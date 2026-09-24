@@ -1,0 +1,26 @@
+:host {
+    ::ng-deep {
+        p-tag {
+            display: inline-block;
+            padding-top: 1px;
+
+            .p-tag {
+                padding: 0.25rem 0.6rem;
+                border-radius: 10px;
+            }
+        }
+
+        p-card {
+            .p-card {
+                border: 2px solid transparent;
+            }
+
+            &.selected {
+                .p-card {
+                    border-color: #6366f1;
+                    background-color: #eef2ff;
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,13 @@
+name: simple_query
+version: 1.0
+inputs:
+  sprint_id: { type: int, default: 0 }
+steps:
+  - id: get_sprint
+    type: sql
+    query: |
+      SELECT sprint_name, start_date, end_date
+      FROM sprints
+      WHERE sprint_id = {sprint_id}
+    returns: (string sprint_name, DateTime start_date, DateTime end_date)
+    output: sprint_info

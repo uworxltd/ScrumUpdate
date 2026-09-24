@@ -1,0 +1,220 @@
+Analyze a JIRA ticket's timeline to identify issues and provide actionable recommendations.
+
+INPUT: JSON containing ticket data:
+{
+  "issue_key": "KFX-123",
+  "issue_id": 48150,
+  "summary": "Ticket title",
+  "description": "Ticket description",
+  "parent_issue_key": "KFX-100",
+  "story_points": 5,
+  "current_status": "Awaiting QA",
+  "priority": "High",
+  "days_in_status": 2.8,
+  "timeline": [
+    {
+      "days_ago": 9,
+      "event_type": "status",
+      "from_value": "In Progress",
+      "to_value": "Awaiting QA",
+      "author": "dev.engineer",
+      "event_date": "2025-11-23T10:30:00Z"
+    },
+    {
+      "days_ago": 5,
+      "event_type": "assignee",
+      "from_value": "dev.engineer",
+      "to_value": "qa.tester",
+      "author": "dev.engineer",
+      "event_date": "2025-11-27T14:20:00Z"
+    },
+    {
+      "days_ago": 2,
+      "event_type": "priority",
+      "from_value": "Medium",
+      "to_value": "High",
+      "author": "manager.name",
+      "event_date": "2025-11-30T09:15:00Z"
+    }
+  ]
+}
+
+TASK:
+Analyze the ticket's timeline to identify:
+1. Process issues (e.g., moved to testing but not assigned, in QA for too long without updates)
+2. Status anomalies (e.g., stuck in a status too long, backward transitions)
+3. Assignment gaps (e.g., reassigned multiple times, unassigned during active work)
+4. Root causes (e.g., process lapse, unclear ownership, blocked, communication gap)
+
+OUTPUT FORMAT:
+Return ONLY this JSON (no markdown, no code blocks):
+{
+  "days_in_current_status": 2.8,
+  "whatWentWrong": [
+    "<Specific issue 1>",
+    "<Specific issue 2>",
+    "<Specific issue 3>"
+  ],
+  "rootCause": "<Brief root cause>",
+  "recommendedActions": [
+    "<Actionable step 1>",
+    "<Actionable step 2>"
+  ],
+  "timelineHighlights": [
+    {
+      "daysAgo": 9,
+      "description": "Moved to Awaiting QA by dev.engineer",
+      "icon": "status_change"
+    },
+    {
+      "daysAgo": 5,
+      "description": "Assigned to qa.tester",
+      "icon": "assignment"
+    },
+    {
+      "daysAgo": 2,
+      "description": "Priority raised to High",
+      "icon": "priority"
+    }
+  ]
+}
+
+ANALYSIS RULES:
+
+1. CALCULATE DAYS IN CURRENT STATUS:
+   - Use the "days_in_status" field directly from ticket data
+   - This is the authoritative value calculated from actual status change in database
+   - Do NOT try to calculate from timeline
+
+2. WHAT WENT WRONG - Identify specific issues:
+   - Status stuck for longer than reasonable (e.g., In QA > 5 days without activity)
+   - Moved to Testing/QA but not assigned to QA person
+   - Multiple rapid reassignments (indicates unclear ownership)
+   - Status backward transitions (e.g., In Progress → To Do, Done → In Progress)
+   - Priority escalations without explanation
+   - Removed from sprint without documented reason
+   - No activity/updates in a status for extended period
+
+3. ROOT CAUSE - Determine underlying cause:
+   - "process lapse" - workflow not followed properly, status not updated
+   - "unclear ownership" - reassigned multiple times or unassigned in active state
+   - "blocked by dependency" - if mentioned in ticket
+   - "communication gap" - if team members not aligned
+   - "scope creep" - if requirements changed mid-work
+   - "technical complexity" - if technical challenges mentioned
+   - "N/A" - if ticket is progressing normally
+
+4. RECOMMENDED ACTIONS - Provide 2-3 specific, actionable steps:
+   - "Assign to QA owner immediately" - if in QA but unassigned
+   - "Follow up on status" - if stuck in a status
+   - "Update status to reflect current work" - if status doesn't match activity
+   - "Add comment explaining delay" - if stalled
+   - "Escalate blocker" - if blocked
+   - "Continue monitoring" - if progressing normally
+
+5. TIMELINE HIGHLIGHTS - Extract 3-4 key events showing overall progression:
+   - Include major status transitions
+   - Include assignment changes
+   - Include priority changes if significant
+   - Omit minor field updates
+   
+   Icon types:
+   - "status_change" - for status transitions (event_type == "status")
+   - "assignment" - for assignee changes (event_type == "assignee")
+   - "priority" - for priority changes (event_type == "priority")
+   - "sprint" - for sprint additions/removals (event_type == "Sprint")
+
+EDGE CASES:
+
+- If timeline is empty: Return minimal response indicating insufficient data
+- If current_status_days < 1: Might be too early to flag issues, be conservative
+- If ticket is moving normally: Acknowledge this and provide preventive recommendations
+- If only 1 status change: Can't determine issue pattern, focus on current state
+
+EXAMPLES:
+
+Example 1 - Stuck in Testing:
+{
+  "days_in_current_status": 9,
+  "whatWentWrong": [
+    "Ticket stuck in Awaiting QA for 9 days",
+    "Assigned to QA but no activity documented",
+    "No status updates or comments indicating progress"
+  ],
+  "rootCause": "process lapse",
+  "recommendedActions": [
+    "Follow up with QA team on testing status",
+    "Add comment documenting current QA findings",
+    "Escalate if blocked by environment issues"
+  ],
+  "timelineHighlights": [
+    {
+      "daysAgo": 9,
+      "description": "Moved to Awaiting QA",
+      "icon": "status_change"
+    },
+    {
+      "daysAgo": 7,
+      "description": "Assigned to qa.tester",
+      "icon": "assignment"
+    }
+  ]
+}
+
+Example 2 - Multiple Reassignments:
+{
+  "days_in_current_status": 3,
+  "whatWentWrong": [
+    "Reassigned 3 times in 5 days indicates unclear ownership",
+    "Confusion about who is responsible for this work",
+    "Multiple handoffs reduce focus and increase delays"
+  ],
+  "rootCause": "unclear ownership",
+  "recommendedActions": [
+    "Clarify ownership - assign to single QA owner",
+    "Document why previous owners couldn't complete",
+    "Add acceptance criteria to prevent re-work"
+  ],
+  "timelineHighlights": [
+    {
+      "daysAgo": 5,
+      "description": "Assigned to dev.engineer",
+      "icon": "assignment"
+    },
+    {
+      "daysAgo": 3,
+      "description": "Reassigned to qa.tester",
+      "icon": "assignment"
+    }
+  ]
+}
+
+Example 3 - Normal Progress:
+{
+  "days_in_current_status": 1,
+  "whatWentWrong": [
+    "No significant issues - ticket is progressing normally"
+  ],
+  "rootCause": "N/A",
+  "recommendedActions": [
+    "Continue monitoring progress",
+    "Maintain clear communication with QA team"
+  ],
+  "timelineHighlights": [
+    {
+      "daysAgo": 5,
+      "description": "Moved to In Progress",
+      "icon": "status_change"
+    },
+    {
+      "daysAgo": 2,
+      "description": "Code review completed",
+      "icon": "status_change"
+    },
+    {
+      "daysAgo": 1,
+      "description": "Moved to Awaiting QA",
+      "icon": "status_change"
+    }
+  ]
+}

@@ -1,0 +1,210 @@
+﻿{
+  "$schema": "https://adaptivecards.io/schemas/adaptive-card.json",
+  "type": "AdaptiveCard",
+  "version": "1.5",
+  "speak": "Your weekly worklog progress",
+  "body": [
+    {
+      "type": "TextBlock",
+      "size": "Large",
+      "text": "Weekly Worklog Summary",
+      "weight": "Bolder",
+      "wrap": true
+    },
+    {
+      "type": "TextBlock",
+      "targetWidth": "atMost:Narrow",
+      "text": "Progress",
+      "wrap": true,
+      "isSubtle": true
+    },
+    {
+      "type": "TextBlock",
+      "targetWidth": "atMost:Narrow",
+      "text": "${worklogProgressPhrase}",
+      "weight": "Bolder",
+      "wrap": true
+    },
+    {
+      "type": "ColumnSet",
+      "targetWidth": "atLeast:Standard",
+      "style": "emphasis",
+      "roundedCorners": true,
+      "showBorder": true,
+      "columns": [
+        {
+          "type": "Column",
+          "items": [
+            {
+              "type": "Chart.Donut",
+              "data": "${chartData}"
+            }
+          ]
+        },
+        {
+          "type": "Column",
+          "width": "stretch",
+          "verticalContentAlignment": "Center",
+          "items": [
+            {
+              "type": "FactSet",
+              "facts": "${facts}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Table",
+      "targetWidth": "atMost:Narrow",
+      "columns": [
+        {
+          "width": 2
+        },
+        {
+          "width": 3
+        }
+      ],
+      "rows": [
+        {
+          "type": "TableRow",
+          "$data": "${facts}",
+          "cells": [
+            {
+              "type": "TableCell",
+              "items": [
+                {
+                  "type": "TextBlock",
+                  "text": "${title}",
+                  "wrap": true,
+                  "isSubtle": true
+                }
+              ]
+            },
+            {
+              "type": "TableCell",
+              "items": [
+                {
+                  "type": "TextBlock",
+                  "text": "${value}",
+                  "wrap": true
+                }
+              ]
+            }
+          ],
+          "verticalCellContentAlignment": "Center"
+        }
+      ],
+      "firstRowAsHeaders": false,
+      "showGridLines": false,
+      "spacing": "Large"
+    },
+    {
+      "type": "Container",
+      "spacing": "Medium",
+      "items": [
+        {
+          "type": "TextBlock",
+          "text": "Breakdown:",
+          "wrap": true,
+          "isSubtle": true
+        },
+        {
+          "type": "Container",
+          "targetWidth": "atMost:Narrow",
+          "style": "emphasis",
+          "spacing": "Medium",
+          "separator": true,
+          "$data": "${daysData}",
+          "items": [
+            {
+              "type": "ColumnSet",
+              "columns": [
+                {
+                  "type": "Column",
+                  "width": "stretch",
+                  "items": [
+                    {
+                      "type": "TextBlock",
+                      "size": "Medium",
+                      "weight": "Bolder",
+                      "text": "${Day}",
+                      "wrap": true
+                    }
+                  ]
+                },
+                {
+                  "type": "Column",
+                  "width": "stretch",
+                  "items": [
+                    {
+                      "type": "TextBlock",
+                      "text": "${Hours}",
+                      "wrap": true
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "ColumnSet",
+      "targetWidth": "atLeast:Standard",
+      "columns": [
+        {
+          "$data": "${daysData}",
+          "type": "Column",
+          "width": "stretch",
+          "items": [
+            {
+              "type": "TextBlock",
+              "text": "${Day}",
+              "weight": "Bolder",
+              "horizontalAlignment": "Center"
+            },
+            {
+              "type": "TextBlock",
+              "text": "${Hours}",
+              "horizontalAlignment": "Center"
+            },
+            {
+              "type": "ActionSet",
+              "targetWidth": "atLeast:Standard",
+              "actions": [
+                {
+                  "type": "Action.Submit",
+                  "iconUrl": "icon:Wand",
+                  "id": "${ActionId}",
+                  "isEnabled": "${IsEnabled}",
+                  "tooltip": "Coming soon!"
+                }
+              ],
+              "horizontalAlignment": "Center"
+            }
+          ],
+          "verticalContentAlignment": "Center",
+          "separator": "${Separator}"
+        }
+      ]
+    },
+    {
+      "type": "ActionSet",
+      "spacing": "Medium",
+      "actions": [
+        {
+          "type": "Action.Execute",
+          "verb": "menu",
+          "title": "Main Menu",
+          "iconUrl": "icon:ArrowCircleLeft",
+          "data": {
+            "source": "summary.BackToMainMenu"
+          },
+          "id": "summary.BackToMainMenu"
+        }
+      ]
+    }
+  ]
+}

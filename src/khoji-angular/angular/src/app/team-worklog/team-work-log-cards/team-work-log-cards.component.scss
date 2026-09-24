@@ -1,0 +1,95 @@
+/*
+  Copyright 2026 UWorx Services.
+  Licensed under the Apache License, Version 2.0.
+  See LICENSE for the full license text.
+*/
+
+:host ::ng-deep {
+  span.p-tag {
+    font-size: 12px;
+    font-weight: 400;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    margin-left: 500px !important;
+  }
+
+  /* Track */
+
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Set the background color for the track */
+    border-radius: 3px;
+  }
+
+  /* Handle */
+
+  ::-webkit-scrollbar-thumb {
+    background: #888; /* Set the color of the scrollbar handle */
+    border-radius: 3px;
+  }
+
+  /* Handle on hover */
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555; /* Set the color of the scrollbar handle on hover */
+  }
+
+}
+
+.card {
+  margin-bottom: 0 !important;
+  padding: 0 !important;
+}
+
+.margin-bottom {
+  margin-bottom: 16px !important;
+}
+
+.margin-top {
+  margin-top: 16px !important;
+}
+
+.margin-left-right {
+  margin-left: 10px !important;
+  margin-right: 10px !important;
+}
+
+.danger {
+  color: #DC143C;
+}
+
+.warning {
+  color: #FFD700;
+}
+
+.success {
+  color: #428a36;
+}
+
+.custom-font-size {
+  font-size: 0.875rem;
+}
+
+.max-h-and-scroll {
+  max-height: 478px;
+  min-height: 478px;
+  overflow-y: auto;
+}
+
+@media (max-width: 1366px) {
+  .max-h-and-scroll {
+    max-height: 501px;
+    min-height: 501px;
+  }
+
+  .custom-font-size {
+    font-size: 0.7rem;
+  }
+}
+
+.chip {
+  padding: 5px;
+  margin: 5px 0px;
+}
+

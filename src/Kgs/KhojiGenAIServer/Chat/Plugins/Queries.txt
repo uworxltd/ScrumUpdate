@@ -1,0 +1,66 @@
+-- How is our current sprint performing? Will we deliver on time?
+SELECT * FROM fn_sprint_facts(
+  (SELECT sprint_id FROM sprints WHERE state = 'ACTIVE' LIMIT 1)
+);
+ 
+-- Are we burning out our best people? Is work distributed fairly?
+-- Analyze current sprint workload distribution
+SELECT 
+  person,
+  issues_assigned_now,
+  points_assigned_now,
+  issues_done_total,
+  points_done_total,
+  ROUND( (points_assigned_now::numeric / NULLIF(points_done_total,0)), 2 ) AS load_ratio
+FROM v_sprint_people_rollup 
+WHERE sprint_id = (SELECT sprint_id FROM sprints WHERE state = 'ACTIVE' LIMIT 1)
+ORDER BY points_assigned_now DESC;
+ 
+-- Why are some stories taking forever while others fly through?
+-- Identify where work gets stuck this sprint
+SELECT 
+  from_status, 
+  to_status,
+  person,
+  transitions,
+  ROUND(avg_secs/86400.0, 1) as avg_days,
+  ROUND(p90_secs/86400.0, 1) as p90_days
+FROM v_person_status_pair_stats 
+WHERE sprint_id = (SELECT sprint_id FROM sprints WHERE state = 'ACTIVE' LIMIT 1)
+  AND transitions >= 2
+ORDER BY p90_days DESC;
+ 
+ 
+-- Are we cutting corners? What quality risks are building up?
+SELECT 
+  issue_key,
+  summary,
+  assignee_display_name,
+  status,
+  current_status_days,
+  CASE 
+    WHEN NOT has_assignee THEN 'No Owner'
+    WHEN NOT has_story_points THEN 'Unestimated' 
+    WHEN NOT has_description THEN 'Undefined'
+    WHEN stale THEN 'Stale Work'
+    ELSE 'OK'
+  END as risk_flag
+FROM v_issue_hygiene_flags 
+WHERE in_scope_now 
+  AND (NOT has_assignee OR NOT has_story_points OR NOT has_description OR stale)
+ORDER BY current_status_days DESC;
+ 
+-- How much are mid-sprint changes actually costing us? 
+-- Track scope changes and their velocity impact
+SELECT 
+  day,
+  scope_points,
+  done_points,
+  remaining_points,
+  added_points_day,
+  removed_points_day,
+  ROUND((added_points_day + removed_points_day)::numeric / scope_points * 100, 1) as churn_percentage
+FROM mv_sprint_burndown_daily 
+WHERE sprint_id = (SELECT sprint_id FROM sprints WHERE state = 'ACTIVE' LIMIT 1)
+  AND (added_points_day > 0 OR removed_points_day > 0)
+ORDER BY day;

@@ -1,0 +1,60 @@
+<!-- /*
+Copyright 2026 UWorx Services.
+Licensed under the Apache License, Version 2.0.
+See LICENSE for the full license text.
+*/ -->
+
+
+
+ <form name="form" #f="ngForm" class="m-5">
+  <!------------------------------------------------- Upload Image Component ------------------------------------------------->
+  <div class="grid">
+    <div class="col-12">
+      <khoji-upload-image [userEmail]="model.email" [showEmail]="true" data-test="upload-image-section"
+        (onImageChanged)="imageChanged($event)" [inputImage]="model.image" (imageDeleted)="imageDeleted=$event">
+      </khoji-upload-image>
+    </div>
+  </div>
+  <!------------------------------------------------- grid for the Form ------------------------------------------------->
+  <div class="formgrid grid">
+    <!------------------------------------------------- First Name ------------------------------------------------->
+    <div class="col-12 md:col-5 sm:col-6">
+      <label for="firstName" class="block">{{translation?.signupUser?.signupPage.firstNameTitle}}
+        <span>
+          <khoji-tooltip-icon [toolTipType]="'custom'"
+            [tooltipText]=" translation?.adminPanel?.projectIntegration?.users?.usernameInputToolTip"
+            [inheritColor]="true"></khoji-tooltip-icon>
+        </span>
+      </label>
+      <input data-test="user-firstName-text" pInputText class="w-full" type="text" id="firstName" name="firstName" [(ngModel)]="model.firstName"
+        #firstName="ngModel" required maxlength="{{constants.USERNAME_MAX_LENGTH}}"
+        pattern={{constants.INVALID_USERNAME_REGEX}}>
+      <small data-test="firstName-validation-text" class="mt-1 p-error block" *ngIf="!firstName?.valid && (firstName?.dirty || firstName?.touched)">
+        {{showErrorMessage(firstName.errors, 'firstNameValidation')}}
+      </small>
+    </div>
+    <!------------------------------------------------- Last Name ------------------------------------------------->
+    <div class="col-12 md:col-5 sm:col-6">
+      <label for="lastName" class="block">{{translation.signupUser.signupPage.lastNameTitle}}
+        <span>
+          <khoji-tooltip-icon [toolTipType]="'custom'"
+            [tooltipText]=" translation?.adminPanel.projectIntegration.users.usernameInputToolTip"
+            [inheritColor]="true"></khoji-tooltip-icon>
+        </span>
+      </label>
+      <input pInputText class="w-full" type="text" name="lastName" [(ngModel)]="model.lastName"
+        data-test="user-lastName-text" #lastName="ngModel" required maxlength="{{constants.USERNAME_MAX_LENGTH}}"
+        pattern={{constants.INVALID_USERNAME_REGEX}}>
+      <small data-test="lastName-validation-text" class="p-error mt-1" *ngIf="!lastName?.valid && (lastName?.dirty || lastName?.touched)">
+        {{showErrorMessage(lastName.errors, 'lastNameValidation')}}
+      </small>
+    </div>
+  </div>
+  <!------------------------------------------------- Save Button ------------------------------------------------->
+  <div class="field grid mt-4">
+    <div class="col">
+      <button pButton pRipple (click)="saveChanges()"
+        [disabled]="!f.form.valid || saveButtonDisabled()">{{translation?.adminMenuUser?.buttons?.save}}</button>
+    </div>
+  </div>
+</form>

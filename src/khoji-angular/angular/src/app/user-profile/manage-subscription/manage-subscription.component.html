@@ -1,0 +1,77 @@
+<!-- /*
+Copyright 2026 UWorx Services.
+Licensed under the Apache License, Version 2.0.
+See LICENSE for the full license text.
+*/ -->
+
+<div class="pb-1">
+  <h5 class="font-normal">{{ translation?.userProfile.manageSubscription.heading }}</h5>
+  <p class="mb-5 khoji-title-sub-heading text-gray-600">{{ translation?.userProfile.manageSubscription.subHeading }}</p>
+  <div class="mt-3">
+    <p class="mb-4">{{ translation?.userProfile.manageSubscription.hostedPageButtonLabel }}</p>
+
+    <button
+      pButton
+      pRipple
+      [label]="translation?.userProfile.manageSubscription.planDetailsButtonText"
+      (click)="displayPlanDetails = true"
+    ></button>
+
+    <button
+      *ngIf="false"
+      type="submit"
+      pButton
+      pRipple
+      (click)="onSubmit()"
+    >
+      {{ translation?.userProfile.manageSubscription.hostedPageButtonText }}
+    </button>
+  </div>
+</div>
+
+<p-dialog
+  header="Plan Details"
+  [(visible)]="displayPlanDetails"
+  [modal]="true"
+  [style]="{ width: '543px' }"
+  [draggable]="false"
+  [resizable]="false"
+>
+  <div class="h-full">
+    <div
+      class="shadow-2 p-6 h-full flex flex-column surface-card"
+      style="border-radius: 6px; background: linear-gradient(90deg, #f25c26, rgba(254, 180, 123, 0.8));"
+    >
+      <span class="text-50 block font-medium text-4xl mb-2 text-center font-bold">Free plan</span>
+      <span class="font-bold block text-3xl text-50 text-center">$0</span>
+
+      <ul class="list-none p-0 m-0 flex-grow-1 mt-6">
+        <li
+          *ngFor="let detail of planDetails"
+          class="flex align-items-center mb-3"
+        >
+          <i class="pi pi-check text-xl text-50 mr-4"></i>
+          <span class="text-50 text-xl">{{ detail }}</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <ng-template pTemplate="footer">
+    <div
+      class="flex w-full align-items-center justify-content-center"
+      pTooltip="Contact support for an upgrade."
+      tooltipPosition="top"
+      tooltipStyleClass="tooltip-width"
+    >
+      <button
+        pButton
+        pRipple
+        label="Upgrade"
+        class="w-full p-button-outlined"
+        icon="pi pi-arrow-right"
+        iconPos="right"
+        disabled="true"
+      ></button>
+    </div>
+  </ng-template>
+</p-dialog>

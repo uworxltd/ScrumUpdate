@@ -1,0 +1,132 @@
+<p-sidebar #sidebar [(visible)]="isSidebarExpanded" [modal]="false" class="relative app-leftbar" [baseZIndex]="0" [autoZIndex]="false" >
+  <div class="mt-1">
+    <button type="button"
+      pButton class="p-button-outlined border-0 p-1 text-md text-color"
+      (click)="navigateToHomePage()"
+      [label]="translation?.adminMenuOrganization?.breadCrum?.home">
+      <span class="pi pi-home text-lg mr-1"></span>
+    </button>
+
+    <hr class="border-top-2 border-solid border-300 mt-2">
+
+    <h6 class="text-sm  font-medium">{{translation?.userWorkspace?.spaces}}</h6>
+    <p-scrollPanel [style]="{ width: '100%', height: '100%' }">
+      <div *ngFor="let workspace of workspaces | slice:0:1">
+        <div class="flex align-items-center">
+          <div class="flex justify-content-start align-items-center w-full p-1 mb-1">
+            <i class="pi pi-box"></i>
+            <h6 class="font-medium text-sm white-space-nowrap overflow-hidden text-overflow-ellipsis flex-1 w-4rem ml-2 m-0">{{workspace?.name}}</h6>
+          </div>
+          <div class="flex justify-content-end mr-1">
+            <button type="button" pButton (click)="newAppmenuBar.toggle($event)" class="p-button-outlined border-0 p-0"
+              icon="pi pi-ellipsis-h"></button>
+          </div>
+        </div>
+
+        <div class="flex flex-row align-items-center mt-1">
+          <input type="search" pInputText
+            [attr.placeholder]="translation?.adminPanel?.projectIntegration?.project?.searchBar?.searchBarPlaceHolder || 'Search'"
+            class="w-full search-input-area" [(ngModel)]="filterString" (input)="filterItems($event)" />
+        </div>
+
+        <h6 *ngIf="treeNodes.length > 0;" class="text-sm font-medium">{{translation?.userWorkspace?.myApps}}</h6>
+        <div class="mt-3">
+          <p-tree [value]="treeNodes" class="sidebar-tree" *ngIf="treeNodes.length > 0;">
+
+            <ng-template let-node pTemplate="default">
+              <div class="flex align-items-center flex-wrap w-11rem ">
+                <img [src]="'assets/images/jira-transparent-logo.svg'" class="cursor-pointer mr-1" (click)="node.expanded = !node.expanded" alt="App Logo" width="20" height="20" />
+                <span class="ml-1 white-space-nowrap overflow-hidden text-overflow-ellipsis flex-1 cursor-pointer" (click)="node.expanded = !node.expanded">{{ node.label }}</span>
+                <div class="absolute right-0 mr-5 ml-2">
+                  <button
+                    pButton
+                    [attr.data-test]="node.label + '-menu'"
+                    type="button"
+                    (click)="toggleMenuBar($event, node, instanceMenuBar)"
+                    class="p-button-outlined border-0 p-0"
+                    icon="pi pi-ellipsis-h"
+                  ></button>
+                </div>
+              </div>
+            </ng-template>
+
+            <ng-template let-node pTemplate="url">
+              <div [ngClass]="{'selected-menu-item': isNodeActive(node, selectedNodeUrl)}">
+                <a [routerLink]="node.data" class="text-700 hover:text-primary" (click)="stopSentCalls(node)">
+                  {{ node.label }}
+                </a>
+              </div>
+            </ng-template>
+
+          </p-tree>
+        </div>
+
+        <h6 *ngIf="sharedTreeNodes.length > 0;" class="text-sm font-medium">Shared apps</h6>
+
+        <div class="mt-3">
+          <p-tree [value]="sharedTreeNodes" class="sidebar-tree" *ngIf="sharedTreeNodes.length > 0;">
+
+            <ng-template let-node pTemplate="default">
+              <div class="flex align-items-center flex-wrap w-11rem ">
+                <img [src]="'assets/images/jira-transparent-logo.svg'" class="cursor-pointer mr-1" (click)="node.expanded = !node.expanded" alt="App Logo" width="20" height="20" />
+                <span class="ml-1 white-space-nowrap overflow-hidden text-overflow-ellipsis flex-1 cursor-pointer" (click)="node.expanded = !node.expanded">{{ node.label }}</span>
+                
+                <img
+                  *ngIf="node.data.sharedInstance"
+                  [src]="node.data.ownerInformation.imageUrl"
+                  class="w-2rem h-2rem border-circle ml-2 cursor-pointer"
+                  [pTooltip]="node.data.ownerInformation.fullName + '\n' + node.data.ownerInformation.email"
+                  tooltipPosition="bottom"
+                />
+                
+                <div class="absolute right-0 mr-5 ml-2">
+                  <button type="button" pButton (click)="toggleMenuBar($event, node, instanceMenuBar)" class="p-button-outlined border-0 p-0"
+                    icon="pi pi-ellipsis-h"></button>
+                </div>
+              </div>
+            </ng-template>
+
+            <ng-template let-node pTemplate="url">
+              <div [ngClass]="{'selected-menu-item': isNodeActive(node, selectedNodeUrl)}">
+                <a [routerLink]="node.data" class="text-700 hover:text-primary" (click)="stopSentCalls()">
+                  {{ node.label }}
+                </a>
+              </div>
+            </ng-template>
+
+          </p-tree>
+        </div>
+
+        <div *ngIf="sharedTreeNodes.length === 0 && treeNodes.length === 0">
+          <ng-container *ngTemplateOutlet="noRecordsFound"></ng-container>
+        </div>
+      </div>
+    </p-scrollPanel>
+
+  </div>
+</p-sidebar>
+
+<p-menu #instanceMenuBar [model]="instanceMenuItems" [popup]="true">
+  <ng-template pTemplate="item" let-item>
+    <a 
+      pRipple 
+      class="flex align-items-center p-menuitem-link" 
+      [routerLink]="item.routerLink" 
+      [queryParams]="item.queryParams" 
+      [ngClass]="{'p-disabled': item._disabled}"
+    >
+      <span class="ml-2">{{ item.label }}</span>
+    </a>
+  </ng-template>
+</p-menu>
+<p-menu #newAppmenuBar [model]="addNewAppMenuItems" [popup]="true"></p-menu>
+
+<div class="sidebar-indicator">
+    <i class="arrow-icon pi pi-angle-left" data-test="collapse-icon" (click)="toggleSidebar();$event.stopPropagation()"></i>
+</div>
+
+<ng-template #noRecordsFound>
+  <p class="text-center mt-3 text-color">{{filterString ?
+     translation?.userWorkspace?.noMatchingRecordsFound :
+      translation?.userWorkspace?.noInstancesFound}}</p>
+</ng-template>

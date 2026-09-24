@@ -1,0 +1,15 @@
+﻿name: sprint_analyzer
+version: 1.0
+inputs: 
+  sprint_id: {type: int, default: 0}
+  additionalInfo: {type: string, default: null}
+steps:
+  - id: load
+    type: sql
+    query: SELECT * FROM fn_sprint_ai_payload({sprint_id})
+    returns: (jsonb fn_sprint_ai_payload)"
+  - id: analyze
+    type: llm
+    cache: 43200
+    llm: claude-haiku
+    prompt: SprintAnalyzer

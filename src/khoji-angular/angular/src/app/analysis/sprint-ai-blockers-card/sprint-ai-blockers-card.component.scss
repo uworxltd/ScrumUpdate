@@ -1,0 +1,430 @@
+/*
+  Copyright 2026 UWorx Services.
+  Licensed under the Apache License, Version 2.0.
+  See LICENSE for the full license text.
+*/
+
+
+// Container
+.sprint-signals-container {
+  height: 380px;
+}
+
+// Card customizations using ::ng-deep for PrimeNG component styles
+::ng-deep {
+  .sprint-signals-container .p-card {
+    height: 100%;
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    border-radius: 0 !important;
+  }
+
+  .sprint-signals-container .p-card-header,
+  .sprint-signals-container .p-card-body,
+  .sprint-signals-container .p-card-content {
+    padding: 0 !important;
+  }
+
+  // Remove any inner card styling - target only elements inside p-card-body
+  .sprint-signals-container .p-card-body {
+    .surface-card,
+    .surface-section,
+    .border-round {
+      border: none !important;
+      box-shadow: none !important;
+      border-radius: 0 !important;
+      background: transparent !important;
+    }
+  }
+} // Custom button styles for tab navigation
+.tab-buttons {
+  display: flex;
+  gap: 0.5rem;
+  border-radius: 8px;
+  padding: 0.4rem; // Increased padding to prevent background from being cut
+  background-color: rgba(0, 0, 0, 0.05);
+  margin-top: 0.45rem; // Add top margin to the container to prevent cutting
+  margin-bottom: 0.25rem; // Add bottom margin for balance
+}
+
+.jira-insights-btn,
+.human-insights-btn {
+  border-radius: 6px;
+  padding: 0.25rem 0.75rem; // Smaller padding to reduce size
+  //margin-top: 0.25rem; // Add slight margin to prevent cutting off
+  background-color: transparent;
+  color: var(--text-color-secondary);
+  border: none;
+  cursor: pointer;
+  font-size: 0.75rem; // Slightly smaller font size
+  font-weight: 500;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  white-space: nowrap;
+
+  i {
+    font-size: 0.75rem; // Adjust icon size to match button
+  }
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.08);
+    color: var(--text-color);
+  }
+
+  &.active {
+    background-color: var(--primary-color);
+    color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+    &:hover {
+      background-color: var(--primary-color);
+      filter: brightness(0.95);
+    }
+  }
+}
+
+
+
+.details-btn {
+  padding: 0.25rem 0.625rem;
+  background: transparent;
+  border: 1px solid var(--primary-color);
+  color: var(--primary-color);
+  border-radius: var(--border-radius);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+
+  &:hover {
+    background: var(--primary-color);
+    color: white;
+  }
+}
+
+.explain-btn {
+  padding: 0.25rem 0.625rem;
+  background: var(--surface-100);
+  border: 1px solid var(--surface-border);
+  color: var(--text-color-secondary);
+  border-radius: var(--border-radius);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  margin-left: 0.75rem;
+  transition: all 0.2s;
+
+  &:hover {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+  }
+}
+
+// Signals list with scrollbar
+.signals-list {
+  max-height: 320px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--surface-300);
+    border-radius: 2px;
+
+    &:hover {
+      background: var(--surface-400);
+    }
+  }
+
+  scrollbar-width: thin;
+  scrollbar-color: var(--surface-300);
+}
+
+// Signal item hover effect
+.signal-item {
+  border-left: 3px solid transparent;
+  transition: all 0.2s ease;
+  background-color: transparent;
+  border-bottom: 1px solid var(--surface-border);
+  padding: 1rem 0 !important;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    background-color: transparent;
+    border-left-color: var(--primary-color);
+    padding-left: 0.75rem !important;
+  }
+}
+
+// AI Summary card - same styling as regular signals but with AI tag
+.summary-card {
+  background: transparent !important;
+  border-left: 4px solid transparent !important;
+  border-bottom: 1px solid var(--surface-border);
+  padding: 1rem 0 !important;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: transparent !important;
+    border-left-color: var(--primary-color) !important;
+    padding-left: 0.75rem !important;
+  }
+
+  h4 {
+    color: var(--text-color);
+    font-weight: 600;
+  }
+
+  .text-color-secondary {
+    color: var(--text-color-secondary) !important;
+  }
+}
+
+// Ticket link styling
+.ticket-link {
+  color: var(--primary-color);
+  text-decoration: none;
+  cursor: pointer;
+  font-size: 0.75rem;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+// Animation for expand/collapse
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.signal-body,
+.signal-footer {
+  animation: slideDown 0.3s ease;
+}
+
+// Modal backdrop
+::ng-deep {
+  .p-dialog-mask {
+    backdrop-filter: blur(8px);
+  }
+}
+
+// Modal explanation content formatting
+.explanation-content {
+  line-height: 1.8;
+  color: var(--text-color);
+  font-size: 0.9375rem;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+
+  ::ng-deep {
+    p {
+      margin: 0 0 0.75rem 0;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    ul,
+    ol {
+      margin: 0.5rem 0;
+      padding-left: 1.5rem;
+    }
+
+    li {
+      margin-bottom: 0.5rem;
+      line-height: 1.6;
+    }
+
+    strong {
+      font-weight: 600;
+      color: var(--text-color);
+    }
+  }
+}
+
+// Velocity Metrics Styles
+.velocity-metrics {
+  .metric-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    span {
+      font-size: 0.75rem;
+      color: var(--text-color-secondary);
+    }
+
+    strong {
+      font-size: 0.875rem;
+      color: #2196f3;
+      font-weight: 600;
+    }
+  }
+}
+.mt-4 {
+  margin-top: 0rem !important;
+}
+
+// Workload Breakdown Styles
+.workload-breakdown {
+  .workload-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    span {
+      font-size: 0.75rem;
+      color: var(--text-color-secondary);
+    }
+
+    strong {
+      font-size: 0.875rem;
+      color: #ffa000;
+      font-weight: 600;
+    }
+  }
+}
+
+// User Avatar Styles
+.user-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.625rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  flex-shrink: 0;
+  cursor: help;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: scale(1.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+}
+
+// Stacked Avatar Styles (for workload imbalance)
+.user-avatar-stacked {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #e0e0e0;
+  color: #424242;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  &:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    z-index: 1000 !important;
+  }
+}
+
+// Custom tooltip styling
+::ng-deep {
+  .p-tooltip {
+    &.p-tooltip-top {
+      .p-tooltip-text {
+        background-color: rgba(0, 0, 0, 0.9);
+        color: white;
+        padding: 0.5rem 0.75rem;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        line-height: 1.4;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+
+      .p-tooltip-arrow {
+        border-top-color: rgba(0, 0, 0, 0.9);
+      }
+    }
+  }
+}
+
+// Clickable ticket links in modal
+.ticket-link-tag {
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+
+  &:hover {
+    opacity: 0.8;
+  }
+
+  ::ng-deep .p-tag {
+    cursor: pointer;
+    transition: transform 0.2s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+    }
+  }
+}
+.sprint-signals-card {
+  padding-left: 0rem !important;
+  padding-right: 0.95rem !important;
+}
+
+// Inline ticket links in explanation text
+::ng-deep .explanation-content {
+  .ticket-link-inline {
+    color: #1976d2;
+    text-decoration: underline;
+    font-weight: 500;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: #1565c0;
+      text-decoration: none;
+    }
+  }
+}

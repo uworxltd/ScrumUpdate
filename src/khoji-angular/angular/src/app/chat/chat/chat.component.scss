@@ -1,0 +1,63 @@
+:host {
+  display: block;
+
+  .actions {
+    div.button {
+      border: 1px solid #216478;
+      padding: 5px 10px;
+      display: inline-block;
+      margin: 0 5px 5px 0;
+      cursor: pointer;
+      background: #256477;
+      color: white;
+      border-radius: 6px;
+      &:hover {
+        box-shadow: 0 0 4px gray;
+      }
+    }
+  }
+
+  .sidebar-chat {
+    height: calc(100vh - 202px);
+  }
+  
+  .fullscreen-chat {
+    height: calc(100vh - 125px);
+  }
+
+  .chat-input-bar {
+    position: sticky;
+    bottom: 0;
+    background: var(--surface-card, #fff);
+    z-index: 1;
+    box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.05);
+    /* soft divider */
+  }
+
+  ::ng-deep {
+    .p-card {
+      background: var(--surface-card);
+      border: 1px solid var(--surface-border);
+      box-shadow: var(--card-shadow);
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+
+      .p-card-body {
+        padding: 0 10px;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+      }
+
+      .p-card-content {
+        padding: 10px 0 0 0;
+      }
+    }
+
+    .p-panel .p-panel-content {
+      padding: 10px;
+    }
+  }
+}

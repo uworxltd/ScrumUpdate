@@ -1,0 +1,41 @@
+name: sprint_insight_ai_cards
+description: |
+  This metric generates a comprehensive sprint brief by leveraging AI to analyze sprint data.
+  It combines data from the sprint_insight_ai_payload metric and processes it through an LLM service
+  to produce insights on sprint performance, challenges, and recommendations for improvement.
+version: 1.0
+
+inputs:
+  sprint_id: { type: int, default: 1 }
+  team_name: { type: string, default: "" }
+
+steps:
+  - id: base_payload_for_ai
+    type: pipeline
+    metric: sprint_insight/sprint_and_team_insight_db
+    inputs:
+      sprint_id: "{{ inputs.sprint_id }}"
+      team_name: "{{ inputs.team_name }}"
+    output: { name: payload }
+
+  - id: llm
+    type: http_ai
+    service: llm
+    headers:
+      Content-Type: "application/json"
+    body:
+      instance: "{{ tenant_id }}"
+      llm: "claude-haiku"
+      prompt: "sprint_insight2"
+      data: "{{ steps.base_payload_for_ai.outputs.payload }}"
+    cache: 8640000   # ✅ 8640000 means cached for 24x100hrs, so subsequent calls are fast
+    output: { name: insight }
+
+  - id: parse
+    type: function
+    function: app.processors.llm.extract_reply_json
+    inputs:
+      response: "{{ steps.llm.outputs.insight }}"
+    output: { name: processed_insight }
+
+return: "parse.processed_insight"

@@ -1,0 +1,209 @@
+<div class="flex mt-3">
+  <div class="summary-chart flex flex-column">
+    <div class="flex flex-row w-full align-items-center justify-content-between">
+      <span>Work log summary:</span>
+      <div>
+        <span>1 day = </span>
+        <span [pTooltip]="disableWorkLogConfigEditing ? (translation$|async)?.error.adminAccessRequired : ''">
+          <p-inputNumber
+            mode="decimal"
+            [(ngModel)]="numberInputFeildValue"
+            min="1"
+            [max]="worklogConfigMaxHoursPerDay"
+            [step]="0.1"
+            [minFractionDigits]="0"
+            [maxFractionDigits]="2"
+            [disabled]="disableWorkLogConfigEditing"
+            (onBlur)="updateWorkingHoursPerDay()"
+          >
+          </p-inputNumber> hour{{numberInputFeildValue == 1 ? '' : 's'}}
+        </span>
+        <i
+          class="pi pi-info-circle ml-2 text-600"
+          pTooltip="Set daily work hours to match your organization’s practice."
+          tooltipPosition="bottom"
+          tooltipStyleClass="tooltip-width"
+        ></i>
+      </div>
+    </div>
+    <div class="flex flex-row">
+      <div
+        echarts
+        [options]="chartOption"
+        style="min-height: 170px; min-width: 170px"
+      ></div>
+      <div
+        class="flex flex-column gap-3 m-auto"
+        style="min-width: 188px"
+        *ngIf="(isHours$ | async) as isHours"
+      >
+        <div class="flex justify-content-end">
+          <div class="hours-days-toggle">
+            <span
+              class="hours"
+              [ngClass]="{ 'active': isHours.value }"
+              (click)="isHours$.next({ value: true })"
+            >
+              {{ (translation$ | async).timelog.workLogStatistics.hours }}
+            </span>
+            <span
+              class="days"
+              [ngClass]="{ 'active': !isHours.value }"
+              (click)="isHours$.next({ value: false })"
+            >
+              {{ (translation$ | async).timelog.workLogStatistics.days }}
+            </span>
+          </div>
+        </div>
+        <div class="flex justify-content-between gap-2 border-bottom-1 surface-border">
+          <span
+            class="text-md"
+          >
+            {{ (translation$ | async).timelog.workLogStatistics.availableCapacity }}
+            <span
+              class="pi pi-info-circle text-sm text-600"
+              [pTooltip]="tooltipForAvailableCapacity"
+              tooltipPosition="top"
+            >
+            </span>
+            :
+          </span>
+          <span class="flex align-items-center gap-2 text-base font-bold">
+            <ng-container *ngIf="isHours.value">
+              {{ this.summaryData?.availableCapacityInHours }} {{ this.summaryData?.availableCapacityInHours === 1 ? 'hour' : 'hours' }}
+            </ng-container>
+            <ng-container *ngIf="!isHours.value">
+              {{ this.summaryData?.availableCapacity }} {{ this.summaryData?.availableCapacity === 1 ? 'day' : 'days' }}
+            </ng-container>
+          </span>
+        </div>
+        <div class="flex justify-content-between gap-2 border-bottom-1 surface-border">
+          <span class="text-md">{{ (translation$ | async).timelog.workLogStatistics.loggedTime }}:</span>
+          <span class="flex align-items-center gap-2 text-base font-bold">
+            <ng-container *ngIf="isHours.value">
+              {{ this.summaryData?.loggedTimeInHours }} {{ this.summaryData?.loggedTimeInHours === 1 ? 'hour' : 'hours' }}
+            </ng-container>
+            <ng-container *ngIf="!isHours.value">
+              {{ this.summaryData?.loggedTime }} {{ this.summaryData?.loggedTime === 1 ? 'day' : 'days' }}
+            </ng-container>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p-divider
+    class="mt-4 mb-4"
+    layout="vertical"
+  ></p-divider>
+
+  <div class="per-week-table m-auto">
+    <div
+      class="m-auto"
+      *ngIf="tableDetails"
+    >
+      <p-table
+        [value]="tableRows"
+        styleClass="p-datatable-sm"
+        class="custom-scrollbar"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th
+              rowspan="2"
+              class="pt-7"
+            >
+              Logged hours
+            </th>
+            <th colspan="7">
+              <div class="flex align-items-center justify-content-center">
+                {{ tableDetails.month }}
+              </div>
+            </th>
+          </tr>
+          <tr>
+            <th
+              *ngFor="let dateDay of tableDetails.dateAndDay"
+              [ngClass]="{ 'disabled-cell': isFutureDate(dateDay) }"
+            >
+              <div>
+                <span class="d-flex justify-content-center">
+                  {{ dateDay.date }}
+                </span>
+                <span class="d-flex justify-content-center">
+                  {{ dateDay.day }}
+                </span>
+              </div>
+            </th>
+          </tr>
+        </ng-template>
+
+        <ng-template
+          pTemplate="body"
+          let-rowData
+        >
+          <tr [ngClass]="{ 'p-disabled': disableClickingOnTable }">
+            <td>
+              <div
+                class="white-space-nowrap overflow-hidden text-overflow-ellipsis"
+                style="max-width: 150px"
+                [title]="tableDetails.userNameAndTotalHours.userName"
+              >
+                {{ tableDetails.userNameAndTotalHours.userName }}
+              </div>
+            </td>
+            <td
+              *ngFor="let dateDay of tableDetails.dateAndDay; let i = index"
+              [ngClass]="{ 'disabled-cell': checkIfFutureDate(dateDay) }"
+            >
+              <div
+                class="flex justify-content-center align-items-center cursor-pointer"
+                style="min-width: 15px"
+                (click)="toggleMenubar($event, dateDay, rowData.loggedHours[i], menu)"
+              >
+                <div *ngIf="rowData.loggedHours[i] < workLogHoursPerDayConfig; else showLoggedHours">
+                  <img
+                    *ngIf="!isFutureDate(dateDay)"
+                    [src]="constants.WAND_ICON_AI"
+                  />
+                </div>
+                <ng-template #showLoggedHours>
+                  <b>{{ rowData.loggedHours[i] + 'h' }}</b>
+                </ng-template>
+                <img
+                  *ngIf="!checkIfFutureDate(dateDay)"
+                  src="assets/images/down-sort.png"
+                  alt="Sort Down"
+                  class="ml-1 text-xs"
+                />
+              </div>
+            </td>
+          </tr>
+
+          <tr style="background: #f8fafc; font-weight: 500">
+            <td>{{ formatHours(totalLoggedHours) }}</td>
+            <td
+              *ngFor="let dateDay of tableDetails.dateAndDay; let i = index"
+              [ngClass]="{ 'disabled-cell': isFutureDate(dateDay) }"
+            >
+              <div
+                class="flex justify-content-center"
+                *ngIf="!isFutureDate(dateDay); else showEmpty"
+              >
+                {{ formatHours(rowData.loggedHours[i]) }}
+              </div>
+              <ng-template #showEmpty></ng-template>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>
+
+<p-menu
+  #menu
+  [model]="menuItems"
+  [popup]="true"
+>
+</p-menu>

@@ -1,0 +1,31 @@
+<div class="flex w-12 h-full">
+	<img
+		class="absolute top-right z-2"
+		src="assets/images/logo.svg"
+		alt="scrumupdate-watermark"
+	/>
+	<div class="w-7 bg-white">
+		<div class="flex flex-column h-full">
+			<div class="w-full pt-5 pl-5 mb-3 flex justify-content-center">
+				<img
+					src="assets/images/scrumupdate-logo-v1.svg"
+					alt="Khoii-Logo"
+					width="42"
+					height="35"
+					class="absolute left-0 ml-5"
+				/>
+				<div>
+					<khoji-steps
+						[key]="constants.KHOJI_STEPS_ONBOARDING_KEY"
+						[steps]="stepsForDisplay"
+						[currentStepIndex]="0"
+					></khoji-steps>
+				</div>
+			</div>
+			<ng-content select="[leftContent]"></ng-content>
+		</div>
+	</div>
+	<div class="w-5 surface-ground pl-5 py-8">
+		<ng-content select="[rightContent]"></ng-content>
+	</div>
+</div>

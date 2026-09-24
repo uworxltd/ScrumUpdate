@@ -1,0 +1,59 @@
+:host {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.pains-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  max-width: 950px;
+  margin: 0 auto;
+
+  @media (max-width: 768px) {
+    gap: 1.25rem;
+  }
+
+  @media (max-width: 680px) {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+.pain-card {
+  transition: all 0.2s ease;
+  border-color: var(--surface-border) !important;
+  outline: none;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+  }
+
+  &.selected {
+    border-color: var(--primary-color) !important;
+    background: var(--primary-50, rgba(91, 155, 213, 0.05)) !important;
+
+    .pain-check {
+      background: var(--primary-color);
+      border-color: var(--primary-color) !important;
+    }
+  }
+}
+
+.pain-icon {
+  line-height: 1;
+}
+
+.pain-check {
+  transition: all 0.2s ease;
+  background: transparent;
+  border-color: var(--surface-border) !important;
+}

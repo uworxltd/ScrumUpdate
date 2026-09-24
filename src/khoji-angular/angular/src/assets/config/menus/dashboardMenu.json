@@ -1,0 +1,32 @@
+[
+  {
+    "key": "Manage Users",
+    "label": "Manage Users",
+    "route": "/admin-panel/tenant-dashboard/manage-users",
+    "expanded": false,
+    "selectable": false,
+    "expandedIcon": "pi pi-lock",
+    "collapsedIcon": "pi pi-lock",
+    "styleClass": "opacity-50"
+  },
+  {
+    "key": "Manage Teams",
+    "label": "Manage Teams",
+    "route": "/admin-panel/tenant-dashboard/manage-teams",
+    "expanded": false,
+    "selectable": false,
+    "expandedIcon": "pi pi-lock",
+    "collapsedIcon": "pi pi-lock",
+    "styleClass": "opacity-50"
+  },
+  {
+    "key": "Account settings",
+    "label": "Account Settings",
+    "route": "/admin-panel/tenant-dashboard/account-settings",
+    "expanded": false,
+    "selectable": false,
+    "expandedIcon": "pi pi-lock",
+    "collapsedIcon": "pi pi-lock",
+    "styleClass": "opacity-50"
+  }
+]

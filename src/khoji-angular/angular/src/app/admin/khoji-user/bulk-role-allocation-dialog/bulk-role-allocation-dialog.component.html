@@ -1,0 +1,83 @@
+<p-dialog
+	[(visible)]="showModal"
+	[style]="{ width: '40vw' }"
+	[modal]="true"
+	[draggable]="false"
+	[closeOnEscape]="true"
+	[resizable]="false"
+>
+	<ng-template pTemplate="header">
+		<h4 class="khoji-headings-title m-0">Add role to users</h4>
+	</ng-template>
+	<ng-template pTemplate="content">
+		<div class="mb-3">
+			<label for="roles">Users</label>
+			<p-autoComplete
+				[(ngModel)]="selectedUsers"
+				[suggestions]="users"
+				(completeMethod)="searchUsers($event)"
+				field="member.fullName"
+				[dropdown]="true"
+				[placeholder]="'Enter a name'"
+				[emptyMessage]="'No matching result found'"
+				[showEmptyMessage]="true"
+				styleClass="w-full"
+				appendTo="body"
+				name="khojiUsersAutoComplete"
+				[multiple]="true"
+			>
+				<ng-template
+					let-user
+					pTemplate="selectedItem"
+				>
+					<div class="flex gap-3 align-items-center ml-2">
+						<img
+							[src]="user.avatarURL ?
+							user.avatarURL : 'assets/images/bullet.svg'"
+							class="w-2rem h-2rem border-circle"
+							alt="profile image"
+						/>
+						<span>{{ user.member.fullName }}</span>
+					</div>
+				</ng-template>
+				<ng-template
+					let-user
+					pTemplate="item"
+				>
+					<div class="flex gap-3 align-items-center ml-2">
+						<img
+							[src]="user.avatarURL ?
+							user.avatarURL : 'assets/images/bullet.svg'"
+							class="w-2rem h-2rem border-circle"
+							alt="profile image"
+						/>
+						<span>{{ user.member.fullName }}</span>
+					</div>
+				</ng-template>
+			</p-autoComplete>
+		</div>
+
+		<div class="flex flex-column">
+			<label for="roles">Role</label>
+			<khoji-single-select-dropdown
+				[filter]="true"
+				appendTo="body"
+				(emitValueOnSelection)="selectedRoleForUsers($event)"
+				[selectedItem]="defaultKhojiRole?.code"
+				[dropdownValues]="roleNew"
+				[placeholder]="'Please select a role'"
+			>
+			</khoji-single-select-dropdown>
+		</div>
+	</ng-template>
+	<ng-template pTemplate="footer">
+		<div class="flex align-items-center flex-row-reverse">
+			<p-button
+				label="Update"
+				[ngClass]="{ 'p-disabled': selectedUsers.length === 0 }"
+				(click)="updateUsersRoleInBulk()"
+			>
+			</p-button>
+		</div>
+	</ng-template>
+</p-dialog>

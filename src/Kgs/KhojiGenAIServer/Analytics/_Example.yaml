@@ -1,0 +1,27 @@
+﻿name: sprint_analyzer
+version: 1.0
+inputs: 
+  sprint_id: {type: int, default: 0}
+  additionalInfo: {type: string, default: null}
+steps:
+  - id: load
+    type: sql
+    query: |
+        SELECT i.issue_id, i.issue_type,
+            i.status, i.priority, i.assignee_display_name,
+            i.story_points, i.time_spent
+        FROM issues i join sprint_issues si on i.issue_key = si.issue_key
+            join sprints s on si.sprint_id = s.sprint_id
+        WHERE s.sprint_id = {sprint_id}
+    returns: |
+        (string issue_id, string issue_type,
+        string status, string priority,
+        string assignee_display_name, float story_points, long time_spent)
+  - id: transform
+    type: function
+    method: "KhojiGenAIServer.Analytics.SprintIssuesProcessor.SummariseItems"
+  - id: analyze
+    type: llm
+    cache: 86400
+    llm: together
+    prompt: _Example

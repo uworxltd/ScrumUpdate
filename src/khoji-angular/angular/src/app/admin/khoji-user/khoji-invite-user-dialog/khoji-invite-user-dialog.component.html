@@ -1,0 +1,110 @@
+<p-dialog
+	[(visible)]="showModal"
+	[style]="{ width: '40vw' }"
+	[modal]="true"
+	[draggable]="false"
+	[closeOnEscape]="true"
+	[resizable]="false"
+	(onHide)="handleModalClose($event)"
+>
+	<ng-template pTemplate="header">
+		<h4 class="khoji-headings-title">{{ translation.header }}</h4>
+	</ng-template>
+	<ng-template pTemplate="content">
+		<div class="flex my-3 gap-4 flex-column">
+			<div>
+				<label>{{ translation.selectUser }}</label>
+				<khoji-single-select-dropdown
+					*ngIf="usersLoaded"
+					appendTo="body"
+					[filter]="true"
+					[dropdownValues]="dropDownUsers"
+					[selectedItem]="selectedUserCode"
+					(emitValueOnSelection)="userChanged($event)"
+					[placeholder]="translation.selectUserPlaceholder"
+				>
+				</khoji-single-select-dropdown>
+				<p-skeleton
+					*ngIf="!usersLoaded"
+					width="100%"
+					height="42px"
+				></p-skeleton>
+			</div>
+
+			<div>
+				<label>{{ translation.selectRole }}</label>
+				<khoji-single-select-dropdown
+					*ngIf="usersLoaded"
+					[filter]="true"
+					appendTo="body"
+					(emitValueOnSelection)="roleChanged($event)"
+					[selectedItem]="selectedUser?.userRole?.code || defaultKhojiRole?.code"
+					[dropdownValues]="roles"
+					[placeholder]="translation.selectRole"
+				>
+				</khoji-single-select-dropdown>
+				<p-skeleton
+					*ngIf="!usersLoaded"
+					width="100%"
+					height="42px"
+				></p-skeleton>
+			</div>
+
+			<div>
+				<label>{{ translation.selectAccessLevel }}</label>
+				<khoji-single-select-dropdown
+					*ngIf="usersLoaded"
+					appendTo="body"
+					(emitValueOnSelection)="accessLevelChanged($event)"
+					[dropdownValues]="accessLevels"
+					[selectedItem]="selectedUser?.accessLevel || defaultAccessLevel"
+					[placeholder]="translation.selectAccessLevel"
+				>
+				</khoji-single-select-dropdown>
+				<p-skeleton
+					*ngIf="!usersLoaded"
+					width="100%"
+					height="42px"
+				></p-skeleton>
+			</div>
+
+			<div>
+				<label for="email">{{ translation.emailLabel }}</label>
+				<input
+					type="email"
+					pInputText
+					[placeholder]="translation.emailPlaceholder"
+					id="email"
+					class="w-12"
+					pattern="{{ constants.KHOJI_EMAIL_REGX }}"
+					[(ngModel)]="userEmail"
+					(ngModelChange)="checkEmailValidity()"
+				/>
+				<p
+					*ngIf="!emailValid"
+					class="p-error"
+				>
+					{{ translation.emailInvalidPatternError }}
+				</p>
+			</div>
+		</div>
+	</ng-template>
+	<ng-template pTemplate="footer">
+		<div class="flex align-items-center gap-2 justify-content-end">
+			<button
+				pButton
+				pRipple
+				[label]="translation.buttons.cancel"
+				class="p-button-text text-primary"
+				(click)="showModal = false"
+			></button>
+			<button
+				pButton
+				pRipple
+				[label]="translation.buttons.save"
+				[disabled]="!selectedUser || !emailValid || formSubmitted"
+				(click)="sendInvite()"
+			></button>
+		</div>
+	</ng-template>
+</p-dialog>

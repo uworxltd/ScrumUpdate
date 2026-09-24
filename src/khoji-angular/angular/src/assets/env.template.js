@@ -1,0 +1,38 @@
+// Note: always keep space between double slash and text for comments in this file
+// app configuration
+env = {
+    NG_SERVER_NAME: "${NG_SERVER_NAME}",
+    NG_SERVER_PORT: "${NG_SERVER_PORT}", // ussually not needed on production
+    NG_APP_PORT: "${NG_APP_PORT}", // ussually not needed on production
+    // issue collector link
+    NG_JIRA_ISSUE_COLLECTOR_LINK: "${NG_JIRA_ISSUE_COLLECTOR_LINK}",
+    // support email
+    NG_SUPPORT_EMAIL: "${NG_SUPPORT_EMAIL}",
+    // web chat backend
+    NG_CHAT_BOT: "${NG_CHAT_BOT}",
+    // request panel visibility
+    NG_REQUEST_PANEL_VISIBILITY: "${NG_REQUEST_PANEL_VISIBILITY}",
+    // user tracking
+    NG_TRACKING_PROVIDER: "${NG_TRACKING_PROVIDER}",
+    NG_TRACKING_API_TOKEN: "${NG_TRACKING_API_TOKEN}",
+    NG_TRACKING_API_HOST: "${NG_TRACKING_API_HOST}",
+    NG_TRACKING_AUTO_EVENTS: "${NG_TRACKING_AUTO_EVENTS}",
+    NG_TRACKING_NAVIGATION_EVENTS: "${NG_TRACKING_NAVIGATION_EVENTS}",
+    NG_TRACKING_USER_ACTION_EVENTS: "${NG_TRACKING_USER_ACTION_EVENTS}",
+    NG_TRACKING_APPLICATION_STATUS_EVENTS: "${NG_TRACKING_APPLICATION_STATUS_EVENTS}",
+    // jira oauth
+    NG_JIRA_CLIENT_ID: "${NG_JIRA_CLIENT_ID}",
+    NG_JIRA_SCOPES: "${NG_JIRA_SCOPES}",
+    // captcha
+    NG_CAPTCHA_KEY: "${NG_CAPTCHA_KEY}",
+    NG_DISABLE_CAPTCHA: "${NG_DISABLE_CAPTCHA}",
+    // ms oauth
+    NG_MS_OAUTH_CLIENT_ID: "${NG_MS_OAUTH_CLIENT_ID}",
+    NG_MS_OAUTH_TOKEN_URL: "${NG_MS_OAUTH_TOKEN_URL}",
+    NG_MS_OAUTH_REQUESTED_SCOPES: "${NG_MS_OAUTH_REQUESTED_SCOPES}",
+    NG_MS_OAUTH_ENABLED: "${NG_MS_OAUTH_ENABLED}",
+    // unleash
+    NG_UNLEASH: "${NG_UNLEASH}",
+    NG_UNLEASH_URL: "${NG_UNLEASH_URL}",
+    NG_UNLEASH_API_TOKEN: "${NG_UNLEASH_API_TOKEN}",
+};

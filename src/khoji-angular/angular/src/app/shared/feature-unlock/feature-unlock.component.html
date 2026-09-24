@@ -1,0 +1,111 @@
+<div>
+  @if (showDialog && feature?.integrations) {
+    <!-- V2: headerless dialog — the card IS the dialog -->
+    <p-dialog
+      [modal]="true"
+      [(visible)]="visible"
+      [showHeader]="false"
+      [style]="{ width: '28rem' }"
+      [breakpoints]="{ '575px': '90vw' }"
+      [contentStyle]="{ padding: 0, borderRadius: '16px', overflow: 'hidden' }"
+      (onHide)="visible=false"
+    >
+      <ng-container *ngTemplateOutlet="featureUnlockTemplate"></ng-container>
+    </p-dialog>
+  }
+  @else if (showDialog) {
+    <!-- Legacy: regular dialog with header -->
+    <p-dialog
+      [header]="'Unlock ' + feature?.name" 
+      [modal]="true"
+      [(visible)]="visible" 
+      [style]="{ width: '50rem' }" 
+      [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+      (onHide)="visible=false"
+    >
+      <ng-container *ngTemplateOutlet="featureUnlockTemplate"></ng-container>
+    </p-dialog>
+  }
+  @else {
+    <ng-container *ngTemplateOutlet="featureUnlockTemplate"></ng-container>
+  }
+</div>
+
+<ng-template #featureUnlockTemplate>
+  <!-- New card layout (when integrations are provided) -->
+  <div *ngIf="feature && feature.integrations; else legacyCard" class="feature-card-v2">
+    <!-- Header with icon -->
+    <div class="feature-card-v2__header">
+      <img *ngIf="feature.icon" [src]="feature.icon" class="feature-card-v2__header-icon" alt="" />
+      <div class="feature-card-v2__header-text">
+        <span class="feature-card-v2__name">{{ feature.name }}</span>
+        <span class="feature-card-v2__subtitle">{{ feature.subtitle }}</span>
+      </div>
+      <button type="button" class="feature-card-v2__close" aria-label="Close" (click)="visible = false">×</button>
+    </div>
+
+    <!-- Integrations -->
+    <div class="feature-card-v2__integrations">
+      <ng-container *ngFor="let integration of feature.integrations; let last = last">
+        <div class="feature-card-v2__integration-item">
+          <img [src]="integration.icon" class="feature-card-v2__integration-icon" alt="" />
+          <div class="feature-card-v2__integration-info">
+            <span class="feature-card-v2__integration-name">{{ integration.name }}</span>
+            <span class="feature-card-v2__integration-desc">{{ integration.description }}</span>
+          </div>
+        </div>
+        <span *ngIf="!last" class="feature-card-v2__integration-plus">+</span>
+      </ng-container>
+    </div>
+
+    <!-- Progress -->
+    <div *ngIf="feature.progressLabel || feature.progressStepLabel" class="feature-card-v2__progress">
+      <span class="feature-card-v2__progress-label">{{ feature.progressLabel }}</span>
+      <div class="feature-card-v2__progress-bar">
+        <div class="feature-card-v2__progress-fill" [class.feature-card-v2__progress-fill--running]="progressRunning"></div>
+      </div>
+      <span class="feature-card-v2__progress-step">{{ feature.progressStepLabel }}</span>
+    </div>
+
+    <!-- CTA Button -->
+    <button class="feature-card-v2__cta" [class.feature-card-v2__cta--disabled]="progressRunning" data-test="unlock-feature-button" (click)="unlockFeature()">
+      <img *ngIf="feature.ctaIcon" [src]="feature.ctaIcon" class="feature-card-v2__cta-icon" alt="" />
+      <span>{{ feature.ctaButtonText || 'Unlock feature for free' }}</span>
+    </button>
+
+    <!-- Disclaimers -->
+    <div *ngIf="feature.disclaimers?.length" class="feature-card-v2__disclaimers">
+      <ng-container *ngFor="let note of feature.disclaimers; let last = last">
+        <span>{{ note }}</span>
+        <span *ngIf="!last" class="feature-card-v2__disclaimer-sep">&middot;</span>
+      </ng-container>
+    </div>
+  </div>
+
+  <!-- Legacy card layout -->
+  <ng-template #legacyCard>
+    <p-card *ngIf="feature" [header]="feature.header">
+      <ng-template pTemplate="header">
+        <img *ngIf="feature.image" [ngSrc]="feature.image" [width]="1" [height]="1" style="width:100%;height:100%" />
+      </ng-template>
+      <div *ngIf="showDetails" class="flex align-items-center flex-column mt-1">
+        <h6 class="mt-2 title">{{ feature.title }}</h6>
+        <ul style="padding:0;">
+          <li style="list-style-type:none;display: block;" class="text-left" *ngFor="let ls of feature.details">
+            <i class="pi pi-check text-purple-600 font-bold" style="font-size:medium"></i>
+            {{ls}}
+          </li>
+        </ul>
+      </div>
+      <p class="text-color text-center p-1 font-medium">{{ feature.footer }}</p>
+      <ng-template pTemplate="footer">
+        <div class="flex justify-content-center">
+          <div class="footer-button" data-test="unlock-feature-button" (click)="unlockFeature()">
+            <img src="../../../assets/images/unlockIcon.svg" width="13px" height="20px" />
+            <p class="ml-1 text-50">Unlock feature for free</p>
+          </div>
+        </div>
+      </ng-template>
+    </p-card>
+  </ng-template>
+</ng-template>

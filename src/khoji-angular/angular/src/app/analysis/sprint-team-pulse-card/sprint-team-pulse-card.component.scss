@@ -1,0 +1,91 @@
+/*
+  Copyright 2026 UWorx Services.
+  Licensed under the Apache License, Version 2.0.
+  See LICENSE for the full license text.
+*/
+
+
+/* Progress bar */
+.progress-bar-container {
+  margin-left: calc(29px + 0.5rem);
+  width: calc(100% - 42px);
+  position: relative;
+}
+
+.progress-bar-bg {
+  height: 8px;
+}
+
+.progress-bar-fill {
+  transition: width 0.3s ease;
+  background-color: #4B5563;
+  border-radius: 3px;
+}
+
+.progress-marker {
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 10px;
+  height: 10px;
+  border-width: 2px;
+  border-style: solid;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+
+/* Avatar sizes */
+.contributor-avatar {
+  width: 20px;
+  height: 20px;
+}
+
+.member-avatar {
+  width: 28px;
+  height: 28px;
+}
+
+.contributor-avatar-img,
+.member-avatar-img {
+  object-fit: cover;
+}
+
+/* Scrollbar for contributors */
+.contributors-scroll-container {
+  overflow-x: auto;
+  overflow-y: hidden;
+  margin: 0 -0.25rem;
+  padding: 0 0.25rem;
+  max-width: 100%;
+
+  &::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--surface-300);
+    border-radius: 2px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: var(--surface-400);
+  }
+
+  scrollbar-width: thin;
+  scrollbar-color: var(--surface-300) transparent;
+}
+
+/* Points chip styling */
+::ng-deep .points-chip {
+  background-color: var(--surface-200);
+  font-size: 0.65rem;
+  height: 1.2rem;
+  padding: 0 0.25rem;
+
+  .p-chip-text {
+    font-size: 0.65rem;
+    line-height: 1.2rem;
+  }
+}

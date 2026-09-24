@@ -1,0 +1,42 @@
+﻿open_ai:
+  - name: openrouternemotron
+    model: nvidia/nemotron-3-nano-30b-a3b:free
+    key: "%OPENROUTER_TOKEN%"
+    base_url: https://openrouter.ai/api
+  - name: together
+    model: "%OPENAI_MODEL%"
+    key: "%OPENAI_API_KEY%"
+    base_url: "%OPENAI_API_URL%"
+  - name: together8
+    model: meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo
+    key: "%OPENAI_API_KEY%"
+    base_url: "%OPENAI_API_URL%"
+  - name: together70
+    model: meta-llama/Llama-3.3-70B-Instruct-Turbo
+    key: "%OPENAI_API_KEY%"
+    base_url: "%OPENAI_API_URL%"
+  - name: ollama
+    model: lfm2.5-thinking
+    key: x
+    base_url: "%OLLAMA_URL%"
+  - name: local-from-docker
+    model: llama3.2
+    key: x
+    base_url: http://host.docker.internal:11434
+  - name: local
+    model: llama3.2:1b
+    key: x
+    base_url: http://localhost:11434/v1
+
+anthropic:
+  - name: claude
+    model: "%CLAUDE_MODEL%"
+    key: "%CLAUDE_API_KEY%"
+  - name: claude-haiku
+    model: claude-haiku-4-5-20251001
+    key: "%CLAUDE_API_KEY%"
+
+gemini:
+  - name: geminiflash
+    model: gemini-2.5-flash
+    key: "%GEMINI_API_KEY%"

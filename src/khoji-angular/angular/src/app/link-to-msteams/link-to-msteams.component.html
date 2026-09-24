@@ -1,0 +1,24 @@
+<p-card header="Microsoft Teams Connection Status"
+  style="width: 1082px; margin: 20px auto; display: flex; align-items: center">
+  <ng-container *ngIf="linkToMSTeamsLoadingStatus === loadingState.Done; else notConnected">
+    <p class="text-green-600">✅ You are connected to Microsoft Teams.</p>
+    <p>Close this Window and Return to MS Teams.</p>
+    <!-- <div class="flex align-items-center bg-yellow-100 text-yellow-600 gap-3 px-3 py-1 rounded">
+      <i class="pi pi-exclamation-triangle"></i>
+      <div>If you have not connected any Jira instance with the application yet, please do so first by <a href="/"> visiting the application </a> before start using Teams Bot.</div>
+    </div> -->
+  </ng-container>
+
+  <ng-template #notConnected>
+    <div *ngIf="!validRequest || linkToMSTeamsLoadingStatus === loadingState.Error"
+      class="flex align-items-center bg-red-100 text-red-600 gap-3 px-3 py-1 rounded">
+      <i class="pi pi-times"></i>
+      <div *ngIf="!validRequest">
+        Invalid Request. Please try again.
+      </div>
+      <div *ngIf="linkToMSTeamsLoadingStatus === loadingState.Error">
+        You are not connected to Microsoft Teams.
+      </div>
+    </div>
+  </ng-template>
+</p-card>

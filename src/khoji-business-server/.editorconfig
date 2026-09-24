@@ -1,0 +1,8 @@
+root = true
+
+[*.java]
+
+#### INDENTATION ####
+indent_style = space
+indent_size = 2
+tab_width = 2

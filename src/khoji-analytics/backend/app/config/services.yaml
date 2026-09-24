@@ -1,0 +1,9 @@
+databases:
+  main-db:
+    dsn: "postgresql://{env:DB_USER}:{env:DB_PASS}@{env:DB_HOST}:{env:DB_PORT}/{env:DB_NAME}"
+    min_size: 1
+    max_size: 5
+
+ai_services:
+  llm:
+    endpoint: "http://{env:AI_HOST}:{env:AI_PORT}/api/llm/invoke"

@@ -1,0 +1,73 @@
+:host {
+    --step-bg-color: #eff2f8;
+    --current-step-bg-color: #428A36;
+    --current-step-text-color: #fff;
+    --current-step-title-color: #1e293b;
+  }
+  
+  :host ::ng-deep {
+    .p-steps-title {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      width: 175px;
+      text-align: center;
+    }
+  
+    .p-steps-item {
+      & .p-steps-number {
+        background-color: var(--step-bg-color) !important;
+      }
+  
+      &::before {
+        width: 100% !important;
+        left: -50% !important;
+        border-width: 2px !important;
+      }
+  
+      &:first-child::before {
+        width: 52% !important;
+        left: -4px !important;
+      }
+  
+      &:last-child::before {
+        width: 147% !important;
+        left: -43% !important;
+      }
+  
+      &.p-steps-current::before,
+      &:has(~ .p-steps-current)::before {
+        border-color: var(--current-step-bg-color) !important;
+      }
+    }
+  
+    .p-steps-current,
+    .p-steps-item:has(~ .p-steps-current) {
+      opacity: 1 !important;
+  
+      .p-steps-number {
+        background-color: var(--current-step-bg-color) !important;
+        color: var(--current-step-text-color) !important;
+      }
+  
+      .p-steps-title {
+        color: var(--current-step-title-color) !important;
+        font-weight: 700 !important;
+      }
+    }
+  
+    .p-steps-item:has(~ .p-steps-current) {
+      .p-steps-number {
+        position: relative;
+        color: var(--current-step-bg-color) !important;
+  
+        &::before {
+          left: 5px;
+          content: "\e909";
+          position: absolute;
+          font-family: 'primeicons';
+          color: var(--current-step-text-color) !important;
+        }
+      }
+    }
+  }

@@ -1,0 +1,47 @@
+ #set($support = "${supportEmail}")
+ <html>
+ <head>
+ </head>
+ <body style="max-width: 2000px !important;">
+
+ <div style="padding: 10px;">
+
+    <p>Hi $memberName,</p>
+
+    <p>$supervisorName from <span style="font-weight: bold;">$tenantName</span> has asked you to complete your work log from
+    <span style="font-weight: bold;">$dateFrom - $dateTo</span>.</p>
+
+    #if($customText && !$customText.isEmpty())
+        <p style="font-size: .9em; margin-bottom: 7px;">
+            <span style="color: #696969;">Message from your supervisor</span>
+        </p>
+
+        <div style="border-radius: 10px;
+                    background: #EFF3F8;
+                    padding: 10px;">
+            <span style="font-size: 1.5em;">&#x201C;</span>$customText<span style="font-size: 1.5em;">&#x201D;</span>
+         </div>
+    #end
+
+    <a href="$workLogUrl" target="_blank">
+    <button style="background-color: #12576C;
+                       border: 0;
+                       padding: 15px;
+                       border-radius: 5px;
+                       color: white;
+                       font-size: 1.1em;
+                       margin-top: 15px;
+                       margin-bottom: 15px;
+                       font-family: inherit;
+                       cursor: pointer;">Log your work using AI</button></a>
+
+     <div style="margin-top: 12px; margin-bottom: 20px; font-size: 14px;">
+         <span>Questions? Contact ScrumUpdate Support at</span>
+         <a style="font-weight: bold; color: #15c;" href="mailto:$support">$support</a>
+     </div>
+     <div style="margin-top: 12px; margin-bottom: 12px; font-size: 12px; font-style: italic;">
+         <p>Disclaimer: This email is sent to you from ${ownerName}'s app (${tenantName}) in ScrumUpdate.</p>
+     </div>
+ </div>
+ </body>
+ </html>

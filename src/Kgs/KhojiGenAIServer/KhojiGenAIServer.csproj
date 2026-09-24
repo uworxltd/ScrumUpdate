@@ -1,0 +1,142 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Uworx.Khoji.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include=".notification.playground*.json" />
+    <None Remove="Skills\code-explainer\SKILL.md" />
+    <Content Include="llms.yaml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+
+    <Content Include="Analytics\_Example.yaml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Analytics\scrum_update.yaml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Analytics\sprint_analyzer.yaml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+
+    <Content Include="Instructions\AtlassianAgent.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Instructions\WebChatAgent.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+
+    <Content Include="Intents\Greeting.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Intents\ScrumUpdate.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Intents\WeeklyRetro.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+
+    <Content Include="Prompts\kia_role.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Prompts\kia_role_categorization.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Prompts\kia_scrum-update.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Prompts\kia_scrum-update2.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Prompts\kia_scrum-update3.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+        <Content Include="Prompts\kia_scrum-update4.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Prompts\kia_weekly-retro.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+
+    <Content Include="Prompts\BurndownInterpreter.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Prompts\ScrumUpdate.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Prompts\SprintAnalyzer.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Prompts\VelocityAnalysis.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Skills\code-explainer\SKILL.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AdaptiveCards" Version="3.1.0" />
+    <PackageReference Include="AdaptiveCards.Templating" Version="2.0.6" />
+    <PackageReference Include="Anthropic" Version="12.45.0" />
+    <PackageReference Include="Dapplo.Jira" Version="2.0.7" />
+    <PackageReference Include="Google.GenAI" Version="1.21.0" />
+    <PackageReference Include="Microsoft.Agents.AI" Version="1.20.0" />
+    <PackageReference Include="Microsoft.Agents.AI.Hosting.AGUI.AspNetCore" Version="1.0.0-preview.260402.1" />
+    <PackageReference Include="Microsoft.Agents.AI.Workflows" Version="1.20.0" />
+    <PackageReference Include="Microsoft.Agents.Builder.Dialogs" Version="1.8.77" />
+    <PackageReference Include="Microsoft.Agents.Client" Version="1.8.77" />
+    <PackageReference Include="Microsoft.Agents.Core" Version="1.8.77" />
+    <PackageReference Include="Microsoft.Agents.Extensions.Teams" Version="1.8.77" />
+    <PackageReference Include="Microsoft.Agents.Authentication.Msal" Version="1.8.77" />
+    <PackageReference Include="Microsoft.Agents.Hosting.AspNetCore" Version="1.8.77" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.11" />
+    <PackageReference Include="Microsoft.Bcl.Memory" Version="10.0.11" />
+    <PackageReference Include="Microsoft.Build" Version="18.9.6" />
+    <PackageReference Include="Microsoft.Extensions.AI.OpenAI" Version="10.9.0" />
+    <PackageReference Include="ModelContextProtocol" Version="2.2.0" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.3" />
+    <PackageReference Include="OpenTelemetry" Version="1.18.0" />
+    <PackageReference Include="OpenTelemetry.Exporter.Console" Version="1.18.0" />
+    <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.18.0" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.18.0" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" Version="1.18.0" />
+    <PackageReference Include="Polly" Version="8.7.0" />
+    <PackageReference Include="PostHog.AspNetCore" Version="2.9.6" />
+    <PackageReference Include="Serilog" Version="4.4.0" />
+    <PackageReference Include="Serilog.Extensions.Logging" Version="10.0.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="10.2.3" />
+    <PackageReference Include="TickerQ" Version="10.2.5" />
+    <PackageReference Include="TickerQ.EntityFrameworkCore" Version="10.2.5" />
+    <PackageReference Include="Unleash.Client" Version="6.2.3" />
+    <PackageReference Include="WorkflowCore" Version="3.20.0" />
+    <PackageReference Include="WorkflowCore.DSL" Version="3.20.0" />
+    <PackageReference Include="WorkflowCore.Persistence.PostgreSQL" Version="3.20.0" />
+    <PackageReference Include="YamlDotNet" Version="18.1.0" />
+    <PackageReference Include="Microsoft.TeamsFx" Version="3.0.*-*">
+      <!-- Exclude TeamsFx wwwroot static files which are for frontend only. -->
+      <ExcludeAssets>contentFiles</ExcludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.11">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="10.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Uworx.Khoji.Agile\Uworx.Khoji.Agile.csproj" />
+    <ProjectReference Include="..\Uworx.Khoji\Uworx.Khoji.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,583 @@
+:host ::ng-deep {
+  .p-tooltip .p-tooltip-text {
+    width: fit-content;
+  }
+}
+
+:host ::ng-deep {
+
+  .display-inherit {
+    display: inherit;
+  }
+
+  .p-inputwrapper-filled .p-disabled {
+    pointer-events: all;
+  }
+
+  .p-datatable .p-datatable-tbody>tr>td {
+    padding: 0.65rem 0.5rem !important;
+  }
+
+  .p-datatable .p-datatable-tbody>tr:focus {
+    outline: none;
+    outline-offset: 0.15rem;
+  }
+
+  .p-dropdown-items-wrapper {
+    max-height: none !important;
+    overflow: auto;
+    position: absolute;
+    background: white;
+    border: 1px solid lightgray;
+    border-radius: 5px;
+    top: 40px;
+    right: 54px;
+  }
+
+  .p-multiselect-items-wrapper {
+    max-height: 400px !important;
+    width: fit-content !important;
+  }
+
+  .p-multiselect-panel .p-multiselect-header {
+    display: none !important;
+  }
+
+  .p-datatable-tfoot {
+    background-color: white;
+  }
+
+  .p-datatable-scrollable-table>.p-datatable-tfoot
+  {
+    position: inherit !important;
+  }
+
+  .p-multiselect {
+    background-color: #b6b6b6;
+    background-image: linear-gradient(to bottom, #b6b6b6 0%, #b6b6b6 100%) !important;
+    width: 35px;
+    height: 33px;
+    margin-right: 5px;
+    border-radius: 0 !important;
+  }
+
+  .table-top-margin {
+    padding-top: 16px;
+    margin-bottom: 20px;
+  }
+
+  .header-font {
+    font-size: 11px;
+    font-weight: 400;
+    color: #333333;
+  }
+
+  .p-multiselect .p-multiselect-trigger {
+    width: 34px;
+  }
+
+  .p-multiselect-trigger-icon {
+    color: white;
+    margin-top: -1px;
+  }
+
+  .p-multiselect-panel .p-multiselect-items .p-multiselect-item.p-highlight {
+    background-color: #dadada;
+    color: black;
+  }
+
+  .p-multiselect-panel .p-multiselect-items {
+    padding: 0px !important;
+  }
+
+  .p-multiselect .p-multiselect-panel {
+    position: absolute !important;
+    left: auto !important;
+    top: opx !important;
+    right: -41px !important;
+  }
+
+  .p-multiselect:hover {
+    color: black !important;
+    background-color: #929191 !important;
+    background-image: none !important;
+    border-color: #929191 !important;
+  }
+
+  .p-multiselect:disabled {
+    pointer-events: none !important;
+    cursor: not-allowed !important;
+    opacity: 0.65 !important;
+    box-shadow: none;
+  }
+
+  .icon {
+    position: relative;
+    right: 17px;
+    top: -7px;
+    color: white;
+    font-size: 15px;
+  }
+
+  .p-datatable .p-datatable-thead>tr>th {
+    top: 0px;
+  }
+
+  .prime-ng-table-checkbox {
+    width: 2rem !important;
+  }
+
+  .p-datatable .p-datatable-tfoot>tr>td {
+    border-width: 1px !important;
+    padding: 0.65rem 0.5rem !important;
+  }
+
+  .p-datatable .p-datatable.tbody>tr>td,
+  .p-datatable .p-datatable-thead>tr>th {
+    padding: 0.5rem 0.4rem !important;
+  }
+
+  .vertical-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .export-dropdown-menu {
+    width: 50px;
+    position: absolute;
+    transform: translate3d(1182px, -11px, 0px) !important;
+    top: 0px;
+    right: 0px;
+    padding: 2px 5px !important;
+    will-change: transform;
+  }
+
+  .align-checkbox-center {
+    display: flex;
+    justify-content: center
+  }
+
+  .p-checkbox {
+    display: flex;
+    justify-content: center;
+
+    .p-checkbox-box {
+      width: 15px !important;
+      height: 15px !important;
+    }
+
+    .p-checkbox-box {
+      margin-left: 0px;
+    }
+
+    .p-checkbox-icon {
+      font-size: 10px;
+    }
+  }
+
+  .p-datatable .p-sortable-column:focus {
+    box-shadow: inset 0 0 0 0.2rem #b4b4b4 !important;
+  }
+
+  .p-multiselect-panel .p-multiselect-items .p-multiselect-item:focus,
+  .p-multiselect:not(.p-disabled).p-focus {
+    box-shadow: none;
+    border-color: transparent;
+  }
+
+  .p-datatable-scrollable-header-box,
+  .p-datatable-scrollable-footer-box {
+    padding-right: 10px !important;
+    background-color: white;
+  }
+
+  .p-datatable .p-datatable-header {
+    background: white;
+    color: white;
+    border: 1px solid white;
+    padding: 0;
+  }
+
+  .p-datatable .p-sortable-column.p-highlight {
+    background: #b4b4b4 !important;
+    color: white;
+  }
+
+  .p-dropdown-panel .p-dropdown-items .p-dropdown-item.p-highlight {
+    background: #1E90FF;
+  }
+
+  .p-dropdown-panel .p-dropdown-items .p-dropdown-item:focus {
+    box-shadow: inset 0 0 0 0.2rem #b4b4b4;
+  }
+
+  .p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
+    background: var(--primary-100);
+    color: var(--primary-500);
+  }
+
+  .p-paginator .p-paginator-pages .p-paginator-page:focus {
+    box-shadow: inset 0 0 0 0.2rem #b4b4b4;
+  }
+
+  .p-dropdown {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    margin-right: 0px;
+  }
+
+  .p-paginator .p-dropdown .p-dropdown-label {
+    padding: 0 !important;
+    margin-left: 5px;
+    margin-top: 5px;
+  }
+
+  .p-dropdown .p-dropdown-trigger {
+    width: 16px;
+    margin-top: 7px;
+    margin-right: -10px;
+  }
+
+  .pi {
+    font-size: 1em;
+  }
+
+  .p-datatable .p-datatable-tbody>tr:nth-child(odd) {
+    background: #fafafa;
+  }
+
+  .p-datatable .p-datatable-tbody>tr:hover {
+    background-color: #929191;
+  }
+
+  .p-datatable .p-datatable-tbody>tr {
+    cursor: pointer;
+  }
+
+  .p-datatable .p-datatable-tbody>tr.p-highlight,
+  .p-datatable .p-datatable-tbody>tr.p-highlight:nth-child(odd) {
+    background-color: #d6d6d6 !important;
+    color: black;
+  }
+
+  .p-paginator {
+    justify-content: right;
+  }
+
+  .p-paginator-rpp-options {
+    padding: 0px 12px 2px 5px;
+    width: 58px;
+    top: -40px;
+    left: 45px;
+    border: 2px solid #dfe1e6;
+    border-radius: 3px;
+    height: 32px;
+    background-color: transparent;
+
+    .p-dropdown-trigger-icon {
+      padding-left: 0px;
+    }
+  }
+
+  .header-row {
+    border-bottom: solid 1pt;
+  }
+
+  .table-caption {
+    float: right;
+    margin-top: -44px;
+  }
+
+  .body_data_ellipsis {
+    max-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .body-data-ellipsis .td-truncate {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .summary-text {
+    font-weight: 100;
+    display: flex;
+    justify-content: left;
+  }
+
+  .export-dropdown-item {
+    background-image: linear-gradient(to bottom, #26b99a 0%, #26b99a 100%) !important;
+    border: 1px solid #169f85 !important;
+    position: relative;
+    display: inline-block;
+    box-sizing: border-box;
+    margin-right: 0.333em;
+    margin-bottom: 0.333em;
+    padding: 0.5em 1em;
+    border: 1px solid #999;
+    border-radius: 2px;
+    cursor: pointer;
+    font-size: 11px;
+    color: white;
+    line-height: 1.6em;
+    white-space: nowrap;
+    text-align: revert;
+    background-color: #e9e9e9;
+    user-select: none;
+    text-decoration: none;
+    outline: none;
+    width: 134px !important;
+  }
+
+  .export-dropdown-menu {
+    position: absolute !important;
+    top: -10px !important;
+    right: 0 !important;
+    left: auto !important;
+    width: 150px !important;
+    margin-top: 3px !important;
+    padding: 8px 8px 4px 8px !important;
+    border: 1px solid #ccc !important;
+    border: 1px solid rgba(0, 0, 0, 0.4) !important;
+    background-color: white !important;
+    overflow: hidden !important;
+    z-index: 2 !important;
+    border-radius: 5px;
+    box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
+    transform: none !important;
+  }
+
+  button.dt-export-file-button {
+    color: white !important;
+    background-image: linear-gradient(to bottom, #26b99a 0%, #26b99a 100%) !important;
+    border: 1px solid #169f85 !important;
+    width: 35px;
+    height: 33px;
+  }
+
+}
+
+.rows-per-page-right-tag {
+  margin-left: 118px;
+  position: absolute;
+  margin-top: -14px;
+}
+
+.rows-per-page-left-tag {
+  position: absolute;
+  margin-top: -14px;
+  margin-left: 9px;
+}
+
+.search-input {
+  height: 32px;
+  width: 200px;
+  padding: 0px 12px 2px 5px;
+  box-sizing: border-box;
+  outline: none;
+  border-radius: 5px;
+  font-size: 14px;
+  line-height: 20px;
+  border: 2px solid rgb(223, 225, 230);
+  box-shadow: none;
+  background-color: rgb(255, 255, 255);
+  color: rgb(107, 119, 140);
+}
+
+.search-container {
+  display: inline-block;
+  position: relative;
+  margin-right: 5px;
+  margin-bottom: 8px;
+}
+
+.footer-label {
+  color: #666666 !important;
+}
+
+.search-span {
+  position: absolute;
+  top: 9px;
+  right: 9px;
+}
+
+.dropdown-toggle::after {
+  border-top: 0em solid;
+  border-right: 0em solid transparent;
+  border-left: 0em solid transparent;
+}
+
+button.datatable-delete-button {
+  height: 32px;
+  color: white !important;
+  background-color: #c9302c !important;
+  background-image: linear-gradient(to bottom, #d9534f 0%, #d9534f 100%) !important;
+  border: 1px solid #d43f3a !important;
+}
+
+button.datatable-delete-button:hover {
+  background-color: #c9302c !important;
+  background-image: none !important;
+  border-color: #ac2925 !important;
+}
+
+button.datatable-delete-button:disabled {
+  opacity: 0.65 !important;
+  box-shadow: none;
+}
+
+button.datatable-refresh-button {
+  height: 32px;
+  color: white !important;
+  background-color: #286090 !important;
+  background-image: linear-gradient(to bottom, #337ab7 0%, #337ab7 100%) !important;
+  border: 1px solid #2e6da4 !important;
+}
+
+button.datatable-refresh-button:hover {
+  background-color: #286090 !important;
+  background-image: none !important;
+  border-color: #204d74 !important;
+}
+
+button.datatable-refresh-button:disabled {
+  cursor: not-allowed !important;
+  opacity: 0.65 !important;
+}
+
+.export-overlay {
+  height: 100%;
+  width: 100%;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.7);
+  background: radial-gradient(ellipse farthest-corner at center, rgba(0, 0, 0, 0.3) 0, rgba(0, 0, 0, 0.7) 100%);
+  overflow-x: hidden;
+  transition: 0.5s;
+}
+
+.export-dropdown-menu {
+  position: absolute !important;
+  top: 5px !important;
+  right: 0 !important;
+  left: auto !important;
+  width: 160px !important;
+  margin-top: 3px !important;
+  padding: 8px 8px 4px 8px !important;
+  border: 1px solid #ccc !important;
+  border: 1px solid rgba(0, 0, 0, 0.4) !important;
+  background-color: white !important;
+  z-index: 2 !important;
+  border-radius: 5px;
+  box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
+  transform: none !important;
+}
+
+button.dt-export-file-button {
+  color: white !important;
+  background-image: linear-gradient(to bottom, #26b99a 0%, #26b99a 100%) !important;
+  border: 1px solid #169f85 !important;
+  width: 35px;
+  height: 32px;
+}
+
+button.dt-export-file-button:hover {
+  widows: 200px;
+  color: white !important;
+  background-image: linear-gradient(to bottom, #377c6e 0%, #377c6e 100%) !important;
+  border: 1px solid #377c6e !important;
+}
+
+button.dt-export-file-button:disabled {
+  cursor: not-allowed !important;
+  pointer-events: none !important;
+  opacity: 0.65 !important;
+  box-shadow: none;
+}
+
+#scroller-highlighted-row {
+  background-color: #dcf2f1;
+}
+
+.rag-status-body {
+  border-radius: 0px !important;
+  height: 41px;
+  margin: -11px -8px;
+  width: 6px !important;
+}
+
+.transparent-class {
+  background-color: transparent;
+}
+
+.grid-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.alerts-div {
+  display: flex;
+  align-content: center;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.rag-status-td {
+  padding: 0px 0px !important;
+  text-align: center !important;
+}
+
+.alerts-circle {
+  height: 9px;
+  width: 9px;
+  border-radius: 50%;
+  display: inline-block;
+  margin: 0px 2px;
+}
+
+.alerts-warning-div {
+  display: flex;
+  align-items: center;
+  margin: 0px 2px;
+}
+
+.epic-row {
+  background-color: #ededed !important;
+}
+
+.epic-row-text {
+  font-weight: 700 !important;
+}
+
+.epic-row-td {
+  border-top: 2px solid var(--gray-500)!important;
+}
+
+@media screen and (max-width: 640px) {
+  div.dt-buttons {
+    float: none !important;
+    text-align: center
+  }
+}
+
+@media screen and (max-width: 64em) {
+  :host ::ng-deep .p-datatable .p-datatable-thead>tr>th {
+    top: 0px;
+  }
+}
+
+body {
+  :host::ng-deep {
+    table {
+      border-collapse: separate !important;
+    }
+  }
+}

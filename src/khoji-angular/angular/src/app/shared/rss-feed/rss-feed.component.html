@@ -1,0 +1,35 @@
+<div class="feed-container" @fadeInOut>
+  <p-card *ngIf="rssFeedService.loading" class="skeleton">
+    <ng-template pTemplate="header">
+      <p-skeleton height="347px"></p-skeleton>
+    </ng-template>
+  </p-card>
+  <ng-container *ngIf="!rssFeedService.loading">
+    <ng-container *ngFor="let item of items">
+      <a
+        [href]="item.link"
+        target="_black"
+        (click)="trackClick(item.title)"
+      >
+        <p-card>
+          <ng-template pTemplate="header">
+            <img
+              class="feed-image"
+              [attr.alt]="item.title"
+              [src]="item.thumbnail"
+              fetchPriority="high"
+            />
+          </ng-template>
+          <div
+            class="blog-button"
+            style="margin-bottom: 10px"
+          >
+            Blogs
+          </div>
+          <h5 class="font-semibold">{{ item.title.length > 25 ? item.title.substring(0, 25) + '...' : item.title }}</h5>
+          <p [innerHTML]="item.description.slice(0, 150) + '...'"></p>
+        </p-card>
+      </a>
+    </ng-container>
+  </ng-container>
+</div>

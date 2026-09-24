@@ -1,0 +1,23 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/db.changelog-1-kbs.cloud.schema.sql
+  - include:
+      file: db/changelog/db.changelog-2-kbs.cloud.data.sql
+  - include:
+      file: db/changelog/db.changelog-3-kbs.KFA-26673.sql
+  - include:
+      file: db/changelog/db.changelog-4-kbs-KFA-26635.sql
+  - include:
+      file: db/changelog/db.changelog-5-kbs-KFX-7.sql
+  - include:
+      file: db/changelog/db.changelog-6-kbs.KFX-1.sql
+  - include:
+      file: db/changelog/db.changelog-7-kbs.KFX-110.sql
+  - include:
+      file: db/changelog/db.changelog-8-kbs.KFX-3.sql
+  - include:
+      file: db/changelog/db.changelog-9-kbs.KFX-730.sql
+  - include:
+      file: db/changelog/db.changelog-10-kbs.scrum-update-audit.sql
+  - include:
+      file: db/changelog/db.changelog-11-kbs.KFX-880.sql

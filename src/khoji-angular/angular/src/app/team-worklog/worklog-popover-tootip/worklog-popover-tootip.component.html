@@ -1,0 +1,41 @@
+<!-- /*
+Copyright 2026 UWorx Services.
+Licensed under the Apache License, Version 2.0.
+See LICENSE for the full license text.
+*/ -->
+
+
+<!-- <span [popover]="indicatorTooltip"
+    [popoverContext]="{tooltipTitle:tooltipTitle,tooltipSubTitle:tooltipSubTitle,tooltipTemplate:tooltipTemplate}"
+    triggers="mouseenter:mouseleave focus" [placement]="tooltipPosition" [container]="'body'"
+    containerClass="customPopoverClass" class='small tooltipColor fa fa-question-circle'></span> -->
+
+<khoji-tooltip [position]="'top'">
+    <span class="small tooltipColor fa fa-question-circle"></span>
+    <div tooltip>
+        <span style="color: white;" innerHTML="{{tooltipTitle}}"></span>
+        <p class='tooltipSubTitle' innerHTML="{{tooltipSubTitle}}"></p>
+        <div class='left-align tooltipBody'>
+            <div class='circle' [ngStyle]="indicatorStyleObject(worklogStats.thresholdColors.Normal)"></div>&nbsp;
+            &#009;{{ (this.worklogStats.thresholdPercentage.Normal + 0.01) === 100
+            ? '100%'
+            : (this.worklogStats.thresholdPercentage.Normal + .01).toFixed(2) + '%' + ' - ' + '100%' }}
+
+        </div>&#013;&#010;
+        <div class='left-align tooltipBody'>
+            <div class='circle' [ngStyle]="indicatorStyleObject(worklogStats.thresholdColors.Medium)"></div>&nbsp;
+            &#009;{{
+            (this.worklogStats.thresholdPercentage.Medium + .01).toFixed(2) ==
+            this.worklogStats.thresholdPercentage.Normal
+            ? this.worklogStats.thresholdPercentage.Normal + '%'
+            : (this.worklogStats.thresholdPercentage.Medium + .01).toFixed(2) + '%' + ' - ' +
+            this.worklogStats.thresholdPercentage.Normal + '%'
+            }}
+        </div>&#013;&#010;
+        <div class='left-align tooltipBody'>
+            <div class='circle' [ngStyle]="indicatorStyleObject(worklogStats.thresholdColors.Low)"></div>&nbsp;
+            &#009;{{ this.worklogStats.thresholdPercentage.Medium === 0 ? '0%' :
+            '0%' + ' - ' + (this.worklogStats.thresholdPercentage.Medium) + '%' }}
+        </div>
+    </div>
+</khoji-tooltip>

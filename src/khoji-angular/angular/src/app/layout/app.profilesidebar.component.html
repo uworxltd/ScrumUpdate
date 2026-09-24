@@ -1,0 +1,75 @@
+<!-- /*
+Copyright 2026 UWorx Services.
+Licensed under the Apache License, Version 2.0.
+See LICENSE for the full license text.
+*/ -->
+
+<p-sidebar [(visible)]="visible" position="right" [transitionOptions]="'.3s cubic-bezier(0, 0, 0.2, 1)'"
+    styleClass="layout-profile-sidebar w-full sm:w-25rem" [blockScroll]="true" data-test="profile-sidebar-card">
+    <ng-template pTemplate="content">
+        <div class="flex flex-column mx-auto md:mx-0 h-full" data-test="profile-menu-bar-card">
+            <div class="flex flex-column align-items-center justify-content-center">
+                <div *ngIf="!base64ImageUrl" id="initials" class="flex align-items-center justify-content-center border-circle text-center h-8rem w-8rem text-5xl">{{initials}}</div>
+                <img *ngIf="base64ImageUrl" class="border-circle h-8rem w-8rem" src="{{base64ImageUrl}}" alt="{{firstName}}" />
+                <div class="mt-2 mb-4 text-center">
+                    <p class="text-color-secondary font-semibold text-primary text-xl m-0" data-test="user-name-text">{{fullName}}</p>
+                </div>
+            </div>
+
+            <ul class="list-none m-0 p-0">
+                <li *ngIf="isComponentEnabled(constants.KHOJI_USER_PROFILE)" data-test="profile-button"  [routerLink]="[environment.USER_PROFILE_PAGE]"
+                [queryParams]="{tab:'accountSettings'}" (click)="hideSideBar()">
+                    <a
+                        class="cursor-pointer flex surface-border mb-3 p-3 align-items-center border-1 surface-border border-round hover:surface-hover transition-colors transition-duration-150">
+                        <span>
+                            <i class="pi pi-user text-xl text-primary"></i>
+                        </span>
+                        <div class="ml-3">
+                            <span
+                                class="mb-2 font-semibold text-primary">{{translation?.profileSidebarMessages?.accountSettings}}</span>
+                            <p class="text-color-secondary m-0">
+                                {{translation?.profileSidebarMessages?.accountSettingsSubtitle}}</p>
+                        </div>
+                    </a>
+                </li>
+
+                <li (click)="logout(true)" data-test="signout-button">
+                    <a
+                        class="cursor-pointer flex surface-border mb-3 p-3 align-items-center border-1 surface-border border-round hover:surface-hover transition-colors transition-duration-150">
+                        <span>
+                            <i class="pi pi-users text-xl text-primary"></i>
+                        </span>
+                        <div class="ml-3">
+                            <span
+                                class="mb-2 font-semibold text-primary">{{translation?.profileSidebarMessages?.switchAccountTitle}}</span>
+                            <p class="text-color-secondary m-0">{{translation?.profileSidebarMessages?.switchAccountSubTitle}}
+                            </p>
+                        </div>
+                    </a>
+                </li>
+
+                <li (click)="logout()" data-test="signout-button">
+                    <a
+                        class="cursor-pointer flex surface-border mb-3 p-3 align-items-center border-1 surface-border border-round hover:surface-hover transition-colors transition-duration-150">
+                        <span>
+                            <i class="pi pi-power-off text-xl text-primary"></i>
+                        </span>
+                        <div class="ml-3">
+                            <span
+                                class="mb-2 font-semibold text-primary">{{translation?.profileSidebarMessages?.signOutTitle}}</span>
+                            <p class="text-color-secondary m-0">{{translation?.profileSidebarMessages?.signOutSubtitle}}
+                            </p>
+                        </div>
+                    </a>
+                </li>
+            </ul>
+
+        </div>
+    </ng-template>
+    <ng-template pTemplate="footer">
+        <div class="w-full text-center text-primary">
+            <!-- TODO: Fetch version from KBS -->
+            <span>v{{environment.VERSION}}</span>
+        </div>
+    </ng-template>
+</p-sidebar>

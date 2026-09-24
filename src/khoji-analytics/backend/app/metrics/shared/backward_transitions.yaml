@@ -1,0 +1,128 @@
+name: backward_transitions
+description: Issues that moved backwards in workflow
+version: 1.0
+
+inputs:
+  sprint_id: { type: int, required: true }
+
+steps:
+  - id: backward_query
+    type: sql
+    service: main-db
+    query: |
+      WITH status_category_order AS (
+        SELECT *
+        FROM (VALUES
+          ('To Do', 1),
+          ('In Progress', 2),
+          ('Done', 3)
+        ) AS t(category, category_index)
+      ),
+      status_lookup AS (
+        SELECT DISTINCT
+          status AS status_name,
+          status_category
+        FROM {{ schema }}.issues
+      ),
+      edges AS (
+        SELECT
+          from_status,
+          to_status,
+          COUNT(*) AS freq
+        FROM {{ schema }}.v_issue_status_transitions
+        GROUP BY from_status, to_status
+      ),
+      edges_with_category AS (
+        SELECT
+          e.from_status,
+          e.to_status,
+          e.freq,
+          sl_from.status_category AS from_category,
+          sl_to.status_category AS to_category
+        FROM edges e
+        JOIN status_lookup sl_from ON e.from_status = sl_from.status_name
+        JOIN status_lookup sl_to ON e.to_status = sl_to.status_name
+      ),
+      intra_category_edges AS (
+        SELECT *
+        FROM edges_with_category
+        WHERE from_category = to_category
+      ),
+      flow_scores AS (
+        SELECT
+          status_category,
+          status,
+          SUM(score) AS score
+        FROM (
+          SELECT
+            from_category AS status_category,
+            from_status AS status,
+            freq AS score
+          FROM intra_category_edges
+          UNION ALL
+          SELECT
+            to_category AS status_category,
+            to_status AS status,
+            -freq AS score
+          FROM intra_category_edges
+        ) s
+        GROUP BY status_category, status
+      ),
+      status_suborder AS (
+        SELECT
+          status_category,
+          status AS status_name,
+          ROW_NUMBER() OVER (
+            PARTITION BY status_category
+            ORDER BY score DESC
+          ) AS sub_index
+        FROM flow_scores
+      ),
+      final_status_order AS (
+        SELECT
+          sl.status_name,
+          sco.category_index,
+          COALESCE(sso.sub_index, 1) AS sub_index,
+          (sco.category_index * 1000 + COALESCE(sso.sub_index, 1)) AS final_index
+        FROM status_lookup sl
+        JOIN status_category_order sco ON sl.status_category = sco.category
+        LEFT JOIN status_suborder sso ON sl.status_name = sso.status_name
+      ),
+      ordered_transitions AS (
+        SELECT
+          v.issue_key AS issue_id,
+          v.from_status,
+          v.to_status,
+          v.transition_ts,
+          fsf.final_index AS from_index,
+          fst.final_index AS to_index
+        FROM {{ schema }}.v_issue_status_transitions v
+        JOIN final_status_order fsf ON v.from_status = fsf.status_name
+        JOIN final_status_order fst ON v.to_status = fst.status_name
+        WHERE v.sprint_id = $1
+      ),
+      backward_moves AS (
+        SELECT *
+        FROM ordered_transitions
+        WHERE to_index < from_index
+      )
+      SELECT
+        i.issue_key,
+        bm.from_status,
+        bm.to_status,
+        COUNT(*) AS backward_count,
+        ARRAY_AGG(
+          TO_CHAR(bm.transition_ts, 'YYYY-MM-DD HH24:MI:SS')
+          ORDER BY bm.transition_ts
+        ) AS transition_times
+      FROM backward_moves bm
+      JOIN {{ schema }}.issues i ON i.issue_id = bm.issue_id
+      GROUP BY i.issue_key, bm.from_status, bm.to_status
+      HAVING COUNT(*) >= 2
+      ORDER BY i.issue_key, bm.from_status, bm.to_status
+
+    params:
+      - "{{ inputs.sprint_id }}"
+    output: { name: backward_transitions }
+
+return: backward_query.backward_transitions

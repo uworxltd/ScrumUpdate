@@ -1,0 +1,61 @@
+.feature-flags-container {
+  padding: 1.5rem;
+
+  h3 {
+    margin-bottom: 1rem;
+    color: #333;
+  }
+
+  .description {
+    color: #666;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+  }
+
+  .badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: inline-block;
+
+    &.badge-release {
+      background-color: #e3f2fd;
+      color: #1976d2;
+    }
+
+    &.badge-experiment {
+      background-color: #fff3e0;
+      color: #f57c00;
+    }
+
+    &.badge-operational {
+      background-color: #f3e5f5;
+      color: #7b1fa2;
+    }
+
+    &.badge-success {
+      background-color: #e8f5e9;
+      color: #388e3c;
+    }
+
+    &.badge-danger {
+      background-color: #ffebee;
+      color: #d32f2f;
+    }
+  }
+
+  :deep(.p-datatable) {
+    .p-datatable-tbody > tr > td {
+      padding: 1rem 0.5rem;
+    }
+
+    .p-button {
+      margin-right: 0.5rem;
+
+      &.ml-2 {
+        margin-left: 0.5rem;
+      }
+    }
+  }
+}

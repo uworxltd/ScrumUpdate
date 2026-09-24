@@ -1,0 +1,143 @@
+<p-card>
+  <!-- Loading Card -->
+  <div
+    *ngIf="isLoading() && !isError()"
+    class="skeleton"
+  >
+    <div class="header">
+      <img
+        [src]="constants.SPARKLES_SVG"
+        height="20"
+        width="20"
+      />
+      <div>{{ translation?.weeklyWorklogSummary.generatingInsightsTitle }}</div>
+      <p class="header-text">{{ translation?.weeklyWorklogSummary.generatingInsightsSubTitle }}</p>
+      <p-skeleton
+        height="20px"
+        width="40%"
+      ></p-skeleton>
+      <p-skeleton height="20px"></p-skeleton>
+      <p-skeleton height="20px"></p-skeleton>
+    </div>
+  </div>
+
+  <!-- Error Card -->
+  <div *ngIf="isError()">
+    <div class="header">
+      <div class="center-align">Retrospective: {{ formatedDateRangeError() }}</div>
+    </div>
+    <div class="content flex flex-column text-center p-3">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="32"
+        height="32"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="lucide lucide-alert-circle w-12 h-12 text-red-500"
+      >
+        <circle
+          cx="12"
+          cy="12"
+          r="10"
+        ></circle>
+        <line
+          x1="12"
+          x2="12"
+          y1="8"
+          y2="12"
+        ></line>
+        <line
+          x1="12"
+          x2="12.01"
+          y1="16"
+          y2="16"
+        ></line>
+      </svg>
+      <p class="text-sm text-gray-500 my-4">We encountered an error while fetching your work summary. Please try again later.</p>
+    </div>
+  </div>
+
+  <!-- Normal Card -->
+  <div *ngIf="!isLoading() && !isError() && weeklyWorklogSummary?.summary">
+    <div class="header">
+      <div class="center-align">Retrospective: {{ formatedDateRange }}</div>
+    </div>
+    <div class="content">
+      <p
+        *ngIf="weeklyWorklogSummary.message !== 'No worklogs provided'"
+        class="summary"
+        [innerHTML]="weeklyWorklogSummary.summary"
+      ></p>
+      <div *ngIf="weeklyWorklogSummary.message === 'No worklogs provided'" class="flex flex-column text-center p-3">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="32"
+          height="32"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="w-12"
+          style="color:#888"
+        >
+          <rect
+            width="8"
+            height="4"
+            x="8"
+            y="2"
+            rx="1"
+            ry="1"
+          ></rect>
+          <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+          <path d="m15 11-6 6"></path>
+          <path d="m9 11 6 6"></path>
+        </svg>
+        <p class="text-sm mt-4">No work logged this week. Please log your work to see insights.</p>
+      </div>
+    </div>
+  </div>
+  <div
+    *ngIf="weeklyWorklogSummaryLoadingState === LoadingState.Done && showRetroFeedback"
+    class="feedback-section mt-4 pt-4 border-t text-center pb-3"
+  >
+    <p class="text-sm text-gray-600 mb-3">Was this helpful?</p>
+    <div class="flex gap-2 justify-content-center">
+      <button
+        pButton
+        type="button"
+        icon="pi pi-thumbs-up"
+        [class.active]="selectedRetroFeedback === 'up'"
+        [class.animating]="animatingRetroButton === 'up'"
+        [class.submitted]="retroFeedbackSubmitted"
+        [outlined]="selectedRetroFeedback !== 'up'"
+        [disabled]="retroFeedbackSubmitted"
+        severity="success"
+        (click)="submitFeedback('up')"
+        class="p-button-sm feedback-btn"
+        pTooltip="This was helpful"
+        tooltipPosition="bottom"
+      ></button>
+      <button
+        pButton
+        type="button"
+        icon="pi pi-thumbs-down"
+        [class.active]="selectedRetroFeedback === 'down'"
+        [class.animating]="animatingRetroButton === 'down'"
+        [class.submitted]="retroFeedbackSubmitted"
+        [outlined]="selectedRetroFeedback !== 'down'"
+        [disabled]="retroFeedbackSubmitted"
+        severity="danger"
+        (click)="submitFeedback('down')"
+        class="p-button-sm feedback-btn"
+        pTooltip="This was not helpful"
+        tooltipPosition="bottom"
+      ></button>
+    </div>
+  </div>
+</p-card>

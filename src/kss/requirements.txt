@@ -1,0 +1,17 @@
+# Core Framework
+fastapi==0.104.1          # Modern, fast web framework
+uvicorn==0.24.0           # ASGI server
+pydantic>=2.0             # Data validation
+
+# Distributed Processing  
+celery==5.3.4             # Task queue
+redis==5.0.1              # Message broker & cache
+
+# Database & External APIs
+psycopg2-binary==2.9.10   # PostgreSQL adapter
+jira==3.8.0               # Jira API client
+requests>=2.25.0          # HTTP library
+PyJWT==2.10.1             # Handle JWT Tokens
+
+# Monitoring & Development
+flower==2.0.1             # Task monitoring

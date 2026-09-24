@@ -1,0 +1,21 @@
+[
+    {
+        "operation": "shift",
+        "spec": {
+            "*": {
+                "id": "[&1].id",
+                "name": "[&1].name",
+                "released": "[&1].status",
+                "@.released": "[&1].released",
+                "description": "[&1].description",
+                "url": "[&1].url",
+                "releaseDate": "[&1].releaseDate",
+                "startDate": "[&1].startDate",
+                "overdue": "[&1].overdue"
+            }
+        }
+    },
+    {
+        "operation": "uk.co.uworx.khoji.agile.transform.ReleaseStatusTransform"
+    }
+]

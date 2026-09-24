@@ -1,0 +1,116 @@
+name: sprint_static_summary
+description: |
+  This metric retrieves sprint static summary data (without status changes).
+  Returns comprehensive sprint data including completed/total points, stale tickets, 
+  blockers, hygiene metrics, and sprint progress information.
+  
+  Note: Status changes are now available via the sprint_status_changes metric.
+version: 1.0
+
+inputs:
+  sprint_id: { type: int, default: 1 }
+
+steps:
+  - id: sprint_title
+    type: pipeline
+    metric: shared/sprint_title
+    inputs:
+      sprint_id: "{{ inputs.sprint_id }}"
+    output: { name: sprint_title_data }
+
+  # - id: blocker_tickets
+  #   type: pipeline
+  #   metric: shared/blockers_list
+  #   inputs:
+  #     sprint_id: "{{ inputs.sprint_id }}"
+  #   output: { name: blockers }
+
+  # - id: stale_tickets
+  #   type: pipeline
+  #   metric: shared/stale_tickets_list
+  #   inputs:
+  #     sprint_id: "{{ inputs.sprint_id }}"
+  #   output: { name: stale_ids }
+
+  - id: initial_scope
+    type: pipeline
+    metric: shared/sprint_initial_scope
+    inputs:
+      sprint_id: "{{ inputs.sprint_id }}"
+    output: { name: initial_scope_data }
+
+  - id: story_points
+    type: pipeline
+    metric: shared/sprint_story_points
+    inputs:
+      sprint_id: "{{ inputs.sprint_id }}"
+    output: { name: story_points_data }
+
+  - id: ticket_hygiene
+    type: pipeline
+    metric: shared/ticket_hygiene
+    inputs:
+      sprint_id: "{{ inputs.sprint_id }}"
+    output: { name: hygiene_counts_data }
+
+  - id: hygiene_summary
+    type: sql
+    service: main-db
+    query: |
+      SELECT {{ schema }}.fn_sprint_hygiene_summary($1::int) AS hygiene_summary
+    params:
+      - "{{ inputs.sprint_id }}"
+    output: { name: hygiene_summary_data }
+
+  # Get current status tickets (for scope addition calculation)
+  - id: status_tickets
+    type: pipeline
+    metric: shared/status_categories_tickets
+    inputs:
+      sprint_id: "{{ inputs.sprint_id }}"
+    output: { name: status_ticket_data }
+
+  # Get sprint basic info (start_date, end_date, progress)
+  - id: sprint_info
+    type: sql
+    service: main-db
+    query: |
+      SELECT 
+        s.sprint_id,
+        s.name AS sprint_name,
+        s.start_date,
+        s.end_date,
+        s.state,
+        -- Calculate progress percentage
+        CASE 
+          WHEN s.start_date IS NULL OR s.end_date IS NULL THEN 0
+          WHEN CURRENT_TIMESTAMP < s.start_date THEN 0
+          WHEN CURRENT_TIMESTAMP > s.end_date THEN 100
+          ELSE ROUND(
+            (EXTRACT(EPOCH FROM CURRENT_TIMESTAMP - s.start_date) / 
+             EXTRACT(EPOCH FROM s.end_date - s.start_date) * 100)::numeric, 
+            1
+          )
+        END AS progress_percentage
+      FROM {{ schema }}.sprints s
+      WHERE s.sprint_id = $1::int
+    params:
+      - "{{ inputs.sprint_id }}"
+    output: { name: sprint_basic_info }
+
+  - id: transform
+    type: function
+    function: app.processors.sprint_cards.extract_static_summary
+    inputs:
+      initial_scope_data: "{{ steps.initial_scope.outputs.initial_scope_data }}"
+      story_points_data: "{{ steps.story_points.outputs.story_points_data }}"
+      hygiene_counts_data: "{{ steps.ticket_hygiene.outputs.hygiene_counts_data }}"
+      hygiene_summary_data: "{{ steps.hygiene_summary.outputs.hygiene_summary_data }}"
+      sprint_basic_info: "{{ steps.sprint_info.outputs.sprint_basic_info }}"
+      sprint_title_data: "{{ steps.sprint_title.outputs.sprint_title_data }}"
+      # stale_ticket_ids: "{{ steps.stale_tickets.outputs.stale_ids }}"
+      # blocker_tickets: "{{ steps.blocker_tickets.outputs.blockers }}"
+      status_ticket_data: "{{ steps.status_tickets.outputs.status_ticket_data }}"
+    output: { name: summary }
+
+return: "transform.summary"

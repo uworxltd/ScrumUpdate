@@ -1,0 +1,94 @@
+<!-- /*
+Copyright 2026 UWorx Services.
+Licensed under the Apache License, Version 2.0.
+See LICENSE for the full license text.
+*/ -->
+
+<div *ngIf="isLoading as loading">
+  <p-confirmPopup></p-confirmPopup>
+  <div class="center-spinner" *ngIf="loading.loading">
+    <p-progressSpinner [style]="{ width: '70px', height: '70px' }" strokeWidth="4"
+      animationDuration="1s"></p-progressSpinner>
+  </div>
+
+  <div *ngIf="!loading.loading">
+    <div class="flex flex-column">
+      <div *ngIf="isCategorizationAndWorklogRemainderEnabled">
+        <div class="khoji-headings">{{ translation?.worklogSettings.categoriesSectionHeading }}</div>
+        <span class="inline-block" tooltipPosition="top"
+          [pTooltip]="accessLevelsStatus.hasAdminAccess ? '' : translation?.error.adminAccessRequired">
+          <button pButton class="p-button-outlined mt-2" (click)="displayCategorizationDialog = true"
+            icon="pi pi-pencil" [label]="translation?.worklogSettings.categoriesButtonLabel"
+            [ngClass]="{ 'p-disabled': !accessLevelsStatus.hasAdminAccess }">
+          </button>
+        </span>
+        <p-divider></p-divider>
+      </div>
+
+      <!-- Enable weekends for stats -->
+      <div>
+        <div class="flex flex-column align-items-start gap-2 justify-content-center">
+          <span class="khoji-headings">
+            {{ translation?.userProfile.workLogIncludeWeekends.title }}
+          </span>
+          <div class="flex flex-column gap-2 w-full">
+            <span class="khoji-sub-headings">
+              {{ translation?.userProfile.workLogIncludeWeekends.subTitle }}
+            </span>
+            <div>
+              <p-inputSwitch (onChange)="handleIncludingWeekendsLogic($event)" [(ngModel)]="enableWeekendsInWorklog">
+              </p-inputSwitch>
+            </div>
+          </div>
+        </div>
+        <p-divider></p-divider>
+      </div>
+
+      <khoji-worklog-general-settings #kwgs class="h-full" (workLogImpactedConfigChanged)="configUpdated.emit()"
+        [showSaveAndResetButtons]="false" (saveButtonDisabledState)="generalSettingsSaveDisabled = $event"
+        (resetButtonVisiblity)="generalSettingsResetButtonVisible = $event"></khoji-worklog-general-settings>
+
+      <p-divider></p-divider>
+
+      <khoji-rag-status-wrapper *ngIf="standupBoardFeatureEnabled" #krsw [optimizeButtonsForAdminDashboard]="false"
+        [ragColors]="ragColorCodes" [ragThresholds]="worklogPercentageThreshold"
+        [sliderConfigs]="worklogRagSliderConfig" [heading]="'Define color threshold for work log percentage'"
+        [subHeading]="'Set range for each RAG status'" [isWorklogCategoryEnabled]="true"
+        [propKey]="worklogThresholdPropKey" (configUpdated)="configUpdated.emit()" [showSaveAndResetButtons]="false"
+        (saveButtonDisabled)="ragStatusSaveDisabled = $event"
+        (resetButtonVisible)="ragStatusResetButtonVisible = $event"
+        (anyFieldInError)="ragStatusAnyFieldInError = $event"></khoji-rag-status-wrapper>
+
+
+      <div class="flex align-items-center justify-content-end gap-2 w-full">
+        <button pButton pRipple *ngIf="resetButtonVisible()" class="p-button-outlined" label="Reset"
+          (click)="handleReset()">
+        </button>
+        <button pButton pRipple [ngClass]="{ 'p-disabled': submitButtonDisabled() }" label="Save Changes"
+          (click)="handleSaveChanges()">
+        </button>
+      </div>
+    </div>
+
+    <div *ngIf="isCategorizationAndWorklogRemainderEnabled">
+      <p-dialog [(visible)]="displayCategorizationDialog" [modal]="true" [style]="{ width: '90vw', height: '90vh' }"
+        [draggable]="false" [resizable]="false">
+        <ng-template pTemplate="header">
+          <div class="p-dialog-title">{{translation?.worklogSettings.categoriesSectionHeading}}</div>
+          <div class="p-dialog-header-icons p-dialog-header-icons-custom">
+            <button (click)="handleCategoriesClose($event)"
+              class="p-ripple p-element p-dialog-header-icon p-dialog-header-close p-link" tabindex="-1">
+              <span class="p-dialog-header-close-icon pi pi-times"></span>
+            </button>
+          </div>
+        </ng-template>
+        <khoji-worklog-categories *ngIf="accessLevelsStatus.hasAdminAccess" #worklogCategoriesComponent
+          [pageTitle]="translation?.onboarding.worklogCategories.title"
+          [pageSubtitle]="'Work log categories ensure that effort is effectively distributed. Moreover, all issue types shown, are synced with Jira.'"
+          [worklogCategoriesSettings]="true" [saveButtonLabel]="'Save changes'" [inModal]="true"
+          (categoriesUpdated)="configUpdated.emit()" (categoryAliasesUpdated)="configUpdated.emit()"
+          [showSplitContainer]="false"></khoji-worklog-categories>
+      </p-dialog>
+    </div>
+  </div>
+</div>

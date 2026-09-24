@@ -1,0 +1,13 @@
+:host {
+  ::ng-deep {
+    .tab-right-align {
+      position: absolute;
+      right: 0;
+
+      a.p-tabview-nav-link {
+        padding: 1rem;
+        border: 0;
+      }
+    }
+  }
+}

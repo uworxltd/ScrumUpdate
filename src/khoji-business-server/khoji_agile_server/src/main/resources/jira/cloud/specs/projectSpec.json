@@ -1,0 +1,18 @@
+[
+    {
+        "operation": "shift",
+        "spec": {
+            "values": {
+                "*": {
+                    "id": "[&1].projectID",
+                    "name": "[&1].name",
+                    "key": "[&1].projectKey",
+                    "self": "[&1].projectUrl",
+                    "lead": {
+                        "displayName": "[&2].projectLead"
+                    }
+                }
+            }
+        }
+    }
+]

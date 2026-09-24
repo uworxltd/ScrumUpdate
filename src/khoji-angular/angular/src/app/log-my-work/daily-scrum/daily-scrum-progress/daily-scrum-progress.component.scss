@@ -1,0 +1,33 @@
+// Maintain height when text is empty to prevent layout shift
+.task-text:empty::before {
+  content: '\200b'; // Zero-width space
+}
+
+.tasks-overview:hover {
+  color: #8E44AD;
+}
+
+.task {
+  &.Pending {
+    opacity: 0.6;
+  }
+  &.Disabled {
+    opacity: 0.5;
+  }
+}
+
+@keyframes pulsate {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.pulsate {
+  animation: pulsate 1.5s ease-in-out infinite;
+}

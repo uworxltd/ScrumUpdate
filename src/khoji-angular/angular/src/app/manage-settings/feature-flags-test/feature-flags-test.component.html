@@ -1,0 +1,96 @@
+<p-toast position="top-right"></p-toast>
+
+<div class="feature-flags-container">
+  <h3>Feature Flags Test Panel (Development Only)</h3>
+
+  <p class="description">Toggle feature flags on/off for testing. Changes are reflected immediately in the Unleash development environment.</p>
+
+  <p-table
+    [value]="flags"
+    [loading]="loading"
+    responsiveLayout="scroll"
+    styleClass="p-datatable-striped"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Flag Name</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Default</th>
+        <th>Actions</th>
+      </tr>
+    </ng-template>
+    <ng-template
+      pTemplate="body"
+      let-flag
+    >
+      <tr>
+        <td>
+          <strong>{{ flag.name }}</strong>
+        </td>
+        <td>{{ flag.description }}</td>
+        <td>
+          <span
+            [ngClass]="{
+              'badge badge-release': flag.type === 'release',
+              'badge badge-experiment': flag.type === 'experiment',
+              'badge badge-operational': flag.type === 'operational'
+            }"
+          >
+            {{ flag.type }}
+          </span>
+        </td>
+        <td>
+          <span
+            [ngClass]="{
+              'badge badge-success': flag.defaultEnabled,
+              'badge badge-danger': !flag.defaultEnabled
+            }"
+          >
+            {{ flag.defaultEnabled ? 'ON' : 'OFF' }}
+          </span>
+        </td>
+        <td>
+          <p-button
+            icon="pi pi-check"
+            [disabled]="isTogglingFlag(flag.name)"
+            [loading]="isTogglingFlag(flag.name)"
+            (onClick)="toggleFlag(flag.name, 'on')"
+            label="Turn ON"
+            [rounded]="true"
+            [text]="true"
+            severity="success"
+            size="small"
+          ></p-button>
+          <p-button
+            icon="pi pi-times"
+            [disabled]="isTogglingFlag(flag.name)"
+            [loading]="isTogglingFlag(flag.name)"
+            (onClick)="toggleFlag(flag.name, 'off')"
+            label="Turn OFF"
+            [rounded]="true"
+            [text]="true"
+            severity="danger"
+            size="small"
+            styleClass="ml-2"
+          ></p-button>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td
+          colspan="5"
+          class="text-center"
+        >
+          No flags loaded.
+          <a
+            href="#"
+            (click)="loadFlags()"
+            >Retry</a
+          >
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

@@ -1,0 +1,29 @@
+<!-- /*
+Copyright 2026 UWorx Services.
+Licensed under the Apache License, Version 2.0.
+See LICENSE for the full license text.
+*/ -->
+
+<div #colorPicker>
+  <div class="color-picker-icon" [pTooltip]="selectedColor != constants.OTHERS?hoverTitle:''" tooltipPosition="right" tooltipZIndex="1051" showDelay="1000">
+    <svg [style.pointer-events]="selectedColor==constants.OTHERS?'none':''" [attr.height]="radius*2"
+      [attr.width]="radius*2" (click)="toggle($event)">
+      <circle [attr.cx]="radius" [attr.cy]="radius" [attr.r]="radius" stroke-width="0" [attr.fill]="selectedColor" />
+    </svg>
+  </div>
+  <div class="color-picker-dropdown dropdown-menu px-3 hidden" #colorPickerDropdown *ngIf="isColorPickerOpen">
+    <div class="mb-2" style="font-size:12px" data-test="color-picker-title">{{title}}</div>
+    <div class="grid" data-test="color-picker-table">
+      <ng-container *ngFor="let color of colorPalette">
+        <svg class="icon" [attr.height]="radius*2" [attr.width]="radius*2" (click)="selectColor(color)">
+          <circle [attr.cx]="radius" [attr.cy]="radius" [attr.r]="radius" stroke-width="0"
+            [attr.fill]="selectedColor===color?'#2A3F54':color" />
+          <circle [attr.cx]="radius" [attr.cy]="radius" [attr.r]="radius-2" stroke-width="0"
+            [attr.fill]="selectedColor===color?'white':color" />
+          <circle [attr.cx]="radius" [attr.cy]="radius" [attr.r]="radius-4" stroke-width="0" [attr.fill]="color"
+            [attr.data-test]="selectedColor===color?'highlighted-color-circle':color+'-color-circle'" />
+        </svg>
+      </ng-container>
+    </div>
+  </div>
+</div>

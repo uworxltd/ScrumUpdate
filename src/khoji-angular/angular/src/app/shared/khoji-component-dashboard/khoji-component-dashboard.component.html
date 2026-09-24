@@ -1,0 +1,33 @@
+<!-- /*
+Copyright 2026 UWorx Services.
+Licensed under the Apache License, Version 2.0.
+See LICENSE for the full license text.
+*/ -->
+
+<div class="mx-8 px-8 py-5">
+  <div class="mx-0 px-0 xl:mx-6 xl:px-6">
+    <div class="card w-12 flex flex-row shadow-4 align-items-center pt-5 pb-6 mb-3">
+      <img [src]="model.imagePath" alt="integrate-logo" class="w-4rem h-4rem">
+      <div class="flex flex-column ml-4 justify-content-center">
+        <span class="text-4xl font-semibold">{{ dashboardComponentTranslations.mainCard[model.title] }}</span>
+        <span class="text-lg text-gray-500">{{ dashboardComponentTranslations.mainCard[model.subtitle] }}</span>
+      </div>
+    </div>
+    <div *ngFor="let item of model.children" [pTooltip]="dashboardComponentTranslations.toolTips[item.toolTip]" [tooltipDisabled]="!item.disabled"
+      tooltipPosition="bottom">
+      <div class="card w-12 flex flex-row align-items-center justify-content-between mb-2 py-4 cursor-pointer"
+        [ngClass]="{'p-disabled':item.disabled}" (click)="notifySidebarSyncService(item)">
+        <div class="flex align-items-center">
+          <img *ngIf="item.leadingIcon" [src]="item.leadingIcon" class="mr-4">
+          <span class="text-xl font-semibold">{{dashboardComponentTranslations.children[item.title]}}</span>
+        </div>
+        <i *ngIf="!item.disabled"
+          class="text-xl text-center w-2rem h-2rem flex align-items-center justify-content-center bg-primary text-white border-circle"
+          [class]="item.icon"></i>
+        <i *ngIf="item.disabled"
+          class="text-xl text-center w-2rem h-2rem flex align-items-center justify-content-center text-primary font-bold border-circle"
+          [class]="item.disabledIcon"></i>
+      </div>
+    </div>
+  </div>
+</div>

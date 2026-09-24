@@ -1,0 +1,181 @@
+{
+  "$schema": "./features-map.schema.json",
+  "version": "1.0.0",
+  "description": "Single source of truth for Unleash feature flags, their purpose, and required Jira scopes.",
+  "features": [
+    {
+      "name": "my-worklogs",
+      "description": "Enables AI-powered worklog insights in My Work section.",
+      "type": "release",
+      "defaultEnabled": false,
+      "consumers": [
+        "frontend",
+        "backend"
+      ],
+      "jiraScopes": [
+        "read:jira-work",
+        "read:issue-worklog:jira",
+        "read:issue-worklog.property:jira",
+        "write:issue-worklog:jira",
+        "write:issue-worklog.property:jira",
+        "delete:issue-worklog:jira",
+        "delete:issue-worklog.property:jira",
+        "write:issue.time-tracking:jira",
+        "read:comment:jira", 
+        "write:comment:jira", 
+        "read:avatar:jira", 
+        "read:group:jira", 
+        "read:project-role:jira", 
+        "read:user:jira", 
+        "read:account", 
+        "read:sprint:jira-software", 
+        "read:board-scope:jira-software", 
+        "read:project:jira", 
+        "read:issue:jira-software", 
+        "read:issue-details:jira"
+      ]
+    },
+    {
+      "name": "scrum-updates",
+      "description": "Enables daily scrum update generation for team standups in My Work section.",
+      "type": "release",
+      "defaultEnabled": true,
+      "consumers": [
+        "frontend",
+        "backend"
+      ],
+      "jiraScopes": [
+        "read:jira-work"
+      ]
+    },
+    {
+      "name": "scrum-assistant",
+      "description": "Gates the AI chat/agents integration and WebChat endpoints.",
+      "type": "release",
+      "defaultEnabled": false,
+      "consumers": [
+        "frontend",
+        "backend"
+      ],
+      "jiraScopes": [
+        "read:jira-work"
+      ]
+    },
+    {
+      "name": "worklog-insights",
+      "description": "Enables AI-powered worklog insights in Team View section.",
+      "type": "release",
+      "defaultEnabled": false,
+      "consumers": [
+        "frontend",
+        "backend"
+      ],
+      "jiraScopes": [
+        "read:jira-work"
+      ]
+    },
+    {
+      "name": "team-pulse",
+      "description": "Enables AI-powered team pulse in Team View section.",
+      "type": "release",
+      "defaultEnabled": false,
+      "consumers": [
+        "frontend",
+        "backend"
+      ],
+      "jiraScopes": [
+        "read:jira-work"
+      ]
+    },
+    {
+      "name": "standup-board",
+      "description": "Enables the standup board feature in Team View section.",
+      "type": "release",
+      "defaultEnabled": false,
+      "consumers": [
+        "frontend",
+        "backend"
+      ],
+      "jiraScopes": [
+        "read:jira-work",
+        "read:issue-worklog:jira",
+        "read:issue-worklog.property:jira",
+        "read:comment:jira", 
+        "read:avatar:jira", 
+        "read:group:jira", 
+        "read:project-role:jira", 
+        "read:user:jira", 
+        "read:account", 
+        "read:sprint:jira-software", 
+        "read:board-scope:jira-software", 
+        "read:project:jira", 
+        "read:issue:jira-software", 
+        "read:issue-details:jira"
+      ]
+    },
+    {
+      "name": "plan-details",
+      "description": "Controls plan/subscription details visibility in user profile section.",
+      "type": "release",
+      "defaultEnabled": false,
+      "consumers": [
+        "frontend"
+      ],
+      "jiraScopes": []
+    },
+    {
+      "name": "sprint-watch",
+      "description": "Enables proactive sprint watch background jobs (JQL polling every 5/15 min).",
+      "type": "release",
+      "defaultEnabled": false,
+      "consumers": [
+        "backend"
+      ],
+      "jiraScopes": [
+        "read:jira-work"
+      ]
+    },
+    {
+      "name": "kgs-llm",
+      "description": "Gates the LLM integration endpoint. Overridable via KGS-LLM env var.",
+      "type": "experiment",
+      "defaultEnabled": true,
+      "consumers": [
+        "backend"
+      ],
+      "jiraScopes": []
+    },
+    {
+      "name": "angular-posthog",
+      "description": "Enables PostHog analytics/telemetry collection in the Angular frontend.",
+      "type": "operational",
+      "defaultEnabled": false,
+      "consumers": [
+        "frontend"
+      ],
+      "jiraScopes": []
+    },
+    {
+      "name": "kgs-posthog",
+      "description": "Controls PostHog analytics/telemetry collection in the backend.",
+      "type": "operational",
+      "defaultEnabled": false,
+      "consumers": [
+        "backend"
+      ],
+      "jiraScopes": []
+    },
+    {
+      "name": "cheat-codes",
+      "description": "Enables post-sync insights and cheat-code messages after data synchronization.",
+      "type": "experiment",
+      "defaultEnabled": false,
+      "consumers": [
+        "backend"
+      ],
+      "jiraScopes": [
+        "read:jira-work"
+      ]
+    }
+  ]
+}

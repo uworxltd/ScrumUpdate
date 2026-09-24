@@ -1,0 +1,68 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Unleash Feature Flags Configuration",
+  "description": "Schema for feature flags configuration with Jira scope requirements",
+  "type": "object",
+  "required": ["version", "description", "features"],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "JSON Schema reference"
+    },
+    "version": {
+      "type": "string",
+      "description": "Schema version",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "description": {
+      "type": "string",
+      "description": "Overall description of the configuration"
+    },
+    "features": {
+      "type": "array",
+      "description": "List of feature flags",
+      "items": {
+        "type": "object",
+        "required": ["name", "description", "type", "defaultEnabled", "consumers", "jiraScopes"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Unique identifier for the feature flag",
+            "pattern": "^[a-z-]+$"
+          },
+          "description": {
+            "type": "string",
+            "description": "Human-readable description of what the flag controls"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["release", "experiment", "operational"],
+            "description": "Type of feature flag"
+          },
+          "defaultEnabled": {
+            "type": "boolean",
+            "description": "Default enabled state of the flag"
+          },
+          "consumers": {
+            "type": "array",
+            "description": "Components that consume this flag",
+            "items": {
+              "type": "string",
+              "enum": ["frontend", "backend"]
+            },
+            "minItems": 1
+          },
+          "jiraScopes": {
+            "type": "array",
+            "description": "Required Jira OAuth scopes for this feature",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,59 @@
+.blog-button {
+    border-radius: 20px;
+    color: var(--orange);
+    border: 1px solid black;
+    padding: 4px 15px;
+    font-size: 0.9rem;
+    display: inline-block;
+
+    &:hover {
+        background-color: rgba(37, 100, 119, 0.04);
+    }
+}
+
+h5 {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.feed-image {
+    border-top-right-radius: 6px;
+    border-top-left-radius: 6px;
+}
+
+:host ::ng-deep {
+    p-card:not(:last-child) {
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    p-card.skeleton {
+        .p-card-body {
+            height: 10px;
+        }
+    }
+
+    .p-card {
+        
+        .p-card-header {
+            padding: 10px 10px 0 10px;
+        }
+
+        .p-card-body {
+            padding-top: 5px;
+            padding-bottom: 0;
+        }
+
+        .p-card-content {
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+    }
+}
+
+:host ::ng-deep .p-card {
+    background: var(--surface-card);
+    border: 1px solid var(--surface-border);
+    box-shadow: var(--card-shadow);
+    border-radius: 12px;
+  }

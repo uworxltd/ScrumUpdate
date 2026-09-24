@@ -1,0 +1,5 @@
+﻿Given the story points completed over the past 5 sprints:
+
+{input}
+
+Calculate the average team velocity and predict capacity for the next sprint.

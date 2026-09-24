@@ -1,0 +1,128 @@
+.btn-group {
+  box-shadow: 0px 0px 4px grey;
+  border-radius: 4px;
+
+  &.disabled {
+    box-shadow: 0px 0px 1px grey;
+    background-color: #ebebeb;
+  }
+
+  .dropdown-toggle {
+    padding: 4.5px 10px;
+
+    &::after {
+      color: #f76131;
+    }
+
+    &[disabled]::after {
+      color: gray;
+    }
+  }
+}
+
+.scroll-box {
+  max-height: 400px;
+  overflow-y: auto;
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 5px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f2f2f2;
+  }
+}
+
+.dropdown-menu {
+  display: block;
+
+  &.dropdown-inner {
+    position: relative;
+    border: 0;
+    padding: 0;
+    margin-left: 25px;
+  }
+}
+
+.dropdown-footer {
+  padding: 0 9px;
+
+  .btn {
+    min-width: 50px;
+  }
+}
+
+.dropdown-item {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  padding: 0;
+
+  &:hover,
+  &.active,
+  &:active {
+    color: unset;
+    background-color: unset;
+  }
+
+  .alert {
+    margin: 0 0.5em;
+  }
+
+  .custom-control {
+    padding: 2px 10px 2px 40px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: #e5e5e5;
+    }
+
+    label {
+      padding-top: 2px;
+    }
+
+    label,
+    input {
+      cursor: pointer;
+    }
+
+    .badge-pill {
+      background-color: darkgray;
+      color: white;
+      margin-left: 8px;
+      padding: 4px 6px 2px;
+    }
+
+  }
+}
+
+.btn.dropdown-toggle {
+  .badge-info {
+    background-color: #f2d7ff;
+    color: #423b44;
+    font-weight: normal;
+    font-size: .9em;
+    margin-right: 5px;
+
+    &.indeterminate {
+      background-color: #ffedc5;
+    }
+  }
+
+  .badge-count {
+    border-radius: 9px;
+    color: #7200a5;
+    padding: 0.3em 0.7em 0.3em 0.4em;
+    font-size: .7em;
+  }
+}
+
+.badge-container {
+  display: inline-block;
+  min-width: 110px;
+  text-align: left;
+}

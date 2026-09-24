@@ -1,0 +1,29 @@
+<div *ngIf="!instanceDetails; else content" style="height: 200px;">
+  <p>Loading...</p>
+</div>
+
+<ng-template #content>
+  <div class="flex flex-row">
+    <div class="p-4 surface-200 border-round-xl">
+      <img
+        [khoji-image]="[instanceDetails?.instanceImageUrl, 'assets/images/Jira_Logo.png']"
+        height="60"
+        width="120"
+      />
+    </div>
+
+    <div class="flex flex-column justify-content-center ml-3">
+      <div class="flex flex-row">
+        <h3>{{ instanceDetails?.instanceName }}</h3>
+        <i class="flex pi pi-user m-2 gap-2">
+          <p>{{ instanceMemberCount }}</p>
+        </i>
+      </div>
+      <a
+        [href]="getCurrentInstanceUrl()"
+        class="underline"
+        >{{ getCurrentInstanceUrl() }}</a
+      >
+    </div>
+  </div>
+</ng-template>

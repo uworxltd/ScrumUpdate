@@ -1,0 +1,71 @@
+<div [ngClass]="classNames || className">
+  <p-dropdown
+    [disabled]="disabled"
+    [loading]="loading"
+    [placeholder]="placeholder"
+    [options]="dropdownValues"
+    [(ngModel)]="selectedItem"
+    [showClear]="showClear"
+    [filter]="filter"
+    (onClear)="onClear.emit()"
+    (onChange)="onSelect(selectedItem)"
+    optionLabel="name"
+    optionValue="code"
+    optionDisabled="inactive"
+    filterBy="name"
+    [emptyMessage]="emptyDropDownMessage"
+    [emptyFilterMessage]="emptyFilterMessage"
+    [appendTo]="appendTo"
+    [group]="group"
+    [optionGroupLabel]="optionGroupLabel"
+    [optionGroupChildren]="optionGroupChildren"
+  >
+    <ng-template let-value pTemplate="selectedItem">
+      <div *ngIf="value" class="flex flex-column">
+        <div>{{ value.name }}</div>
+        <small *ngIf="value.isSynced && value.last_synced_at" class="text-gray-600 font-light">
+          Synced {{ value.lastSyncedTimeAgo }}
+        </small>
+      </div>
+    </ng-template>
+    <ng-template let-group pTemplate="group" *ngIf="group">
+      <div class="flex align-items-center gap-2">
+        <span class="font-semibold">{{ group[optionGroupLabel] }}</span>
+      </div>
+    </ng-template>
+    <ng-template let-value pTemplate="item">
+      <div
+        class="value-item pl-3"
+        [pTooltip]="value.disabledOptionTooltipText"
+        [tooltipPosition]="'bottom'"
+        style="pointer-events: all !important;"
+      >
+        <div class="flex flex-column">
+          <div
+            [title]="showTitleWithDDOptions ? value.name : ''"
+          >
+            {{ value.name }}
+          </div>
+          <small
+            *ngIf="value.isSynced && value.last_synced_at && !value.description"
+            class="text-gray-600 font-light"
+          >
+            Synced {{ value.lastSyncedTimeAgo }} • {{ value.storyPointsDisplay }}
+          </small>
+          <small
+            *ngIf="value.isSynced && value.last_synced_at && value.description"
+            class="text-gray-600 font-light"
+          >
+            Synced {{ value.lastSyncedTimeAgo }} • {{ value.description }}
+          </small>
+          <small
+            *ngIf="value.description && !value.isSynced"
+            class="text-gray-600 font-light"
+          >
+            {{ value.description }}
+          </small>
+        </div>
+      </div>
+    </ng-template>
+  </p-dropdown>
+</div>

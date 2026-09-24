@@ -1,0 +1,52 @@
+/*
+  Copyright 2026 UWorx Services.
+  Licensed under the Apache License, Version 2.0.
+  See LICENSE for the full license text.
+*/
+
+
+
+
+.color-picker-icon {
+  display: inline-block;
+
+  svg {
+    cursor: pointer;
+  }
+}
+
+.color-picker-dropdown {
+  display: block;
+  box-shadow: 0 0 1rem rgba(0, 0, 0, .15);
+  z-index: 1051010109999990; 
+
+  .icon {
+    cursor: pointer;
+  }
+
+  .grid {
+    display: inline-grid;
+    grid-template-columns: repeat(7, 1fr);
+    column-gap: 8px;
+    row-gap: 8px;
+    padding: 15px;
+  }
+
+  &::after {
+    content: "";
+    width: 8px;
+    height: 8px;
+    transform: rotate(45deg);
+    background-color: white;
+    top: -5px;
+    left: 10px;
+    position: absolute;
+    border-top: 1px solid #bbbec3;
+    border-left: 1px solid #bbbec3;
+  }
+
+  &.open-top::after {
+    transform: rotate(225deg);
+    top: 184px;
+  }
+}

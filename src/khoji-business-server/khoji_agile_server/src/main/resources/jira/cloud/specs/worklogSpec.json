@@ -1,0 +1,23 @@
+[
+  {
+    "operation": "shift",
+    "spec": {
+      "total": "total",
+      "maxResults": "maxResults",
+      "worklogs": {
+        "*": {
+          "issueId": "worklogs[&1].issueId",
+          "id": "worklogs[&1].workLogId",
+          "started": "worklogs[&1].started",
+          "created": "worklogs[&1].created",
+          "updated": "worklogs[&1].updated",
+          "timeSpentSeconds": "worklogs[&1].timeSpentSeconds",
+          "comment": "worklogs[&1].comment",
+          "author": {
+            "accountId": "worklogs[&2].author.accountId"
+          }
+        }
+      }
+    }
+  }
+]

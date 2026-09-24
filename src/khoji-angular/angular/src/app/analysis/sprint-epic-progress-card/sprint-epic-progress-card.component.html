@@ -1,0 +1,683 @@
+<!-- /*
+Copyright 2026 UWorx Services.
+Licensed under the Apache License, Version 2.0.
+See LICENSE for the full license text.
+*/ -->
+
+
+<!-- Sprint Epic Progress Card -->
+<div
+  *ngIf="epics && epics.length > 0"
+  class="sprint-epics-container"
+  style="margin-left: 12px; margin-right: 12px; margin-top: 0px; width: 100%; height: 100%"
+>
+  <p-card class="surface-card border-round h-full">
+    <!-- Card Header -->
+    <ng-template pTemplate="header">
+      <div class="flex justify-content-between align-items-center pt-2">
+        <div class="flex align-items-center gap-2">
+          <h3 class="text-xl font-bold text-color m-0">Epic Progress</h3>
+        </div>
+      </div>
+    </ng-template>
+
+    <!-- Card Content -->
+    <div class="flex flex-column h-full sprint-epics-card pt-2 pb-0 overflow-hidden mt-4">
+      <!-- Loading State -->
+      <div
+        *ngIf="isLoading"
+        class="flex flex-column align-items-center justify-content-center h-full text-color-secondary"
+      >
+        <i class="pi pi-spin pi-spinner text-4xl mb-2"></i>
+        <p class="m-0">Loading epic progress...</p>
+      </div>
+
+      <!-- Error State -->
+      <div
+        *ngIf="!isLoading && hasError"
+        class="flex flex-column align-items-center justify-content-center h-full text-center"
+      >
+        <i class="pi pi-exclamation-triangle text-6xl text-orange-500 mb-3"></i>
+        <p class="text-color-secondary text-lg m-0">Network error. Please retry.</p>
+      </div>
+
+      <!-- Epics List -->
+      <div
+        *ngIf="!isLoading && !hasError"
+        class="epics-list"
+      >
+        <!-- Epic Items -->
+        <div
+          *ngFor="let epic of epics"
+          class="epic-item"
+        >
+          <div class="mb-0">
+            <div class="flex justify-content-between align-items-center mb-1">
+              <div class="flex align-items-center gap-2">
+                <a
+                  href="javascript:void(0)"
+                  (click)="openEpicDetails(epic, $event)"
+                  class="epic-title-link"
+                >
+                  <h4 class="text-base font-semibold m-0">{{ epic.epicKey }} {{ epic.epicName }}</h4>
+                </a>
+              </div>
+              <div class="flex gap-2 align-items-center">
+                <button
+                  (click)="openEpicInJira(epic)"
+                  class="jira-btn"
+                  pTooltip="Open in Jira"
+                  tooltipPosition="left"
+                >
+                  <i class="fa fa-external-link"></i>
+                </button>
+                <button
+                  (click)="showDetails(epic)"
+                  class="details-btn"
+                  pTooltip="Detailed AI insights"
+                  tooltipPosition="left"
+                >
+                  Details
+                </button>
+              </div>
+            </div>
+            <p class="text-sm text-color-secondary m-0">{{ epic.storyPoints.completed }}/{{ epic.storyPoints.total }} story points: {{ epic.storyPoints.percentage }}%</p>
+          </div>
+        </div>
+
+        <!-- Empty State -->
+        <div
+          *ngIf="epics.length === 0"
+          class="flex flex-column align-items-center justify-content-center h-full text-center"
+        >
+          <i class="pi pi-check-circle text-4xl text-green-500 mb-2 mt-3"></i>
+          <p class="text-color-secondary text-lg m-0">No epics in this sprint</p>
+        </div>
+      </div>
+    </div>
+  </p-card>
+</div>
+
+<!-- Ticket Details Modal -->
+<p-dialog
+  [(visible)]="displayTicketDetails"
+  [modal]="true"
+  [style]="{ width: '800px' }"
+  [draggable]="false"
+  [resizable]="false"
+  [appendTo]="'body'"
+  styleClass="ticket-insights-dialog"
+>
+  <ng-template pTemplate="header">
+    <div class="flex justify-content-between align-items-center w-full">
+      <div
+        class="flex flex-column gap-2"
+        style="flex: 1"
+      >
+        <div class="flex align-items-center gap-2">
+          <a
+            [href]="getJiraUrl(selectedTicket?.key || '')"
+            target="_blank"
+            class="ticket-key-link"
+            (click)="$event.stopPropagation()"
+            pTooltip="Click to open in Jira"
+            tooltipPosition="bottom"
+          >
+            {{ selectedTicket?.key || '[object Object]' }}
+          </a>
+          <span
+            *ngIf="!isLoadingTicketInsights"
+            class="ai-badge"
+            pTooltip="AI-generated insights. Information may be incomplete or inaccurate. Please verify before taking action."
+            tooltipPosition="bottom"
+          >
+            AI
+          </span>
+        </div>
+        <div
+          class="ticket-summary"
+          *ngIf="selectedTicket?.summary"
+        >
+          {{ selectedTicket?.summary }}
+        </div>
+      </div>
+      <div
+        class="flex align-items-center gap-3"
+        *ngIf="ticketInsights && !isLoadingTicketInsights"
+      >
+        <div class="flex align-items-center gap-3">
+          <span class="status-text">{{ ticketInsights.currentStatus }}</span>
+          <span
+            class="days-badge-modern"
+            pTooltip="Days in current status. Counts calendar days including weekends, matching Jira."
+            tooltipPosition="bottom"
+          >{{ ticketInsights.currentStatusDays }} {{ ticketInsights.currentStatusDays === 1 ? 'day' : 'days' }}</span>
+        </div>
+        <span
+          class="export-action-icon"
+          role="button"
+          tabindex="0"
+          (click)="downloadTicketScreenshot()"
+          (keydown.enter)="downloadTicketScreenshot()"
+          (keydown.space)="downloadTicketScreenshot()"
+          pTooltip="Download as PNG"
+          tooltipPosition="bottom"
+        >
+          <i
+            class="fa fa-file-image-o"
+            aria-hidden="true"
+          ></i>
+        </span>
+        <span
+          class="export-action-icon"
+          role="button"
+          tabindex="0"
+          (click)="downloadTicketPDF()"
+          (keydown.enter)="downloadTicketPDF()"
+          (keydown.space)="downloadTicketPDF()"
+          pTooltip="Download as PDF"
+          tooltipPosition="bottom"
+        >
+          <i
+            class="fa fa-file-pdf-o"
+            aria-hidden="true"
+          ></i>
+        </span>
+      </div>
+    </div>
+  </ng-template>
+
+  <div class="ticket-insights-modal-content">
+    <!-- Data Scope Notice -->
+    <div
+      class="ai-disclaimer-modern"
+      *ngIf="!isLoadingTicketInsights && ticketInsights"
+    >
+      <i class="pi pi-info-circle"></i>
+      <span>This displays the full ticket history including all status changes and assignments. Day counts use calendar days (including weekends), matching Jira's standard time calculation.</span>
+    </div>
+
+    <!-- Loading State -->
+    <div
+      *ngIf="isLoadingTicketInsights"
+      class="flex flex-column align-items-center justify-content-center"
+      style="min-height: 300px"
+    >
+      <p-progressSpinner
+        styleClass="w-4rem h-4rem"
+        strokeWidth="4"
+      ></p-progressSpinner>
+      <p class="mt-3 text-color-secondary">Analyzing ticket timeline...</p>
+    </div>
+
+    <!-- Two Column Layout -->
+    <div
+      class="insights-grid"
+      *ngIf="!isLoadingTicketInsights && ticketInsights"
+    >
+      <!-- Left Column: What went wrong -->
+      <div class="insights-column">
+        <h4 class="insights-section-title">What went wrong</h4>
+        <ul class="issues-list">
+          <li
+            class="issue-item"
+            *ngFor="let issue of ticketInsights.aiInsights.whatWentWrong"
+          >
+            <i class="pi pi-times-circle"></i>
+            <span>{{ issue }}</span>
+          </li>
+        </ul>
+        <p class="root-cause-text">Root cause: {{ ticketInsights.aiInsights.rootCause }}</p>
+      </div>
+
+      <!-- Right Column: Timeline -->
+      <div class="insights-column timeline-column">
+        <h4 class="insights-section-title">Timeline</h4>
+        <div
+          class="timeline-container"
+          *ngIf="ticketInsights.aiInsights.timelineHighlights.length > 0"
+        >
+          <div
+            class="timeline-item"
+            *ngFor="let event of ticketInsights.aiInsights.timelineHighlights; let last = last"
+          >
+            <div class="timeline-marker">
+              <i
+                class="pi timeline-event-icon"
+                [ngClass]="{
+                  'pi-info-circle': event.icon === 'status_change',
+                  'pi-check-circle': event.icon === 'completed',
+                  'pi-exclamation-circle': event.icon === 'chase',
+                  'pi-comment': event.icon === 'comment',
+                  'pi-ban': event.icon === 'blocked',
+                  'pi-user': event.icon === 'assignment'
+                }"
+              ></i>
+            </div>
+            <div class="timeline-content">
+              <div class="timeline-days">{{ event.daysAgo }}d ago</div>
+              <div class="timeline-description">{{ event.description }}</div>
+            </div>
+            <div
+              class="timeline-line"
+              *ngIf="!last"
+            ></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Now Section - Full Width at Bottom -->
+    <div
+      class="actions-section-full-width"
+      *ngIf="!isLoadingTicketInsights && ticketInsights"
+    >
+      <div class="action-now-container">
+        <h4 class="insights-section-title">Action Now</h4>
+        <ul class="actions-list-full-width">
+          <li
+            class="action-item"
+            *ngFor="let action of ticketInsights.aiInsights.recommendedActions"
+          >
+            <i class="pi pi-check"></i>
+            <span>{{ action }}</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</p-dialog>
+<!-- Epic Details Modal -->
+<p-dialog
+  [(visible)]="displayEpicDetails"
+  [modal]="true"
+  [style]="{ width: '800px' }"
+  [draggable]="false"
+  [resizable]="false"
+  [appendTo]="'body'"
+  styleClass="ticket-insights-dialog"
+>
+  <ng-template pTemplate="header">
+    <div class="flex justify-content-between align-items-center w-full">
+      <div
+        class="flex flex-column gap-2"
+        style="flex: 1"
+      >
+        <div class="flex align-items-center gap-2">
+          <a
+            [href]="getEpicJiraUrl(selectedEpic?.epicKey || '')"
+            target="_blank"
+            class="ticket-key-link"
+            (click)="$event.stopPropagation()"
+            pTooltip="Click to open in Jira"
+            tooltipPosition="bottom"
+          >
+            {{ selectedEpic?.epicKey || '' }}<span class="type-bracket"> [Epic]</span>
+          </a>
+          <span
+            class="ai-badge"
+            pTooltip="AI-generated insights. Information may be incomplete or inaccurate. Please verify before taking action."
+            tooltipPosition="bottom"
+          >
+            AI
+          </span>
+        </div>
+        <div
+          class="ticket-summary"
+          *ngIf="selectedEpic?.epicName"
+        >
+          {{ selectedEpic?.epicName }}
+        </div>
+      </div>
+      <div
+        class="flex align-items-center gap-3"
+        *ngIf="selectedEpic && !isLoadingEpicDetailsInsights"
+      >
+        <div class="flex align-items-center gap-3">
+          <span class="status-text">{{ selectedEpic.storyPoints.completed }}/{{ selectedEpic.storyPoints.total }} pts</span>
+          <span class="days-badge-modern">{{ selectedEpic.storyPoints.percentage }}% complete</span>
+        </div>
+        <span
+          class="export-action-icon"
+          role="button"
+          tabindex="0"
+          (click)="downloadEpicScreenshot()"
+          (keydown.enter)="downloadEpicScreenshot()"
+          (keydown.space)="downloadEpicScreenshot()"
+          pTooltip="Download as PNG"
+          tooltipPosition="bottom"
+        >
+          <i
+            class="fa fa-file-image-o"
+            aria-hidden="true"
+          ></i>
+        </span>
+        <span
+          class="export-action-icon"
+          role="button"
+          tabindex="0"
+          (click)="downloadEpicPDF()"
+          (keydown.enter)="downloadEpicPDF()"
+          (keydown.space)="downloadEpicPDF()"
+          pTooltip="Download as PDF"
+          tooltipPosition="bottom"
+        >
+          <i
+            class="fa fa-file-pdf-o"
+            aria-hidden="true"
+          ></i>
+        </span>
+      </div>
+    </div>
+  </ng-template>
+
+  <div class="ticket-insights-modal-content">
+    <!-- Data Scope Notice -->
+    <div
+      class="ai-disclaimer-modern"
+      *ngIf="!isLoadingEpicDetailsInsights && epicDetailsInsights"
+    >
+      <i class="pi pi-info-circle"></i>
+      <span>This epic data includes tickets and timeline from the current sprint only. Historical or cross-sprint data is not included.</span>
+    </div>
+
+    <!-- Epic Achievement Summary -->
+    <div
+      class="epic-summary-section"
+      *ngIf="!isLoadingEpicDetailsInsights && epicDetailsInsights?.summary"
+    >
+      <p class="epic-summary-text">{{ epicDetailsInsights.summary }}</p>
+    </div>
+
+    <!-- Loading State -->
+    <div
+      *ngIf="isLoadingEpicDetailsInsights"
+      class="flex flex-column align-items-center justify-content-center"
+      style="min-height: 300px"
+    >
+      <p-progressSpinner
+        styleClass="w-4rem h-4rem"
+        strokeWidth="4"
+      ></p-progressSpinner>
+      <p class="mt-3 text-color-secondary">Analyzing epic progress...</p>
+    </div>
+
+    <!-- Epic Insights Content -->
+    <div
+      *ngIf="!isLoadingEpicDetailsInsights && epicDetailsInsights"
+      class="epic-insights-content"
+    >
+      <!-- Top Row: Two Column Layout (Risk Factors + Epic Activity Timeline) -->
+      <div class="insights-grid">
+        <!-- Left Column: Risk Factors -->
+        <div class="insights-column">
+          <h4 class="insights-section-title">Risk Factors</h4>
+          <ul
+            class="issues-list"
+            *ngIf="selectedEpic"
+          >
+            <li *ngIf="selectedEpic.storyPoints.percentage < 100">
+              <i
+                class="pi pi-exclamation-triangle"
+                style="color: #f59e0b"
+              ></i>
+              {{ selectedEpic.storyPoints.total - selectedEpic.storyPoints.completed }} story points remaining
+            </li>
+            <li *ngIf="getInProgressTickets().length > 0">
+              <i
+                class="pi pi-exclamation-triangle"
+                style="color: #f59e0b"
+              ></i>
+              {{ getInProgressTickets().length }} ticket(s) in progress
+            </li>
+            <li *ngIf="getTodoTickets().length > 0">
+              <i
+                class="pi pi-exclamation-triangle"
+                style="color: #f59e0b"
+              ></i>
+              {{ getTodoTickets().length }} ticket(s) not yet started
+            </li>
+            <li *ngIf="selectedEpic.storyPoints.percentage === 100">
+              <i
+                class="pi pi-check-circle"
+                style="color: #10b981"
+              ></i>
+              All tickets completed
+            </li>
+          </ul>
+          <p
+            class="root-cause-text"
+            *ngIf="selectedEpic && selectedEpic.storyPoints.percentage < 100"
+          >
+            Primary focus: Complete remaining story points
+          </p>
+        </div>
+
+        <!-- Right Column: Epic Activity Timeline -->
+        <div class="insights-column timeline-column">
+          <h4 class="insights-section-title">Epic Activity</h4>
+          <div
+            class="timeline-container"
+            *ngIf="epicTimelineEvents && epicTimelineEvents.length > 0"
+          >
+            <div
+              class="timeline-item"
+              *ngFor="let event of epicTimelineEvents; let last = last"
+            >
+              <div class="timeline-marker">
+                <i
+                  class="pi timeline-event-icon"
+                  [ngClass]="getTimelineEventIcon(event)"
+                ></i>
+              </div>
+              <div class="timeline-content">
+                <div class="timeline-days">{{ event.daysAgo }}d ago</div>
+                <div class="timeline-description">{{ event.description }}</div>
+              </div>
+              <div
+                class="timeline-line"
+                *ngIf="!last"
+              ></div>
+            </div>
+          </div>
+          <div
+            *ngIf="!epicTimelineEvents || epicTimelineEvents.length === 0"
+            class="text-color-secondary text-sm"
+          >
+            No recent activity
+          </div>
+        </div>
+      </div>
+
+      <!-- Metrics Section: Three Key Metrics -->
+      <div class="insights-section-full-width">
+        <h4 class="insights-section-title">Key Metrics</h4>
+        <div class="metrics-grid">
+          <!-- Ticket Hygiene -->
+          <div
+            class="metric-card"
+            *ngIf="selectedEpic"
+            pTooltip="% of tickets with assigned owners and story point estimates"
+            tooltipPosition="top"
+            [escape]="false"
+          >
+            <div
+              class="metric-box"
+              [ngClass]="getHygieneClass()"
+            >
+              <div class="metric-value">{{ selectedEpic.ticketHygienePercentage }}%</div>
+              <div class="metric-label">Data Quality</div>
+            </div>
+          </div>
+
+          <!-- Delivery Health -->
+          <div
+            class="metric-card"
+            *ngIf="selectedEpic"
+            pTooltip="% of tickets marked as Done"
+            tooltipPosition="top"
+            [escape]="false"
+          >
+            <div
+              class="metric-box"
+              [ngClass]="getDeliveryHealthClass()"
+            >
+              <div class="metric-value">{{ selectedEpic.deliveryHealthPercentage }}%</div>
+              <div class="metric-label">Completion Rate</div>
+            </div>
+          </div>
+
+          <!-- Delivery Confidence -->
+          <div
+            class="metric-card"
+            *ngIf="selectedEpic"
+            pTooltip="Likelihood of completing remaining tickets by sprint end"
+            tooltipPosition="top"
+            [escape]="false"
+          >
+            <div
+              class="metric-box"
+              [ngClass]="getDeliveryConfidenceClass()"
+            >
+              <div class="metric-value">{{ selectedEpic.deliveryConfidencePercentage }}%</div>
+              <div class="metric-label">Confidence</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Evidence & Sprint Tickets - Two Column Layout -->
+      <div class="insights-grid">
+        <!-- Left Column: Evidence -->
+        <div class="insights-column">
+          <div class="section-container">
+            <h4 class="insights-section-title">Evidence</h4>
+            <ul
+              class="insights-list"
+              *ngIf="selectedEpic"
+            >
+              <li>
+                <i class="pi pi-check-circle"></i>
+                {{ selectedEpic.storyPoints.percentage }}% complete - {{ selectedEpic.storyPoints.completed }}/{{ selectedEpic.storyPoints.total }} pts
+              </li>
+              <li>
+                <i class="pi pi-check-circle"></i>
+                {{ getDoneTickets().length }}/{{ selectedEpic.tickets.length }} tickets completed
+              </li>
+              <li *ngIf="getInProgressTickets().length > 0">
+                <i class="pi pi-check-circle"></i>
+                {{ getInProgressTickets().length }} in progress: {{ getInProgressTicketKeys() }}
+              </li>
+              <li *ngIf="getTodoTickets().length > 0">
+                <i class="pi pi-check-circle"></i>
+                {{ getTodoTickets().length }} to start: {{ getTodoTicketKeys() }}
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Right Column: Sprint Tickets -->
+        <div class="insights-column">
+          <div class="section-container">
+            <h4 class="insights-section-title">Sprint Tickets</h4>
+            <div class="sprint-tickets-container">
+              <div
+                *ngIf="selectedEpic?.tickets && selectedEpic.tickets.length > 0"
+                class="tickets-grid-wrapper"
+              >
+                <div class="tickets-grid">
+                  <div
+                    *ngFor="let ticket of selectedEpic.tickets"
+                    class="ticket-item-wrapper"
+                  >
+                    <span
+                      class="ticket-badge"
+                      (click)="openTicketDetails(ticket, $event)"
+                      [pTooltip]="getTicketTooltip(ticket)"
+                      tooltipPosition="top"
+                      [escape]="false"
+                      tooltipStyleClass="ticket-tooltip"
+                    >
+                      {{ ticket.key }}
+                    </span>
+                    <div class="ticket-actions">
+                      <button
+                        (click)="openTicketDetails(ticket, $event)"
+                        class="ticket-action-btn"
+                        pTooltip="View details"
+                        tooltipPosition="bottom"
+                        tooltipStyleClass="sm-tooltip"
+                      >
+                        <i class="pi pi-eye"></i>
+                      </button>
+                      <button
+                        (click)="openTicketInJira(ticket)"
+                        class="ticket-action-btn"
+                        pTooltip="Open in Jira"
+                        tooltipPosition="bottom"
+                        tooltipStyleClass="sm-tooltip"
+                      >
+                        <i class="fa fa-external-link"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <span
+                *ngIf="!selectedEpic?.tickets || selectedEpic.tickets.length === 0"
+                class="text-color-secondary text-sm"
+              >
+                No tickets found
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Now Section -->
+      <div
+        class="insights-section-full-width"
+        *ngIf="epicDetailsInsights && epicDetailsInsights.insights && epicDetailsInsights.insights.length > 0"
+      >
+        <div class="action-now-container">
+          <h4 class="insights-section-title">Action Now</h4>
+          <ul class="action-items-list">
+            <li *ngFor="let insight of epicDetailsInsights.insights">{{ insight }}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</p-dialog>
+<!-- Epic Confirmation Modal -->
+<p-dialog
+  [(visible)]="displayEpicConfirmation"
+  [modal]="true"
+  [style]="{ width: '400px' }"
+  [draggable]="false"
+  [resizable]="false"
+  [appendTo]="'body'"
+  styleClass="confirmation-dialog"
+  [header]="'View Epic Details'"
+>
+  <div class="confirmation-content">
+    <i class="pi pi-info-circle text-2xl text-orange-500 mb-3"></i>
+    <p class="text-center mb-4">Viewing detailed analytics will load AI insights. Would you prefer to view in Jira instead?</p>
+    <div class="flex gap-3 justify-content-center">
+      <button
+        (click)="confirmOpenInJira()"
+        class="p-button p-button-secondary"
+        style="padding: 0.5rem 1.5rem"
+      >
+        Open in Jira
+      </button>
+      <button
+        (click)="confirmViewDetails()"
+        class="p-button p-button-primary"
+        style="padding: 0.5rem 1.5rem"
+      >
+        Load Analytics
+      </button>
+    </div>
+  </div>
+</p-dialog>

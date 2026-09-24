@@ -1,0 +1,12 @@
+:host ::ng-deep {
+  div.p-tabview-panels {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}
+
+
+:host ::ng-deep .p-autocomplete input {
+  width: 100% !important;
+}
+

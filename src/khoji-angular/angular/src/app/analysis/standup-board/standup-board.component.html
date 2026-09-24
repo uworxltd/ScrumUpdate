@@ -1,0 +1,206 @@
+<!-- /*
+Copyright 2026 UWorx Services.
+Licensed under the Apache License, Version 2.0.
+See LICENSE for the full license text.
+*/ -->
+
+
+<p-toast position="top-center"></p-toast>
+
+<div class="flex flex-column" style="min-height: calc(100vh - 105px)">
+  <!-- Message for non-admin users when data sync is disabled -->
+  <div *ngIf="dataSyncPermission === false && !isAdminOrTenantAdmin && workspacesLoadingState === LoadingState.Done"
+    class="flex flex-column align-items-center justify-content-center" style="min-height: calc(100vh - 105px)">
+    <div class="flex flex-column align-items-center gap-3 p-5 surface-card border-round shadow-2">
+      <i class="pi pi-lock text-4xl text-primary"></i>
+      <div class="text-xl font-semibold text-center">Jira Data Synchronization is Disabled</div>
+      <div class="text-center text-700">
+        Please contact your tenant administrator to enable Jira data synchronization for the Standup Board.
+      </div>
+    </div>
+  </div>
+  <div *ngIf="dataSyncPermission === false && isAdminOrTenantAdmin && workspacesLoadingState === LoadingState.Done"
+    class="flex align-items-center gap-2">
+    Please turn on
+    <div class="flex align-items-center gap-1 font-italic font-semibold cursor-pointer">
+      <i class="pi pi-sync"></i>
+      <div class="jira-link font-semibold" (click)="displayJiraDataSync = true">
+        Jira Data synchronization
+      </div>
+    </div>
+    to enable <span class="font-semibold">Standup Board.</span>
+  </div>
+  <div *ngIf="dataSyncPermission" class="flex flex-column">
+    <div
+      *ngIf="currentSprint && (activityIssuesSyncJobStatus === 'running' || worklogSyncJobStatus[currentSprint.sprint_id] === 'running')"
+      class="p-message p-message-warn mt-0 mb-3">
+      <div class="p-message-wrapper flex p-3">
+        <i class="p-message-icon pi pi-exclamation-triangle"></i>
+        <div class="p-message-detail">Please stay on this screen while we sync your sprint to avoid any data
+          discrepancies.</div>
+      </div>
+    </div>
+    <div class="flex align-items-center justify-content-between mb-4 gap-2">
+      <!-- <div *ngIf="!sprintAnalyticsSynced" class="text-700">No data yet. Run a live sync (typically < 1 min).</div> -->
+      <khoji-single-select-dropdown [filter]="true" [className]="'w-25rem'" [showTitleWithDDOptions]="true"
+        [dropdownValues]="groupedSprintList" [selectedItem]="currentSprint?.code"
+        [disabled]="!isAdminOrTenantAdmin || sprintListSyncJobStatus === 'running' || activityIssuesSyncJobStatus === 'running' || isValidatingSprintsFromCache || isSprintAnalyticsLoading || isRefreshingAndWaitingForAnalytics || (currentSprint && currentSprint.state === 'CLOSED')"
+        (emitValueOnSelection)="onDropdownSprintSelect($event)" [placeholder]="'Select Sprint for Analysis'"
+        [showClear]="true" (onClear)="handleClear()" [group]="true" [optionGroupLabel]="'label'"
+        [optionGroupChildren]="'items'">
+      </khoji-single-select-dropdown>
+      <div *ngIf="currentSprint" class="flex align-items-center gap-2">
+        <span
+          *ngIf="activityIssuesSyncJobStatus !== 'failed' && sprintListSyncJobStatus !== 'failed' && sprintAnalyticsSynced === true"
+          class="su-dotg"></span>
+        <span
+          *ngIf="activityIssuesSyncJobStatus !== 'failed' && sprintListSyncJobStatus !== 'failed' && sprintAnalyticsSynced === false"
+          class="su-dotgr"></span>
+        <span *ngIf="activityIssuesSyncJobStatus === 'failed' || sprintListSyncJobStatus === 'failed'"
+          class="su-dotr"></span>
+        <span>Last synced: </span>
+        <span
+          *ngIf="activityIssuesSyncJobStatus !== 'failed' && sprintListSyncJobStatus !== 'failed' && sprintAnalyticsSynced === true"
+          class="font-bold text-black-alpha-60">{{ lastSyncedTimeAgo }}</span>
+        <span
+          *ngIf="activityIssuesSyncJobStatus !== 'failed' && sprintListSyncJobStatus !== 'failed' && sprintAnalyticsSynced === false"
+          class="text-gray-600 font-bold">Never</span>
+        <span *ngIf="activityIssuesSyncJobStatus === 'failed' || sprintListSyncJobStatus === 'failed'"
+          class="text-red-600 font-bold">Error</span>
+        <ng-container *ngIf="sprintListSyncJobStatus === 'running'">
+          <span class="font-bold">|</span>
+          <span class="pulsate">Validating Sprints...</span>
+        </ng-container>
+        <ng-container *ngIf="activityIssuesSyncJobStatus === 'running'">
+          <span class="font-bold">|</span>
+          <span class="pulsate">Syncing latest data...</span>
+        </ng-container>
+        <ng-container *ngIf="worklogSyncJobStatus[currentSprint.sprint_id] === 'running'">
+          <span class="font-bold">|</span>
+          <span class="pulsate">Calculating scope changes...</span>
+        </ng-container>
+      </div>
+      <div *ngIf="!currentSprint && sprintListSyncJobStatus === 'failed'" class="flex align-items-center gap-2">
+        <span class="su-dotr"></span>
+        <span class="text-red-600">Sync Error</span>
+      </div>
+      <div><!-- empty div to fix flex flickering issue --></div>
+      <p-button icon="pi pi-sync"
+        (onClick)="currentSprint && currentSprint.last_synced_at === null ? syncAndFetchSprintAnalytics(currentSprint) : syncAndFetchSprintList(true)"
+        label="Sync"
+        [disabled]="!isAdminOrTenantAdmin || !currentSprint?.sprint_id || sprintListSyncJobStatus === 'running' || activityIssuesSyncJobStatus === 'running' || isValidatingSprintsFromCache || isSprintAnalyticsLoading || isRefreshingAndWaitingForAnalytics || (currentSprint && currentSprint.state === 'CLOSED')"
+        [loading]="activityIssuesSyncJobStatus === 'running' || (!currentSprint && sprintListSyncJobStatus === 'running')"
+        styleClass="p-button-text p-button-rounded" size="small" [raised]="true">
+      </p-button>
+    </div>
+  </div>
+
+  <!-- Right side cards: Show when sprint-static-summary data loads -->
+  <div
+    *ngIf="currentSprint && currentSprint.last_synced_at !== null && (staticSummaryData !== null || staticSummaryLoadingState === LoadingState.Loading || teamPulseData !== null || velocityBurndownData !== null) && !showGifLoadingScreen"
+    class="flex flex-column gap-4">
+    <div class="flex gap-4">
+      <!-- Left side: Always show, but with loading state when response unavailable -->
+      <div style="width: 50%; position: relative">
+        <khoji-sprint-summary-card [carouselId]="sprintInsightCarousel?.carouselId"
+          [tableId]="sprintSummaryTable?.tableId" [meta]="response?.meta" [insights]="response?.insights"
+          [kpi]="response?.kpi" [staticSummaryData]="staticSummaryData"
+          [isLoading]="isSprintAnalyticsLoading"></khoji-sprint-summary-card>
+      </div>
+      <!-- Right side: Show when sprint-static-summary data loads -->
+      <div style="width: 50%; position: relative">
+        <div class="static-summary-with-spinner" style="position: relative">
+          <khoji-sprint-insight-carousel #sprintInsightCarousel [insights]="response?.insights" [showStaticCard]="true"
+            [statusChangesData]="statusChangesData"
+            [statusChangesLoading]="statusChangesLoadingState === LoadingState.Loading" [showTeamPulseCard]="true"
+            [teamPulseData]="teamPulseData" [teamPulseLoading]="teamPulseLoadingState === LoadingState.Loading"
+            [sprintId]="currentSprint?.code" [teamPulseLoading]="teamPulseLoadingState === LoadingState.Loading"
+            [showVelocityBurndownCard]="true" [velocityBurndownData]="velocityBurndownData"
+            [velocityBurndownLoading]="velocityBurndownLoadingState === LoadingState.Loading"
+            [tableId]="sprintSummaryTable?.tableId"></khoji-sprint-insight-carousel>
+        </div>
+      </div>
+    </div>
+    <!-- Bottom table: Always show, with loading state when response unavailable -->
+    <div style="position: relative">
+      <div *ngIf="showDataLoadedNotification" class="p-message p-message-success mb-3"
+        style="animation: fadeIn 0.3s ease-in">
+        <div class="p-message-wrapper flex p-3">
+          <i class="p-message-icon pi pi-check-circle"></i>
+          <div class="p-message-detail">Sync is complete - data updated</div>
+        </div>
+      </div>
+      <div class="table-container">
+        <div class="table-content" [class.blurred]="isSprintAnalyticsLoading">
+          <khoji-tabulator-table #sprintSummaryTable [options]="response?.table"
+            [tableNav]="'StandupBoard / SprintAnalytics / Table'"
+            [exportFileTitle]="'Team: ' + response?.meta?.teamName + ', Sprint: ' + response?.meta?.sprintName"
+            [exportFileName]="response?.meta?.teamName + '-' + response?.meta?.sprintName + '-' + exportTimeStamp"></khoji-tabulator-table>
+        </div>
+        <div *ngIf="isSprintAnalyticsLoading" class="table-loading-overlay">
+          <p-progressSpinner [strokeWidth]="4" [style]="{ width: '50px', height: '50px' }"></p-progressSpinner>
+          <div class="loading-text">Loading sprint data...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    *ngIf="(sprintList?.length && !sprintAnalyticsSynced && !((sprintAnalyticsLoadingState$ | async) === LoadingState.Loading)) || (sprintListSyncJobStatus === 'running' && !sprintAnalyticsSynced) || showGifLoadingScreen"
+    class="flex flex-1 align-self-center">
+    <div *ngIf="!currentSprint && sprintListSyncJobStatus !== 'running'"
+      class="flex-1 align-self-center p-8 rounded shadow-2">
+      <div><span class="font-bold text-primary">No active sprint selected</span> at the moment.</div>
+      <div>Select an active sprint for real time updates.</div>
+    </div>
+    <div
+      *ngIf="currentSprint && sprintListSyncJobStatus !== 'running' && activityIssuesSyncJobStatus !== 'running' && !sprintAnalyticsSynced"
+      class="flex-1 align-self-center p-8 rounded shadow-2">
+      <div>
+        <span class="font-bold text-primary">{{ currentSprint?.sprint_name }} is not synced</span> at the moment.
+      </div>
+      <div *ngIf="isAdminOrTenantAdmin">Please <a href="javascript:void(0)" class="jira-link font-semibold"
+          (click)="currentSprint && currentSprint.last_synced_at === null ? syncAndFetchSprintAnalytics(currentSprint) : syncAndFetchSprintList(true)">sync
+          data</a> for the selected sprint to see analytics.</div>
+      <div *ngIf="!isAdminOrTenantAdmin">Please contact your tenant admin to sync data for the selected sprint.</div>
+    </div>
+    <div
+      *ngIf="sprintListSyncJobStatus === 'running' || activityIssuesSyncJobStatus === 'running' || showGifLoadingScreen"
+      class="flex-1 align-self-center flex flex-column align-items-center justify-content-center"
+      style="width: 100%; max-width: 960px; margin: 0 auto">
+      <!-- Show GIF loading screen only for first sync of a never-synced sprint -->
+      <khoji-scrum-update-loading-screen *ngIf="showGifLoadingScreen" [width]="'100%'" [height]="'auto'"
+        [showImageCarousel]="true" [sprintId]="currentSprint?.sprint_id" [startApiCall]="triggerLoadingScreenApi"
+        [onLoadComplete]="handleLoadingScreenClose.bind(this)"></khoji-scrum-update-loading-screen>
+      <!-- Show simple loading spinner for first visit or already-synced sprints -->
+      <p-progressSpinner *ngIf="!showGifLoadingScreen" [strokeWidth]="4"></p-progressSpinner>
+      <div *ngIf="!showGifLoadingScreen" class="mt-4 text-lg font-semibold text-700">
+        Analyzing Jira to fetch sprints...
+      </div>
+    </div>
+  </div>
+  <p-dialog [(visible)]="displayJiraDataSync" [modal]="true" [style]="{ width: '600px', height: '300px' }"
+    [draggable]="false" [resizable]="false">
+    <ng-template pTemplate="header">
+      <div class="p-dialog-title">Manage Settings</div>
+    </ng-template>
+    <khoji-delete-app *ngIf="displayJiraDataSync" [hideDataStorage]="true" [hideDeleteApp]="true"
+      (configChange)="onConfigChange($event)"></khoji-delete-app>
+  </p-dialog>
+
+  <p-confirmDialog key="sprintSyncConfirmationDlg" #syncConfirmationDlg [style]="{ width: '500px' }">
+    <ng-template pTemplate="headless" let-message>
+      <div class="flex flex-column align-items-center p-5 surface-overlay border-round text-center">
+        <span class="font-bold text-2xl block mb-2">
+          {{ message.header }}
+        </span>
+        <p class="mb-0 confirm-message">{{ message.message }}</p>
+        <div class="w-30rem flex justify-content-around mt-4">
+          <button pButton label="Cancel" (click)="syncConfirmationDlg.reject()"
+            class="p-button-outlined w-8rem"></button>
+          <button pButton label="Proceed" (click)="syncConfirmationDlg.accept()" class="w-8rem"></button>
+        </div>
+      </div>
+    </ng-template>
+  </p-confirmDialog>
+
+</div>

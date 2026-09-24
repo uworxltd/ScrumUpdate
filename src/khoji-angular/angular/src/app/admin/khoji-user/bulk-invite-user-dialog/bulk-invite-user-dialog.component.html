@@ -1,0 +1,155 @@
+<ng-container *ngTemplateOutlet="modal ? modalTemplate : standaloneTemplate"></ng-container>
+
+<ng-template #modalTemplate>
+	<p-dialog
+		[(visible)]="showModal"
+		[style]="{ width: '40vw' }"
+		[modal]="true"
+		[draggable]="false"
+		[closeOnEscape]="true"
+		[resizable]="false"
+	>
+		<ng-template pTemplate="header">
+			<ng-container *ngTemplateOutlet="headerTemplate || defaultHeaderTemplate"></ng-container>
+		</ng-template>
+		<ng-template pTemplate="content">
+			<ng-container *ngTemplateOutlet="bodyTemplate || defaultBodyTemplate"></ng-container>
+		</ng-template>
+		<ng-template pTemplate="footer">
+			<ng-container *ngTemplateOutlet="footerTemplate || defaultFooterTemplate"></ng-container>
+		</ng-template>
+	</p-dialog>
+</ng-template>
+
+<ng-template #standaloneTemplate>
+	<div class="flex flex-column gap-4 w-full card">
+		<ng-container *ngTemplateOutlet="headerTemplate || defaultHeaderTemplate"></ng-container>
+		<ng-container *ngTemplateOutlet="bodyTemplate || defaultBodyTemplate"></ng-container>
+		<ng-container *ngTemplateOutlet="footerTemplate || defaultFooterTemplate"></ng-container>
+	</div>
+</ng-template>
+
+<ng-template #defaultHeaderTemplate>
+	<h4 class="khoji-headings-title m-0">{{ header }}</h4>
+</ng-template>
+
+<ng-template #defaultBodyTemplate>
+	<div
+		class="flex flex-column w-full"
+		*ngIf="usersLoaded; else loadingTemplate"
+	>
+		<!-- new users section -->
+		<div class="flex flex-column w-full mb-3">
+			<!-- limit and label -->
+			<div class="flex align-items-end justify-content-between">
+				<label for="jiraUsersAutoComplete">Users</label>
+				<span class="khoji-limit-chip mb-2"> Remaining limit: {{ limit }} </span>
+			</div>
+
+			<!-- auto complete users selection component -->
+			<p-autoComplete
+				[(ngModel)]="selectedUsers"
+				[suggestions]="filteredUsers"
+				(completeMethod)="searchUsers($event)"
+				[dropdown]="true"
+				[placeholder]="'Enter a name'"
+				[emptyMessage]="'No matching result found'"
+				[showEmptyMessage]="true"
+				styleClass="w-full"
+				appendTo="body"
+				name="jiraUsersAutoComplete"
+				[multiple]="true"
+				field="name"
+			>
+				<ng-template
+					let-user
+					pTemplate="selectedItem"
+				>
+					<div class="flex gap-3 align-items-center ml-2">
+						<img
+							[src]="user.avatarURL"
+							class="w-2rem h-2rem border-circle"
+							alt="profile image"
+						/>
+						<span>{{ user.name }}</span>
+					</div>
+				</ng-template>
+				<ng-template
+					let-user
+					pTemplate="item"
+				>
+					<div class="flex gap-3 align-items-center ml-2">
+						<img
+							[src]="user.avatarURL"
+							class="w-2rem h-2rem border-circle"
+							alt="profile image"
+						/>
+						<span>{{ user.name }}</span>
+					</div>
+				</ng-template>
+			</p-autoComplete>
+			<small
+				class="p-error mt-1"
+				*ngIf="limitReached"
+			>
+				Reduce the number of users to no more than {{ remainingLimit }}.
+			</small>
+		</div>
+
+		<!-- role dropdown -->
+		<div class="flex flex-column">
+			<label for="roles">Role</label>
+			<khoji-single-select-dropdown
+				[filter]="true"
+				appendTo="body"
+				(emitValueOnSelection)="selectedRoleCode = $event"
+        (selectedValue)="selectedRoleCode = $event"
+				[selectedItem]="defaultKhojiRole?.code"
+				[dropdownValues]="roles"
+				[placeholder]="'Please select a role'"
+			>
+			</khoji-single-select-dropdown>
+		</div>
+	</div>
+</ng-template>
+
+<ng-template #defaultFooterTemplate>
+	<div class="flex align-items-center flex-row-reverse">
+		<p-button
+			label="Add users"
+			[ngClass]="{ 'p-disabled': limitReached ||  selectedUsers.length === 0}"
+			(click)="addSelectedUsers()"
+		>
+		</p-button>
+	</div>
+</ng-template>
+
+<ng-template #loadingTemplate>
+	<div class="flex flex-column w-full">
+		<div class="flex flex-column w-full mb-3">
+			<!-- limit and label -->
+			<div class="flex align-items-center justify-content-between mb-1">
+				<label for="jiraUsersAutoComplete">Users</label>
+				<p-skeleton
+					width="140px"
+					height="25px"
+				></p-skeleton>
+			</div>
+
+			<!-- auto complete skeleton -->
+			<p-skeleton
+				width="100%"
+				height="41px"
+			></p-skeleton>
+		</div>
+
+		<!-- role skeleton -->
+		<div class="flex flex-column">
+			<label for="roles">Role</label>
+			<p-skeleton
+				width="100%"
+				height="41px"
+			></p-skeleton>
+		</div>
+	</div>
+</ng-template>

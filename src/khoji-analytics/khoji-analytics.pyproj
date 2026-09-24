@@ -1,0 +1,151 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{1874b068-3fca-45f5-b374-dd7cc0d6da83}</ProjectGuid>
+    <ProjectHome />
+    <StartupFile />
+    <SearchPath />
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <ProjectTypeGuids>{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
+    <LaunchProvider>Standard Python launcher</LaunchProvider>
+    <InterpreterId />
+    <TestFramework>pytest</TestFramework>
+    <UnitTestPattern>test*.py</UnitTestPattern>
+    <UnitTestRootDirectory>.</UnitTestRootDirectory>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
+  <PropertyGroup>
+    <VisualStudioVersion Condition=" '$(VisualStudioVersion)' == '' ">10.0</VisualStudioVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="backend\app\config\services.yaml" />
+    <Content Include="backend\app\metrics\shared\backward_transitions.yaml" />
+    <Content Include="backend\app\metrics\shared\blocked_issues.yaml" />
+    <Content Include="backend\app\metrics\shared\blockers_list.yaml" />
+    <Content Include="backend\app\metrics\shared\effort_without_movement.yaml" />
+    <Content Include="backend\app\metrics\shared\scope_creep.yaml" />
+    <Content Include="backend\app\metrics\shared\sprint_initial_scope.yaml" />
+    <Content Include="backend\app\metrics\shared\sprint_story_points.yaml" />
+    <Content Include="backend\app\metrics\shared\sprint_title.yaml" />
+    <Content Include="backend\app\metrics\shared\sprint_velocity.yaml" />
+    <Content Include="backend\app\metrics\shared\stagnant_tasks.yaml" />
+    <Content Include="backend\app\metrics\shared\stale_tickets_list.yaml" />
+    <Content Include="backend\app\metrics\shared\status_categories_tickets.yaml" />
+    <Content Include="backend\app\metrics\shared\status_categories_tickets_yesterday.yaml" />
+    <Content Include="backend\app\metrics\shared\status_counts_now.yaml" />
+    <Content Include="backend\app\metrics\shared\status_flow_analysis.yaml" />
+    <Content Include="backend\app\metrics\shared\status_snapshot_yesterday.yaml" />
+    <Content Include="backend\app\metrics\shared\testing_bottleneck_transitions.yaml" />
+    <Content Include="backend\app\metrics\shared\ticket_hygiene.yaml" />
+    <Content Include="backend\app\metrics\shared\unassigned_issues.yaml" />
+    <Content Include="backend\app\metrics\shared\unclear_ownership.yaml" />
+    <Content Include="backend\app\metrics\shared\workload_imbalance.yaml" />
+    <Content Include="backend\app\metrics\sprint_epic_fetch.yaml" />
+    <Content Include="backend\app\metrics\sprint_epic_insights.yaml" />
+    <Content Include="backend\app\metrics\sprint_epic_ticket_insights.yaml" />
+    <Content Include="backend\app\metrics\sprint_insight\sprint_and_team_insight_db.yaml" />
+    <Content Include="backend\app\metrics\sprint_insight.yaml" />
+    <Content Include="backend\app\metrics\sprint_insight\ai_cards.yaml" />
+    <Content Include="backend\app\metrics\sprint_insight\db_tabulator_table.yaml" />
+    <Content Include="backend\app\metrics\sprint_signals_human.yaml" />
+    <Content Include="backend\app\metrics\sprint_signals_jira.yaml" />
+    <Content Include="backend\app\metrics\sprint_static_summary.yaml" />
+    <Content Include="backend\app\metrics\sprint_status_changes.yaml" />
+    <Content Include="backend\app\metrics\sprint_team_pulse.yaml" />
+    <Content Include="backend\app\metrics\sprint_velocity_burndown.yaml" />
+    <Content Include="backend\Dockerfile" />
+    <Content Include="backend\requirements.txt" />
+    <Content Include="business-intelligence\README.md" />
+    <Content Include="business-intelligence\schema\backup-work-in-progress\1. issue_360_view.sql" />
+    <Content Include="business-intelligence\schema\backup-work-in-progress\10. issue_cycle_time.sql" />
+    <Content Include="business-intelligence\schema\backup-work-in-progress\11. issue_assignee_spans.sql" />
+    <Content Include="business-intelligence\schema\backup-work-in-progress\12. one_stop_view_person_insight_per_sprint.sql" />
+    <Content Include="business-intelligence\schema\backup-work-in-progress\13. func_ai_sprint_insight.sql" />
+    <Content Include="business-intelligence\schema\backup-work-in-progress\14. func_ai_user_brief.sql" />
+    <Content Include="business-intelligence\schema\backup-work-in-progress\15. func_ai_issue_brief.sql" />
+    <Content Include="business-intelligence\schema\backup-work-in-progress\2. issues_done_at.sql" />
+    <Content Include="business-intelligence\schema\backup-work-in-progress\3. sprint_scope_events.sql" />
+    <Content Include="business-intelligence\schema\backup-work-in-progress\4. membership_period_issues_sprints.sql" />
+    <Content Include="business-intelligence\schema\backup-work-in-progress\5. sprint_calendar.sql" />
+    <Content Include="business-intelligence\schema\backup-work-in-progress\6. sprint_burndown.sql" />
+    <Content Include="business-intelligence\schema\backup-work-in-progress\7. sprint_summary.sql" />
+    <Content Include="business-intelligence\schema\backup-work-in-progress\8. load_per_person.sql" />
+    <Content Include="business-intelligence\schema\backup-work-in-progress\9. issue_status_span.sql" />
+    <Content Include="business-intelligence\schema\backup-work-in-progress\useful-sql-queries.sql" />
+    <Content Include="business-intelligence\schema\current\comments.sql" />
+    <Content Include="business-intelligence\schema\current\views_and_functions.sql" />
+    <Content Include="business-intelligence\tools\docs\INDEX.md" />
+    <Content Include="business-intelligence\tools\docs\tenant_1001.boards.md" />
+    <Content Include="business-intelligence\tools\docs\tenant_1001.changelogs.md" />
+    <Content Include="business-intelligence\tools\docs\tenant_1001.comments.md" />
+    <Content Include="business-intelligence\tools\docs\tenant_1001.issues.md" />
+    <Content Include="business-intelligence\tools\docs\tenant_1001.issue_links.md" />
+    <Content Include="business-intelligence\tools\docs\tenant_1001.issue_relationships.md" />
+    <Content Include="business-intelligence\tools\docs\tenant_1001.mv_sprint_burndown_daily.md" />
+    <Content Include="business-intelligence\tools\docs\tenant_1001.sprints.md" />
+    <Content Include="business-intelligence\tools\docs\tenant_1001.sprint_issues.md" />
+    <Content Include="business-intelligence\tools\docs\tenant_1001.sync_jobs.md" />
+    <Content Include="business-intelligence\tools\docs\tenant_1001.v_issue_assignee_spans.md" />
+    <Content Include="business-intelligence\tools\docs\tenant_1001.v_issue_blockers.md" />
+    <Content Include="business-intelligence\tools\docs\tenant_1001.v_issue_children.md" />
+    <Content Include="business-intelligence\tools\docs\tenant_1001.v_issue_contributors.md" />
+    <Content Include="business-intelligence\tools\docs\tenant_1001.v_issue_done_at.md" />
+    <Content Include="business-intelligence\tools\docs\tenant_1001.v_issue_hygiene_flags.md" />
+    <Content Include="business-intelligence\tools\docs\tenant_1001.v_issue_sprint_membership.md" />
+    <Content Include="business-intelligence\tools\docs\tenant_1001.v_issue_sprint_membership_final.md" />
+    <Content Include="business-intelligence\tools\docs\tenant_1001.v_issue_status_spans.md" />
+    <Content Include="business-intelligence\tools\docs\tenant_1001.v_issue_status_transitions.md" />
+    <Content Include="business-intelligence\tools\docs\tenant_1001.v_person_status_pair_stats.md" />
+    <Content Include="business-intelligence\tools\docs\tenant_1001.v_person_work_profile.md" />
+    <Content Include="business-intelligence\tools\docs\tenant_1001.v_sprint_blockers_open.md" />
+    <Content Include="business-intelligence\tools\docs\tenant_1001.v_sprint_issue_set.md" />
+    <Content Include="business-intelligence\tools\docs\tenant_1001.v_sprint_people_rollup.md" />
+    <Content Include="business-intelligence\tools\docs\tenant_1001.v_sprint_scope_events.md" />
+    <Content Include="business-intelligence\tools\docs\tenant_1001.worklogs.md" />
+    <Content Include="business-intelligence\tools\export_db_wiki.bat" />
+    <Content Include="business-intelligence\tools\export_db_wiki.ps1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="backend\app\core\cache.py" />
+    <Compile Include="backend\app\core\engine.py" />
+    <Compile Include="backend\app\core\errors.py" />
+    <Compile Include="backend\app\core\service_registry.py" />
+    <Compile Include="backend\app\core\__init__.py" />
+    <Compile Include="backend\app\helpers\json_helpers.py" />
+    <Compile Include="backend\app\helpers\__init__.py" />
+    <Compile Include="backend\app\main.py" />
+    <Compile Include="backend\app\processors\sprint_insight.py" />
+    <Compile Include="backend\app\processors\llm.py" />
+    <Compile Include="backend\app\processors\sprint_cards.py" />
+    <Compile Include="backend\app\processors\__init__.py" />
+    <Compile Include="backend\app\transformers\transform.py" />
+    <Compile Include="backend\app\__init__.py" />
+    <Compile Include="backend\tests\conftest.py" />
+    <Compile Include="backend\tests\test_sprint_cards.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="backend" />
+    <Folder Include="backend\app" />
+    <Folder Include="backend\app\config\" />
+    <Folder Include="backend\app\core" />
+    <Folder Include="backend\app\metrics\" />
+    <Folder Include="backend\app\metrics\sprint_insight\" />
+    <Folder Include="backend\app\metrics\shared\" />
+    <Folder Include="backend\app\helpers\" />
+    <Folder Include="backend\app\processors" />
+    <Folder Include="backend\app\testdata\" />
+    <Folder Include="backend\app\transformers" />
+    <Folder Include="backend\tests\" />
+    <Folder Include="business-intelligence\" />
+    <Folder Include="business-intelligence\schema\" />
+    <Folder Include="business-intelligence\schema\backup-work-in-progress\" />
+    <Folder Include="business-intelligence\schema\current\" />
+    <Folder Include="business-intelligence\tools\" />
+    <Folder Include="business-intelligence\tools\docs\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
+</Project>

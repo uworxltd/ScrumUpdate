@@ -1,0 +1,256 @@
+.c-btn {
+  background: #fff;
+  border: 1px solid #ccc;
+  color: #333;
+}
+
+.selected-list .c-btn {
+  min-height: 34px;
+  font-size: 13px;
+}
+
+.selected-list .c-list .c-token {
+  overflow: hidden;
+  background: #337ab7;
+}
+
+.selected-list .c-list .c-token .c-label {
+  color: #fff;
+}
+
+.epic-dropdown .selected-list .c-list .c-token .c-label {
+  max-width: 60px; //this property is resposible to adjust the value with three dots in multiselect dropdown. It will auto adjust
+}
+
+.release-report-dropdown .selected-list .c-list .c-token .c-label {
+  max-width: 60px; //this property is resposible to adjust the value with three dots in multiselect dropdown. It will auto adjust
+}
+
+.teamboard-release-report-dropdown .selected-list .c-list .c-token .c-label {
+  max-width: 90px; //this property is resposible to adjust the value with three dots in multiselect dropdown. It will auto adjust
+}
+
+.selected-list .c-list .c-token .c-label {
+  max-width: 100px; //this property is resposible to adjust the value with three dots in multiselect dropdown. It will auto adjust
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.selected-list .c-list .c-token .c-remove svg {
+  fill: #fff;
+}
+
+.selected-list .c-angle-down svg,
+.selected-list .c-angle-up svg {
+  fill: #333;
+}
+
+.dropdown-list ul li {
+  padding: 2px 10px !important;
+  margin: 5px 0px !important;
+  color: black;
+  font-size: 14px;
+}
+
+.dropdown-list ul li:hover {
+  background: #f5f5f5;
+}
+
+.dropdown-list ul li label {
+  font-weight: normal !important;
+}
+
+.dropdown-list ul li:first-child {
+  padding-top: 10px !important;
+}
+
+.c-btn {
+  line-height: 1 !important;
+  padding: 9px 10px !important;
+}
+
+.selected-list .c-list .c-token .c-remove svg {
+  fill: #ccc !important;
+}
+
+.c-angle-down c-icon {
+  visibility: hidden !important;
+}
+
+.c-angle-up c-icon {
+  visibility: hidden !important;
+}
+
+.c-angle-up,
+.c-angle-down {
+  right: 2px !important;
+  display: inline-block;
+  font: normal normal normal 14px/1 FontAwesome;
+  font-size: inherit;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+}
+
+.c-angle-up:before,
+.c-angle-down:before {
+  content: "\f0d7" !important;
+}
+
+.arrow-up,
+.arrow-down {
+  border-bottom: 15px solid #fff;
+}
+
+.arrow-2 {
+  border-bottom: 15px solid #ccc;
+}
+
+.c-angle-down c-icon {
+  visibility: hidden !important;
+}
+
+.list-area {
+  border: 1px solid #ccc;
+  background: #fff;
+  box-shadow: 0px 1px 5px #959595;
+}
+
+.select-all {
+  border-bottom: 1px solid #ccc;
+}
+
+.list-filter {
+  border-bottom: 1px solid #ccc;
+}
+
+.list-filter .c-search svg {
+  fill: #888;
+}
+
+.list-filter .c-clear svg {
+  fill: #888;
+}
+
+.pure-checkbox input[type="checkbox"]:focus + label:before,
+.pure-checkbox input[type="checkbox"]:hover + label:before {
+  border-color: #337ab7;
+  background-color: #f2f2f2;
+}
+
+  .pure-checkbox input[type="checkbox"] + label {
+  color: #000;
+}
+
+.pure-checkbox input[type="checkbox"] + label:before {
+  color: #337ab7;
+  border: 2px solid #337ab7;
+}
+
+.pure-checkbox input[type="checkbox"] + label:after {
+  background-color: #337ab7 !important;
+}
+
+.pure-checkbox input[type="checkbox"]:disabled + label:before {
+  border-color: #cccccc;
+}
+
+.pure-checkbox input[type="checkbox"]:disabled:checked + label:before {
+  background-color: #cccccc;
+}
+
+.pure-checkbox input[type="checkbox"] + label:after {
+  border-color: #ffffff;
+}
+
+.pure-checkbox input[type="radio"]:checked + label:before {
+  background-color: white;
+}
+
+.pure-checkbox input[type="checkbox"]:checked + label:before {
+  background: #337ab7 !important;
+}
+
+.single-select-mode .pure-checkbox input[type="checkbox"]:focus + label:before,
+.single-select-mode .pure-checkbox input[type="checkbox"]:hover + label:before {
+  border-color: #337ab7;
+  background-color: #f2f2f2;
+}
+
+.single-select-mode .pure-checkbox input[type="checkbox"] + label {
+  color: #000;
+}
+
+.single-select-mode .pure-checkbox input[type="checkbox"] + label:before {
+  color: transparent !important;
+  border: 0px solid #337ab7;
+}
+
+.single-select-mode .pure-checkbox input[type="checkbox"] + label:after {
+  background-color: transparent !important;
+}
+
+.single-select-mode .pure-checkbox input[type="checkbox"]:disabled + label:before {
+  border-color: #cccccc;
+}
+
+.single-select-mode .pure-checkbox input[type="checkbox"]:disabled:checked + label:before {
+  background-color: #cccccc;
+}
+
+.single-select-mode .pure-checkbox input[type="checkbox"] + label:after {
+  border-color: #337ab7;
+}
+
+.single-select-mode .pure-checkbox input[type="radio"]:checked + label:before {
+  background-color: white;
+}
+
+.single-select-mode .pure-checkbox input[type="checkbox"]:checked + label:before {
+  background: none !important;
+}
+
+.selected-item {
+  background: #e9f4ff;
+}
+
+.btn-iceblue {
+  background: #337ab7;
+  border: 1px solid #ccc;
+  color: #fff;
+}
+
+.hover-arrow-keys {
+  background: #d8d8d8;
+}
+
+.future-sprint {
+  color: #000000;
+  font-style: italic;
+}
+
+.closed-sprint {
+  color: grey;
+  font-style: italic;
+}
+// only increase width of list area in case of epic drop down as `epic-dropdown` is parent class
+.list-area {
+  width: 100%;
+  .epic-dropdown & {
+    width: 200%;
+  }
+}
+
+.truncate-long-epic {
+  white-space: pre;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// this is default class of dropdown and its default value is `99999`
+// we are showing tooltip on each item in dropdown list
+// default precedence of dropdown is higher than tooltip so tooltip was hiding behind the list.
+// ! Do not ! use this class for anyother change. Please create a new class node.
+.dropdown-list {
+  z-index: 2 !important;
+}

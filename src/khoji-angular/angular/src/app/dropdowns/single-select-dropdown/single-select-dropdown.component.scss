@@ -1,0 +1,53 @@
+  // Resolving primeng style clashes
+  :host ::ng-deep {
+    .p-dropdown {
+      background: #ffffff !important;
+      border: 1px solid #cbd5e1;
+
+      .p-dropdown .p-dropdown-label {
+        background: transparent;
+        border: 0 none !important;
+      }
+    }
+
+    .clear {
+      .p-dropdown {
+
+        min-width: 17rem;
+        width: max-content;
+
+      }
+    }
+
+    .p-dropdown-panel .p-dropdown-items .p-dropdown-item.p-highlight {
+      color: #124E60 !important;
+      background: #EAF0F2 !important;
+    }
+
+    .p-dropdown .p-dropdown-label.p-placeholder {
+      color: #64748b !important;
+    }
+
+    .p-disabled, .p-disabled * {
+        background-color: var(--gray-100) !important;
+    }
+
+    .p-component {
+      width: 100%;
+      font-family: "Poppins", sans-serif;
+      font-size: 1rem;
+    }
+
+    .p-inputtext {
+      font-family: "Poppins", sans-serif !important;
+      font-size: 1rem !important;
+      color: #1e293b !important;
+      padding-bottom: 0.75rem !important;
+      font-weight: normal !important;
+    }
+
+    .p-dropdown-trigger {
+      display: flex !important;
+      margin-top: 0 !important;
+    }
+  }

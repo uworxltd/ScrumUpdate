@@ -1,0 +1,220 @@
+<div
+  class="card zoom-9"
+  *ngIf="worklogTeamsSelected$ | async as worklogTeamsSelected"
+>
+  <ng-container [ngTemplateOutlet]="worklogTeamsSelected.length > 1 ? teamWorklogTable : memberWorklogTable"></ng-container>
+</div>
+
+<ng-template #memberWorklogTable>
+  <p-table
+    [paginator]="true"
+    [rows]="10"
+    [rowsPerPageOptions]="[10, 25, 50, 100]"
+    [value]="memberWorklogs$ | async"
+    @fadeInOut
+  >
+    <ng-template pTemplate="caption">
+      <div class="flex justify-content-between align-items-center">
+        <div class="khoji-headings-title">{{ (translation$ | async).timelog.worklogSummary.title }}</div>
+        <button
+          pButton
+          label="{{ (translation$ | async).timelog.worklogSummary.export }}"
+          icon="pi pi-upload"
+          class="export-button p-button-outlined"
+          [title]="'export as CSV'"
+          [disabled]="!(memberWorklogs$ | async)?.length"
+          (click)="exportMemberWorklogCsv()"
+        ></button>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+      <ng-container *ngTemplateOutlet="(categorizationEnabled$ | async) ? normalHeader : unlockHeader"></ng-container>
+      <ng-template #normalHeader>
+        <tr>
+          <th>{{ colsMemberWorklog[0] }}</th>
+          <th>{{ colsMemberWorklog[1] }}</th>
+          <th style="text-wrap: nowrap;">{{ colsMemberWorklog[2] }}</th>
+          <th>{{ (generalSettings$ | async).productiveAlias }}</th>
+          <th>{{ (generalSettings$ | async).nonProductiveAlias }}</th>
+        </tr>
+      </ng-template>
+      <ng-template #unlockHeader>
+        <tr>
+          <th rowspan="2">{{ colsMemberWorklog[0] }}</th>
+          <th rowspan="2">{{ colsMemberWorklog[1] }}</th>
+          <th style="text-wrap: nowrap;" rowspan="2">{{ colsMemberWorklog[2] }}</th>
+          <ng-container *ngIf="(categorizationEnabled$ | async) || !removeCategorizationUnlock">
+            <th colspan="2">
+              <div class="flex w-full align-items-center justify-content-center">
+                <button
+                  pButton
+                  label="Unlock effort tracking now"
+                  icon="pi pi-unlock"
+                  data-test="unlock-effort-tracking"
+                  style="background-color: #d1e0e5;"
+                  class="unlock-button"
+                  title="Unlock effort tracking now"
+                  [disabled]="unlockButtonClicked"
+                  (click)="unlockWorkLogCategorizationFeature()"
+                ></button>
+              </div>
+            </th>
+          </ng-container>
+        </tr>
+        <ng-container *ngIf="(categorizationEnabled$ | async) || !removeCategorizationUnlock">
+          <tr>
+            <th style="filter: blur(1px);">{{ (generalSettings$ | async).productiveAlias }}</th>
+            <th style="filter: blur(1px);">{{ (generalSettings$ | async).nonProductiveAlias }}</th>
+          </tr>
+        </ng-container>
+      </ng-template>
+    </ng-template>
+    <ng-template
+      pTemplate="body"
+      let-rowData
+    >
+      <tr>
+        <td>{{ rowData.memberName }}</td>
+        <td>{{ rowData.roleName }}</td>
+        <td>
+          <div class="flex">
+            <div
+              [ngStyle]="{ 'background-color': rowData.thresholdColor }"
+              class="rag-box"
+            ></div>
+            {{ rowData.percentage | number : '1.2-2' }}%
+          </div>
+        </td>
+        <ng-container *ngIf="(categorizationEnabled$ | async) || !removeCategorizationUnlock">
+          <ng-container *ngIf="categorizationEnabled$ | async">
+            <td>{{ rowData.mainPercentage | number : '1.2-2' }}%</td>
+            <td>{{ rowData.othersPercentage | number : '1.2-2' }}%</td>
+          </ng-container>
+          <ng-container *ngIf="!(categorizationEnabled$ | async)">
+            <td style="filter: blur(2px);">0%</td>
+            <td style="filter: blur(2px);">100%</td>
+          </ng-container>
+        </ng-container>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td
+          class="no-data"
+          style="text-align: center"
+          [attr.colspan]="5"
+        >
+          {{ (translation$ | async).error.noDataAvailable }}
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</ng-template>
+
+<ng-template #teamWorklogTable>
+  <p-table
+    [paginator]="true"
+    [rows]="10"
+    [rowsPerPageOptions]="[10, 25, 50, 100]"
+    [value]="teamWorklogs$ | async"
+    @fadeInOut
+
+  >
+    <ng-template pTemplate="caption">
+      <div class="flex justify-content-between align-items-center">
+        <div class="khoji-headings-title">{{ (translation$ | async).timelog.worklogSummary.title }}</div>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+      <tr>
+        <th [width]="350">{{ colsTeamWorklog[0] }}</th>
+        <th style="text-wrap: nowrap;">{{ colsTeamWorklog[1] }}</th>
+        <th>{{ colsTeamWorklog[2] }}</th>
+        <th>{{ colsTeamWorklog[3] }}</th>
+        <ng-container *ngIf="categorizationEnabled$ | async">
+          <th>{{ (generalSettings$ | async).productiveAlias }}</th>
+          <th>{{ (generalSettings$ | async).nonProductiveAlias }}</th>
+        </ng-container>
+        <th></th>
+      </tr>
+    </ng-template>
+    <ng-template
+      pTemplate="body"
+      let-rowData
+    >
+      <tr>
+        <td>
+          <div class="flex justify-content-between">
+            <div class="flex align-items-center">
+              <div
+                class="max-w-9rem white-space-nowrap overflow-hidden text-overflow-ellipsis"
+                [title]="rowData.teamName"
+              >
+                {{ rowData.teamName }}
+              </div>
+              <div class="flex align-items-center color-grey-text ml-2">
+                <i class="pi pi-users mr-1"></i>
+                <span style="margin-top: 2px">{{ rowData.memberWorklogs.length }}</span>
+              </div>
+            </div>
+            <div
+              class="flex align-items-center khoji-color-secondary cursor-pointer"
+              *ngIf="teamReminderMap.get(rowData.teamName)"
+              (click)="openWorklogReminderModalForTheTeam(rowData.teamName)"
+            >
+              <i class="fa fa-bell mr-2"></i>
+              <span style="margin-top: 1px">{{ (translation$ | async).timelog.worklogSummary.sendReminder }}</span>
+            </div>
+          </div>
+        </td>
+        <td>
+          <div class="flex">
+            <div
+              [ngStyle]="{ 'background-color': rowData.thresholdColor }"
+              class="rag-box"
+            ></div>
+            {{ rowData.percentage | number : '1.2-2' }}%
+          </div>
+        </td>
+        <td>{{ rowData.totalAvailableDays | number : '1.2-2' }}</td>
+        <td>{{ rowData.totalWorkLogInDays | number : '1.2-2' }}</td>
+        <ng-container *ngIf="categorizationEnabled$ | async">
+          <td>{{ rowData.totalMainPercents | number : '1.2-2' }}%</td>
+          <td>{{ rowData.totalOthersPercents | number : '1.2-2' }}%</td>
+        </ng-container>
+        <td>
+          <div
+            class="flex justify-content-end align-items-center khoji-color-secondary cursor-pointer"
+            (click)="navigateToTeamWorklogDetails(rowData.teamName)"
+          >
+            {{ (translation$ | async).timelog.worklogSummary.viewDetails }}
+            <i
+              class="pi pi-angle-right ml-2"
+              style="font-size: 1.2rem"
+            ></i>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td
+          class="no-data"
+          style="text-align: center"
+          [attr.colspan]="(categorizationEnabled$ | async) ? 7 : 5"
+        >
+          {{ (translation$ | async).error.noDataAvailable }}
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</ng-template>
+
+
+<khoji-worklog-reminder
+  *ngIf="showRemindTeamModal"
+  [(showRemindTeamModal)]="showRemindTeamModal"
+  [teamNameForReminder]="teamNameForReminder"
+  (modalClosed)="onModalClosed()"
+  [supervisorId]="supervisorId"
+></khoji-worklog-reminder>

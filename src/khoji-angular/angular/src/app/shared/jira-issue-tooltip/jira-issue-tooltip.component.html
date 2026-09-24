@@ -1,0 +1,21 @@
+<span
+    (mouseenter)="fetchTicketDetail($event, ticketId, blockedByTicketId)"
+    (mouseleave)="this.overlayPanel.hide()">
+    <ng-content></ng-content>
+</span>
+<p-overlayPanel #overlayPanel styleClass="issue-tooltip-container">
+    <div class="issue-tooltip p-3 w-25rem">
+        <div *ngIf="loading" class="center-align">
+            <p-progressSpinner styleClass="w-2rem h-2rem" />
+        </div>
+        <div *ngIf="!loading">
+            {{ticketId}}: {{ data?.summary }}<br>
+            <span class="assignee">Assignee: {{data?.assignee}} </span>
+            <span *ngIf="blockedByTicketId">
+                <b>is blocked by</b> <br> 
+                {{blockedByTicketId}}: {{dataBlockedBy?.summary}}<br>
+                <span class="assignee">Assignee: {{dataBlockedBy?.assignee}}</span>
+            </span>
+        </div>
+    </div>
+</p-overlayPanel>

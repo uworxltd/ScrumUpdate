@@ -1,0 +1,28 @@
+name: sprint_insight_db_tabulator_table
+version: 1.0
+
+# http://localhost:9000/metrics/sprint_insight_db_tabulator_table?sprint_id=300
+
+inputs:
+  jira_browse_base: {type: string, default: 'https://company-name.atlassian.net/browse/' }
+  sprint_id: {type: int, default: 300}
+
+steps:
+  - id: sprint_insight_table
+    type: sql
+    service: main-db
+    query: |
+      SELECT fn_issue_insights_grid(null,$1::int, 10) AS sprint_insight_table
+    params:
+      - "{{ inputs.sprint_id }}"
+    output: {name: sprint_insight_table}
+
+  - id: to_tabulator
+    type: function
+    function: app.transformers.transform.transform_issues_to_tabulator_from_json
+    inputs:
+      jira_browse_base: "{{ inputs.jira_browse_base }}"
+      issues_json: "{{ steps.sprint_insight_table.outputs.sprint_insight_table }}"
+    output: {name: tabulator_json}
+
+return: "to_tabulator.tabulator_json"

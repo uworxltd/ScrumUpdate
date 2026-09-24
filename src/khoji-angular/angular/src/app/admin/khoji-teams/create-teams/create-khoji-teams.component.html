@@ -1,0 +1,418 @@
+<!-- /*
+Copyright 2026 UWorx Services.
+Licensed under the Apache License, Version 2.0.
+See LICENSE for the full license text.
+*/ -->
+
+
+<ng-container
+	#outlet
+	[ngTemplateOutlet]="content"
+>
+</ng-container>
+	
+<ng-template #content>
+	<div
+    class="container-khoji h-full"
+    style="padding: 0 !important;"
+	  [ngClass]="{ 'p-0': quickSetup }"
+  >
+
+		<button
+			type="button"
+			pButton
+			icon="pi pi-angle-left"
+			class="p-button-text border-0 p-0 my-3"
+			(click)="cancelButtonClick()"
+			label="back to teams"
+		></button>
+		
+		<div class="modal-header h-full">
+			<div
+				class="modal-title"
+				data-test="modal-title"
+			>
+				<b class="d-flex">
+					<h4
+						*ngIf="!quickSetup"
+						class="khoji-headings-title mt-3 mr-3"
+						[textContent]="updateTeamData ? translation?.adminPanel.dashboard.createTeams.editTeamsModal.modalHeading + updateTeamData.teamName : translation?.adminPanel.dashboard.createTeams.createTeamsModal.modalHeading"
+					></h4>
+					<p-messages
+						*ngIf="teamModel.users.length >= membersInTeamLimit"
+						[(value)]="messages"
+						[enableService]="false"
+						[closable]="false"
+					>
+					</p-messages>
+				</b>
+			</div>
+
+			<div class="modal-body relative h-full">
+				<form class="h-full">
+					<div class="form-row">
+						<!--Name and supervisor row-->
+						<div class="form-group col-md-12 mb-0 margin-bottom-10px">
+							<!--Name column-->
+							<div
+								*ngIf="!quickSetup"
+								class="form-group col-md-12"
+							>
+								<label
+									for="teamName"
+									class="dd-label"
+								>
+									{{ translation?.adminPanel.dashboard.createTeams.createTeamsModal.labels.teamName }}
+									<span>
+										<khoji-tooltip-icon
+											[tooltipText]="translation?.adminPanel.dashboard.createTeams.createTeamsModal.labels.teamNameToolTip"
+											[inheritColor]="true"
+											toolTipPosition="right"
+										>
+										</khoji-tooltip-icon>
+									</span>
+								</label>
+								<input
+									type="text"
+									class="form-control w-full"
+									pInputText
+									id="name"
+									name="teamName"
+									maxlength="{{ constants.TEAMNAME_MAX_LENGTH + 1 }}"
+									[formControl]="createTeamForm.controls['name']"
+									[(ngModel)]="teamModel.teamName"
+									data-test="team-Name-text"
+								/>
+								<small
+									class="p-error"
+									*ngIf="teamNameError()"
+									>{{ teamNameError() }}</small
+								>
+							</div>
+							<!--Supervisor dropdown-->
+							<div
+								*ngIf="!quickSetup"
+								class="form-group col-md-12"
+							>
+								<khoji-multiselect
+									class="margin-bottom-10px"
+									(selectionChange)="selectSupervisors($event.selected)"
+									[items]="supervisorDropdownItems"
+									label="{{ translation?.adminPanel.dashboard.createTeams.createTeamsModal.labels.supervisor }}"
+									[text]="translation?.adminPanel.createNewTeam.selectSupervisor"
+									[noDataLabel]="translation?.adminPanel.createNewTeam.noSupervisorsAvailable"
+									[fixedWidth]="false"
+									[fullWidthDropdown]="true"
+									data-test="supervisor-text"
+								>
+								</khoji-multiselect>
+							</div>
+						</div>
+
+						<!--Member label, limit message, limit count-->
+						<div class="form-group col-md-12 d-flex mb-0">
+							<div class="form-group col-md-12 mb-0">
+								<div
+									class="flex align-items-center mb-1 justify-content-between"
+									[ngClass]="{ 'h-2rem mb-2': teamModel.users.length >= membersInTeamLimit }"
+								>
+									<div class="flex align-items-center gap-3 d-flex">
+										<label>{{ translation?.adminPanel.dashboard.createTeams.createTeamsModal.labels.member }}</label>
+										<!-- <span>{{ tableData.length }}/{{ membersInTeamLimit }}</span> -->
+									</div>
+									<div class="d-flex">
+										<div class="flex align-items-center">
+											<p class="m-0">Can't find the user you are looking for?</p>
+											<div
+												[pTooltip]="limitReachedTooltipText || (accessLevelsStatus?.hasTenantAdminAccess ? '' : translation?.error.adminAccessRequired)"
+												tooltipPosition="top"
+											>
+												<button
+													pButton
+													type="button"
+													class="p-button-text p-1 m-2 mr-3"
+													label="Add from Jira"
+													[ngClass]="{ 'p-disabled': jiraUserLimitReached || !(accessLevelsStatus?.hasTenantAdminAccess) }"
+													(click)="handleAddFromJira()"
+												></button>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!--Users dropdown and cant find user message-->
+						<div class="form-group col-md-12 d-flex">
+							<div class="form-group col-md-12">
+								<khoji-multiselect
+									(selectionChange)="selectMembers($event.selected)"
+									[items]="memberDropdownItems"
+									[text]="translation?.adminPanel.createNewTeam.selectMembers"
+									[noDataLabel]="translation?.adminPanel.createNewTeam.noMembersAvailable"
+									[fixedWidth]="false"
+									[fullWidthDropdown]="true"
+									limitReachedTooltip="Maximum team member limit reached."
+									data-test="members-dropdown"
+								>
+								</khoji-multiselect>
+							</div>
+						</div>
+
+
+						<div class="form-group col-md-12 d-flex">
+							<div class="form-group col-md-12">
+						<div>
+							<h6 class="members-heading">
+								{{ translation?.adminPanel.dashboard.createTeams.createTeamsModal.labels.members }}
+							</h6>
+							<p-toolbar>
+								<div class="w-full flex justify-content-end">
+									<div class="p-toolbar-group-right">
+										<div>
+											<button
+												[title]="selectedRows.length > 0 ? translation?.adminPanel.createNewTeam.removeSelectedMembers : translation?.adminPanel.createNewTeam.selectMembersToRemove"
+												pButton
+												pRipple
+												icon="pi pi-trash"
+												class="p-button-danger"
+												[disabled]="selectedRows.length <= 0"
+												(click)="removeMultipleMembers()"
+												data-test="delete-selected-members-icon"
+											></button>
+										</div>
+										<div class="p-toolbar-group-right">
+											<i class="pi pi-search"></i>
+											<label
+												*ngIf="enableSearch"
+												title="{{ constants.DATA_TABLE_SEARCH_INPUT_TOOLTIP }}"
+												class="search-container"
+											>
+												<input
+													data-test="members-search-text"
+													type="search"
+													pInputText
+													size="50"
+													placeholder="Search"
+													(input)="customFilter(dt, $event.target.value, 'contains')"
+													class="search-input"
+												/>
+											</label>
+										</div>
+									</div>
+								</div>
+							</p-toolbar>
+
+							<p-table
+								[id]="tableId"
+								[(selection)]="selectedRows"
+								[value]="tableData"
+								#dt
+								sortField="fullName"
+								[sortOrder]="1"
+								[rowsPerPageOptions]="[10, 25, 50, 100]"
+								[(rows)]="showRows"
+								[totalRecords]="tableData.length"
+								[paginator]="enablePaging"
+								[currentPageReportTemplate]="checkPaginationText()"
+								[showCurrentPageReport]="true"
+								[columns]="cols"
+								[responsive]="true"
+								[autoLayout]="false"
+								(onPage)="resetDisplayedStories()"
+								[scrollable]="true"
+								scrollHeight="250px"
+								scrollDirection="both"
+								(onSort)="resetDisplayedStories()"
+								(onFilter)="onSearch()"
+								(sortFunction)="customSort($event)"
+								[customSort]="true"
+								data-test="view-members-table"
+							>
+								<ng-template pTemplate="header">
+									<tr *ngIf="cols.length > 0">
+										<th class="prime-ng-table-checkbox border-none">
+											<p-tableHeaderCheckbox
+												class="align_checkbox_center"
+												data-test="select-all-members-checkbox"
+											></p-tableHeaderCheckbox>
+										</th>
+										<th
+											*ngFor="let col of cols"
+											class="header_font border-none"
+											[pSortableColumn]="col.field"
+											[ngStyle]="{ width: col.width, 'max-width': col.width, 'min-width': col.width }"
+											[pSortableColumnDisabled]="col.field != constants.MEMBER_FULL_NAME ? true : false"
+										>
+											<div class="vertical_header">
+												<span>
+													{{ col.header }}
+												</span>
+												<div *ngIf="col.field == constants.MEMBER_FULL_NAME">
+													<p-sortIcon [field]="col.field"></p-sortIcon>
+												</div>
+											</div>
+										</th>
+										<th class="border-none delete-button-column"></th>
+									</tr>
+								</ng-template>
+
+								<ng-template
+									pTemplate="body"
+									let-rowData
+									let-columns="cols"
+									let-rowIndex="rowIndex"
+								>
+									<tr
+										attr.data-test="{{ rowData.id }}-row"
+										[pSelectableRow]="rowData"
+									>
+										{{
+											addToDisplayedStories(rowData, rowIndex)
+										}}
+										<td class="prime-ng-table-checkbox border-none">
+											<p-tableCheckbox
+												[pSelectableRow]="rowData"
+												[value]="rowData"
+												class="align_checkbox_center"
+												data-test="row-checkbox"
+											>
+											</p-tableCheckbox>
+										</td>
+										<td
+											*ngFor="let col of cols"
+											class="body_data_ellipsis border-none"
+											[ngStyle]="{ 'max-width': col.width, 'min-width': col.width }"
+										>
+											<ng-container
+												*ngTemplateOutlet="
+													col.field === constants.MEMBER_FULL_NAME ? userName : simpleCell;
+													context: {
+														data: rowData,
+														text: getFormattedProperty(rowData, col.field)
+													}
+												"
+											>
+											</ng-container>
+										</td>
+										<td class="border-none delete-button-column">
+											<div class="delete-buttons-div">
+												<button
+													type="button"
+													class="view_teams_buttons"
+													title="{{ this.translation?.adminPanel.createNewTeam.removeMember }}"
+													(click)="removeMember(rowData)"
+													data-test="delete-member-icon"
+												>
+													<img src="assets/images/delete icon of prime ng.svg" />
+												</button>
+											</div>
+										</td>
+									</tr>
+								</ng-template>
+								<ng-template
+									pTemplate="emptymessage"
+									let-columns
+								>
+									<tr>
+										<td
+											[attr.colspan]="columns.length + 2"
+											data-test="view-members-table"
+											class="border-none text-center"
+										>
+											{{ showEmptyMessage() }}
+										</td>
+									</tr>
+								</ng-template>
+							</p-table>
+						</div>
+							</div>
+						</div>
+					</div>
+				</form>
+				<div class="flex align-items-center gap-2 justify-content-end" *ngIf="!quickSetup">
+					<button
+            *ngIf="!quickSetup"
+						pButton
+						pRipple
+						[label]="translation?.adminPanel.dashboard.createTeams.cancel"
+						class="p-button-text text-primary"
+						(click)="cancelButtonClick()"
+					></button>
+					<button
+						pButton
+						pRipple
+						[title]="updateTeamData ? translation?.adminPanel.createNewTeam.editTeam : translation?.adminPanel.createNewTeam.createTeam"
+						[label]="updateTeamData ? translation?.adminPanel.createNewTeam.editTeam : translation?.adminPanel.createNewTeam.createTeam"
+						[disabled]="setSaveButtonState()"
+						(click)="submitData()"
+					></button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<ng-template
+		#simpleCell
+		let-text="text"
+	>
+		<span
+			class="td-truncate"
+			title="{{ text }}"
+			>{{ text }}</span
+		>
+	</ng-template>
+
+	<ng-template
+		#userName
+		let-text="text"
+		let-data="data"
+	>
+		<div class="flex justify-content-between">
+			<div class="flex justify-content-start align-items-center">
+				<span
+					class="max-w-13rem white-space-nowrap overflow-hidden text-overflow-ellipsis"
+					title="{{ text }}"
+					>{{ text }}</span
+				>
+				<span
+					*ngIf="data.isInMultipleTeams"
+					data-test="multipleTeamMember-icon"
+					class="pi pi-users ml-1 text-base"
+					[pTooltip]="translation?.timelog.tooTips.multipleTeamMember"
+					[tooltipStyleClass]="'customTooltip'"
+					[tooltipPosition]="'top'"
+				>
+				</span>
+			</div>
+
+			<div
+				*ngIf="data.status == constants.MEMBER_REVOKED_STATUS"
+				data-test="revoked-user-label"
+				class="user-status-div"
+			>
+				<span
+					class="revoked-status"
+					title="Member Status"
+					>SUSPENDED</span
+				>
+			</div>
+		</div>
+	</ng-template>
+
+	<p-confirmDialog
+		#cd
+		[closable]="false"
+		[acceptIcon]="false"
+		[rejectIcon]="false"
+		[style]="{ width: '530px' }"
+		[key]="'tabSwitchConfirm'"
+		data-test="confirmation-dialog"
+		rejectButtonStyleClass="p-button-text"
+	>
+	</p-confirmDialog>
+
+	<khoji-bulk-invite-user-dialog
+		[(showModal)]="renderAddJiraUsersComponent"
+		header="Bulk add users from Jira"
+	></khoji-bulk-invite-user-dialog>
+</ng-template>

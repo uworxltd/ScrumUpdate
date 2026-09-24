@@ -1,0 +1,114 @@
+Analyze an Epic's progress within a sprint to identify risks, blockers, and provide actionable recommendations.
+
+INPUT: JSON containing epic data:
+{
+  "epic_key": "KFX-284",
+  "epic_name": "Sprint Carousel Cards in Scru...",
+  "sprint_id": "123",
+  "story_points": {
+    "completed": 3.5,
+    "total": 4.5,
+    "percentage": 77.78
+  },
+  "tickets": [
+    {
+      "key": "KFX-236",
+      "summary": "Add epic progress card",
+      "status": "Done",
+      "storyPoints": 2
+    },
+    {
+      "key": "KFX-310",
+      "summary": "Add velocity burndown",
+      "status": "In Progress",
+      "storyPoints": 1.5
+    },
+    {
+      "key": "KFX-356",
+      "summary": "Add team pulse card",
+      "status": "To Do",
+      "storyPoints": 1
+    }
+  ]
+}
+
+TASK:
+Analyze the epic's progress within the sprint to identify:
+1. Progress assessment - is the epic on track?
+2. Risks and blockers - what might prevent completion?
+3. Work distribution - are tickets balanced or is there unfinished work?
+4. Completion likelihood - will this epic finish in the sprint?
+5. Actionable recommendations for the team
+
+OUTPUT FORMAT:
+Return ONLY this JSON (no markdown, no code blocks):
+{
+  "summary": "<1-2 line description of what this epic accomplishes>",
+  "insights": [
+    "<Status + % complete + trajectory in one line>",
+    "<Main risk or concern with ticket key if any>",
+    "<Top priority action with ticket key>"
+  ]
+}
+
+Note: Return exactly 2-3 bullet points. If epic is 100% done, only return 1-2 bullets celebrating completion.
+
+ANALYSIS RULES:
+
+SUMMARY GENERATION:
+- Generate a 1-2 line description of what this epic accomplishes or will accomplish
+- Focus on the business outcome and what gets delivered/enabled
+- Use the epic name and ticket descriptions for context
+- Be concise but specific about deliverables
+- Examples:
+  * "Implementing sprint carousel UI components to display performance metrics in real-time."
+  * "Backend API for real-time epic progress tracking and analytics data streaming."
+  * "Multi-tenant authentication layer supporting OAuth2 and SAML integration."
+
+Generate 2-3 concise, actionable bullet points:
+
+1. BULLET 1 - Status (always include):
+   - "On track"/"At risk"/"Behind"/"Complete" + % + what's left or completed
+   - Example: "Complete at 100% - all 17 points done"
+   - Example: "On track at 77% - 1 ticket in progress, 1 not started"
+
+2. BULLET 2 - Risk or Achievement (include if relevant):
+   - If 100% done: Skip or celebrate achievement
+   - If work remaining: Main risk with ticket key
+   - Example: "KFX-310 (1.5pts) in progress may delay if blocked"
+   - Example: "All regression tickets completed successfully"
+
+3. BULLET 3 - Action (only if work remains):
+   - Top priority next step with ticket key
+   - Skip if 100% complete
+   - Example: "Complete KFX-310 before starting KFX-356"
+
+5. BE SPECIFIC AND ACTIONABLE:
+   - Reference specific ticket keys when relevant
+   - Provide concrete next steps, not generic advice
+   - Focus on what's actionable within the sprint
+   - Avoid vague statements like "monitor progress" - be specific about what to monitor
+
+6. CONSIDER STORY POINT DISTRIBUTION:
+   - If most points are in "To Do", flag as high risk
+   - If most points are "Done", acknowledge good progress
+   - If points are spread across statuses, note fragmentation
+   - Consider total remaining points vs sprint timeline
+
+EXAMPLE OUTPUT (work in progress):
+{
+  "summary": "Implementing sprint carousel UI components to display performance metrics in real-time.",
+  "insights": [
+    "On track at 77% - 3.5 of 4.5 points done, 1 ticket in progress",
+    "KFX-310 (1.5pts) in progress could delay if blocked",
+    "Complete KFX-310 before starting KFX-356"
+  ]
+}
+
+EXAMPLE OUTPUT (100% complete):
+{
+  "summary": "Sprint carousel UI components successfully completed and ready for deployment.",
+  "insights": [
+    "Complete at 100% - all 17 points done across 17 tickets"
+  ]
+}

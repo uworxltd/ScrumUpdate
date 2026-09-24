@@ -1,0 +1,223 @@
+<div class="scrum-update-content">
+  <!-- Data Card -->
+  <div>
+    <div class="scrum-header">
+      <div class="scrum-header-content">
+        <div class="scrum-title-section">
+          <img [src]="constants.SPARKLES_SVG" height="24" width="24" class="scrum-icon" />
+          <h2 class="scrum-title">Today's Scrum Update</h2>
+          <div class="text-600">{{ today | date:'EEEE, MMMM d, y' }}</div>
+        </div>
+        <div *ngIf="dailyScrumLoadingState==LoadingState.Done && !isNoActivityFound()" class="scrum-actions">
+          <p-button icon="pi pi-pencil" label="Edit" [text]="true" size="small" styleClass="edit-button"
+            (onClick)="openEditModal()"></p-button>
+          <p-button icon="pi pi-save" [label]="standupBoardFeatureEnabled ? 'Save and Submit' : 'Save'" [text]="true"
+            size="small" styleClass="edit-button" (onClick)="saveChanges(dailyScrumUpdates)"></p-button>
+          <p-button *ngIf="!isIntegrationDone && msOAuthEnabled" icon="pi pi-calendar" label="Connect Calendar" [outlined]="true"
+            size="small" (onClick)="connectMSCalendar()"></p-button>
+          <p-button icon="pi pi-sync" label="Generate New" severity="primary" size="small"
+            (onClick)="retry()"></p-button>
+
+          <!-- Share Button with Dropdown Menu -->
+          <div class="share-actions">
+            <p-button icon="pi pi-share-alt" label="Share" [text]="true" size="small" styleClass="share-button"
+              (onClick)="shareMenu.toggle($event)"></p-button>
+            <p-menu #shareMenu [model]="shareMenuItems" [popup]="true">
+              <ng-template pTemplate="item" let-item>
+                <a class="p-menuitem-link flex align-items-center" [attr.href]="item.url" [attr.target]="item.target"
+                  [attr.tabindex]="-1" [pTooltip]="item.tooltip" tooltipPosition="right">
+                  <span [class]="item.icon" class="p-menuitem-icon" *ngIf="item.icon"></span>
+                  <span class="p-menuitem-text ml-2">{{ item.label }}</span>
+                  <i *ngIf="item.tooltip" class="pi pi-info-circle ml-auto"></i>
+                </a>
+              </ng-template>
+            </p-menu>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Loading Card -->
+    <div *ngIf="isLoading() && !isError()" class="skeleton">
+      <div class="header">
+        <img [src]="constants.SPARKLES_SVG" height="20" width="20" />
+        <div>{{ translation?.dailyScrumUpdates?.generatingScrumUpdatesTitle || 'Generating Scrum Updates' }}</div>
+        <p class="header-text">{{ translation?.dailyScrumUpdates?.generatingScrumUpdatesSubTitle || 'Please wait while we analyze your activity' }}</p>
+      </div>
+      <khoji-daily-scrum-progress [isFetchingFromJira]="isFetchingFromJira"></khoji-daily-scrum-progress>
+    </div>
+
+    <div *ngIf="dailyScrumLoadingState==LoadingState.Done && !isNoActivityFound()" class="scrum-meta">
+      <div class="timestamp">
+        <i class="pi pi-clock"></i>
+        <span>{{dailyScrumUpdates?.isSavedDailyScrumUpdate ? 'Saved' : 'Generated'}} at {{
+          dailyScrumUpdates.updatedAt|smartDateFormat }}</span>
+      </div>
+      <div class="confidence-badge" [class.confidence-high]="isIntegrationDone"
+        [class.confidence-medium]="!isIntegrationDone">
+        <span>{{ isIntegrationDone ? '100%' : '60%' }} Confidence</span>
+        <i class="pi cursor-pointer" [class.pi-check-circle]="isIntegrationDone"
+          [class.pi-info-circle]="!isIntegrationDone"
+          [pTooltip]="isIntegrationDone ? 'High confidence: Calendar is connected, providing complete activity data' : (msOAuthEnabled ? 'Medium confidence: Connect your calendar to improve accuracy' : 'Medium confidence: Connect your Jira to improve accuracy')"
+          tooltipPosition="bottom"></i>
+      </div>
+    </div>
+    <div class="content" *ngIf="dailyScrumLoadingState==LoadingState.Done">
+      <!-- No Activity Found Section -->
+      <div *ngIf="isNoActivityFound()" class="no-activity-section">
+        <div class="no-activity-content">
+          <img src="assets/svg/No activity.svg" alt="No Activity" class="no-activity-icon" />
+          <h3 class="no-activity-title">No Activity Found for Today</h3>
+          <p class="no-activity-text">
+            We couldn't find any recent activity in your connected tools. Connect Jira<ng-container *ngIf="msOAuthEnabled"> and Calendar</ng-container> to automatically
+            generate your scrum updates, or add work logs manually.
+          </p>
+          <div class="no-activity-actions">
+            <p-button label="Connect Jira" icon="pi pi-link" [raised]="true" severity="primary"
+              (onClick)="connectJira()"></p-button>
+            <p-button *ngIf="!isIntegrationDone && msOAuthEnabled" label="Connect Calendar" icon="pi pi-calendar" [outlined]="true"
+              (onClick)="connectMSCalendar()"></p-button>
+            <p-button label="Add Manually" icon="pi pi-pencil" [outlined]="true" (onClick)="addManually()"></p-button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Completed Yesterday Section -->
+      <div *ngIf="dailyScrumUpdates.last_day" class="scrum-section">
+        <div class="section-title-row">
+          <span class="section-emoji">📅</span>
+          <h3 class="section-title">Yesterday ({{ dailyScrumDates.yesterdayDate | date:'MMM d' }})</h3>
+        </div>
+        <div class="scrum-card completed-card">
+          <div class="summary" [innerHTML]="dailyScrumUpdates.last_day"></div>
+        </div>
+      </div>
+
+      <!-- Working on Today Section -->
+      <div *ngIf="dailyScrumUpdates.current_day" class="scrum-section">
+        <div class="section-title-row">
+          <span class="section-emoji">🎯</span>
+          <h3 class="section-title">Today ({{ dailyScrumDates.todayDate | date:'MMM d' }})</h3>
+        </div>
+        <div class="scrum-card working-card">
+          <div class="summary" [innerHTML]="dailyScrumUpdates.current_day"></div>
+        </div>
+      </div>
+
+      <!-- Blockers Section -->
+      <div *ngIf="dailyScrumUpdates.blockers" class="scrum-section">
+        <div class="section-title-row">
+          <span class="section-emoji">🚧</span>
+          <h3 class="section-title">Blockers & Impediments</h3>
+        </div>
+        <div class="scrum-card blockers-card">
+          <div class="summary" [innerHTML]="dailyScrumUpdates.blockers"></div>
+        </div>
+      </div>
+    </div>
+    <!-- Feedback Section -->
+    <div *ngIf="dailyScrumLoadingState === LoadingState.Done && showScrumFeedback" class="feedback-section">
+      <p class="feedback-text">Was this helpful?</p>
+      <div class="feedback-buttons">
+        <p-button icon="pi pi-thumbs-up" [outlined]="selectedScrumFeedback !== 'up'"
+          [class.active]="selectedScrumFeedback === 'up'" [class.animating]="animatingScrumButton === 'up'"
+          [disabled]="scrumFeedbackSubmitted" severity="success" size="small" (onClick)="submitFeedback('up')"
+          pTooltip="This was helpful" tooltipPosition="bottom"></p-button>
+        <p-button icon="pi pi-thumbs-down" [outlined]="selectedScrumFeedback !== 'down'"
+          [class.active]="selectedScrumFeedback === 'down'" [class.animating]="animatingScrumButton === 'down'"
+          [disabled]="scrumFeedbackSubmitted" severity="danger" size="small" (onClick)="submitFeedback('down')"
+          pTooltip="This was not helpful" tooltipPosition="bottom"></p-button>
+      </div>
+    </div>
+    <!-- Error -->
+    <div *ngIf="isError()" class="content flex flex-column text-center">
+      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+        class="error-icon mx-auto">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" x2="12" y1="8" y2="12"></line>
+        <line x1="12" x2="12.01" y1="16" y2="16"></line>
+      </svg>
+      <p class="error-text my-4">We encountered an error while fetching your daily scrum updates. Please try again
+        later.</p>
+    </div>
+  </div>
+
+  <!-- Edit Modal -->
+  <p-dialog header="Edit Update" [(visible)]="showEditModal" [modal]="true" [style]="{ width: '600px' }"
+    [draggable]="false" [resizable]="false" styleClass="edit-update-dialog">
+    <div class="edit-modal-content">
+      <!-- Completed Yesterday Section -->
+      <div class="edit-section">
+        <div class="section-header">
+          <i class="pi pi-check-circle section-icon completed-icon"></i>
+          <label class="section-label">Yesterday</label>
+        </div>
+        <p-editor [(ngModel)]="editedData.last_day" [style]="{ height: '150px' }"
+          placeholder="Enter what you completed yesterday...">
+          <ng-template pTemplate="header">
+            <span class="ql-formats">
+              <button type="button" class="ql-bold" aria-label="Bold"></button>
+              <button type="button" class="ql-italic" aria-label="Italic"></button>
+              <button type="button" class="ql-underline" aria-label="Underline"></button>
+            </span>
+            <span class="ql-formats">
+              <button type="button" class="ql-list" value="ordered" aria-label="Ordered List"></button>
+              <button type="button" class="ql-list" value="bullet" aria-label="Unordered List"></button>
+            </span>
+          </ng-template>
+        </p-editor>
+      </div>
+
+      <!-- Working on Today Section -->
+      <div class="edit-section">
+        <div class="section-header">
+          <i class="pi pi-circle section-icon working-icon"></i>
+          <label class="section-label">Today</label>
+        </div>
+        <p-editor [(ngModel)]="editedData.current_day" [style]="{ height: '150px' }"
+          placeholder="Enter what you're working on today...">
+          <ng-template pTemplate="header">
+            <span class="ql-formats">
+              <button type="button" class="ql-bold" aria-label="Bold"></button>
+              <button type="button" class="ql-italic" aria-label="Italic"></button>
+              <button type="button" class="ql-underline" aria-label="Underline"></button>
+            </span>
+            <span class="ql-formats">
+              <button type="button" class="ql-list" value="ordered" aria-label="Ordered List"></button>
+              <button type="button" class="ql-list" value="bullet" aria-label="Unordered List"></button>
+            </span>
+          </ng-template>
+        </p-editor>
+      </div>
+
+      <!-- Blockers Section -->
+      <div class="edit-section">
+        <div class="section-header">
+          <i class="pi pi-exclamation-circle section-icon blockers-icon"></i>
+          <label class="section-label">Blockers and Impediments</label>
+        </div>
+        <p-editor [(ngModel)]="editedData.blockers" [style]="{ height: '150px' }" placeholder="Enter any blockers...">
+          <ng-template pTemplate="header">
+            <span class="ql-formats">
+              <button type="button" class="ql-bold" aria-label="Bold"></button>
+              <button type="button" class="ql-italic" aria-label="Italic"></button>
+              <button type="button" class="ql-underline" aria-label="Underline"></button>
+            </span>
+            <span class="ql-formats">
+              <button type="button" class="ql-list" value="ordered" aria-label="Ordered List"></button>
+              <button type="button" class="ql-list" value="bullet" aria-label="Unordered List"></button>
+            </span>
+          </ng-template>
+        </p-editor>
+      </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+      <div class="dialog-footer">
+        <p-button label="Cancel" [text]="true" (onClick)="closeEditModal()"></p-button>
+        <p-button [label]="standupBoardFeatureEnabled ? 'Save and Submit' : 'Save'" icon="pi pi-check"
+          (onClick)="saveChanges(editedData)"></p-button>
+      </div>
+    </ng-template>
+  </p-dialog>
+</div>

@@ -1,0 +1,136 @@
+﻿name: scrum_update
+version: 1.0
+inputs: 
+  account_id: {type: string, default: null}
+  additionalInfo: {type: string, default: null}
+  today_date: {type: string, default: null}
+  yesterday_date: {type: string, default: null}
+  instance_id: {type: int, default: null}
+steps:
+  - id: load
+    type: sql
+    query: WITH base_user AS (
+               SELECT iu.account_id, iu.full_name, r.name AS role
+               FROM khoji.instance_user iu
+               JOIN khoji.roles r ON iu.role_id = r.id
+               WHERE iu.instance_id = {instance_id}
+                   AND iu.account_id = '{account_id}'
+           )
+
+           SELECT jsonb_build_object(
+               'name', bu.full_name,
+               'role', bu.role,
+               'yesterdayActivity', jsonb_build_object(
+                   'worklogs', (
+                       SELECT jsonb_agg(
+                           jsonb_build_object(
+                               'issueKey', w.issue_key,
+                               'summary', i.summary,
+                               'comment', w.comment::jsonb,
+                               'startedDate', w.started_date,
+                               'timeSpentInSeconds', w.time_spent_seconds
+                           )
+                       )
+                       FROM worklogs w join issues i on w.issue_key = i.issue_key
+                       WHERE w.author_account_id = bu.account_id
+                           AND w.started_date::date = '{yesterday_date}'
+                   ),
+                   'comments', (
+                       SELECT jsonb_agg(
+                           jsonb_build_object(
+                               'issueKey', tc.issue_key,
+                               'comment', tc.comment_body::jsonb,
+                               'createdDate', tc.created_date,
+                               'author', tc.author_display_name
+                           )
+                       )
+                       FROM comments tc
+                       WHERE tc.account_id = bu.account_id
+                           AND tc.created_date::date = '{yesterday_date}'
+                   ),
+                   'changelogs', (
+                       SELECT jsonb_agg(
+                           jsonb_build_object(
+                               'issueKey', i.issue_key,
+                               'fieldName', cl.field_name,
+                               'oldValue', cl.from_display_value,
+                               'newValue', cl.to_display_value,
+                               'createdDate', cl.created_date,
+                               'author', cl.author_display_name
+                           )
+                       )
+                       FROM changelogs cl join issues i on cl.issue_key = i.issue_id
+                       WHERE cl.account_id = bu.account_id
+                           AND cl.created_date::date = '{yesterday_date}'
+                           AND cl.field_name IN ('status','summary','description','assignee')
+                   )
+               ),
+               'todayActivity', jsonb_build_object(
+                   'worklogs', (
+                       SELECT jsonb_agg(
+                           jsonb_build_object(
+                               'issueKey', w.issue_key,
+                               'summary', i.summary,
+                               'comment', w.comment::jsonb,
+                               'startedDate', w.started_date,
+                               'timeSpentInSeconds', w.time_spent_seconds
+                           )
+                       )
+                       FROM worklogs w join issues i on w.issue_key = i.issue_key
+                       WHERE w.author_account_id = bu.account_id
+                           AND w.started_date::date = '{today_date}'
+                   ),
+                   'comments', (
+                       SELECT jsonb_agg(
+                           jsonb_build_object(
+                              'issueKey', tc.issue_key,
+                              'comment', tc.comment_body::jsonb,
+                              'createdDate', tc.created_date,
+                              'author', tc.author_display_name
+                           )
+                       )
+                       FROM comments tc
+                       WHERE tc.account_id = bu.account_id
+                           AND tc.created_date::date = '{today_date}'
+                   ),
+                   'changelogs', (
+                       SELECT jsonb_agg(
+                           jsonb_build_object(
+                               'issueKey', i.issue_key,
+                               'fieldName', cl.field_name,
+                               'oldValue', cl.from_display_value,
+                               'newValue', cl.to_display_value,
+                               'createdDate', cl.created_date,
+                               'author', cl.author_display_name
+                           )
+                       )
+                       FROM changelogs cl join issues i on cl.issue_key = i.issue_id
+                       WHERE cl.account_id = bu.account_id
+                           AND cl.created_date::date = '{today_date}'
+                           AND cl.field_name IN ('status','summary','description','assignee')
+                   )
+               ),
+               'assignedIssues', (
+                   SELECT jsonb_agg(
+                       jsonb_build_object(
+                           'issueKey', i.issue_key,
+                           'type', i.issue_type,
+                           'status', i.status,
+                           'priority', i.priority,
+                           'summary', i.summary,
+                           'description', i.description::jsonb
+                       )
+                   )
+                   FROM issues i
+                   WHERE i.assignee_account_id = bu.account_id
+                   AND i.status_category NOT IN ('To Do', 'Done')
+               )
+            ) AS result
+            FROM base_user bu;
+
+    returns: (jsonb userActivity)
+  - id: analyze
+    type: llm
+    cache: 43200
+    llm: claude-haiku
+    prompt: ScrumUpdate

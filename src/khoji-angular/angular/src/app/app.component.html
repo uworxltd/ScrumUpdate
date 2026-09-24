@@ -1,0 +1,15 @@
+<!-- /*
+Copyright 2026 UWorx Services.
+Licensed under the Apache License, Version 2.0.
+See LICENSE for the full license text.
+*/ -->
+
+<p-toast key="network" position="top-center" baseZIndex="1051" data-test="toast-message-network"
+  (onClose)="handleMessageServiceCount(constants.NETWORK_COUNT)"></p-toast>
+<p-toast key="warning" position="top-center" baseZIndex="1051" data-test="toast-message-warning"
+  (onClose)="handleMessageServiceCount(constants.WARNING_COUNT)"></p-toast>
+<!-- z-index is set to 1051 because of bootstrap modal z-index value is 1050 -->
+<p-toast key="message" position="top-center" baseZIndex="1051" data-test="toast-message"></p-toast>
+<p-toast key="validate-user" position="top-center" baseZIndex="1051"></p-toast>
+<khoji-spinner [fullScreen]="true"></khoji-spinner>
+<router-outlet></router-outlet>

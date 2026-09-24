@@ -1,0 +1,69 @@
+<!-- /*
+Copyright 2026 UWorx Services.
+Licensed under the Apache License, Version 2.0.
+See LICENSE for the full license text.
+*/ -->
+
+<div class="flex align-items-center">
+    <ng-container *ngTemplateOutlet="showUserImage ? showImage : uploadphoto ">
+    </ng-container>
+    <div *ngIf="showEmail" class="ml-5">
+      <label for="avatarUrl" class="block">{{translation?.signupUser.signupPage.emailTitle}}</label>
+      <input pInputText id="avatarUrl" data-test="user-email-text" class="w-full md:w-20rem lg:w-29rem" type="text" [disabled]="true" [value]="userEmail" />
+    </div>
+</div>
+
+<ng-template #uploadphoto>
+    <input type="file" [accept]="constants.IMAGE_ACCEPTABLE_FORMATES" (click)="$event.target.value=null" data-test="upload-file-button" #uploadFileButton (change)="openModal(template, $event)" hidden>
+    <button class="uploadbutton box" (click)="uploadFileButton.click()">
+        <label class="upload-size">
+            <div class="img">
+                <img [src]="constants.KHOJI_UPLOAD_ICON" id="image" />
+            </div>
+            <strong>{{translation?.uploadImage.buttons.uploadPhoto}}</strong>
+        </label>
+    </button>
+</ng-template>
+
+<ng-template #showImage>
+    <div class="d-flex flex-column">
+        <div>
+            <div class="box">
+                <img id="image" [src]="image" class="khoji-upload-image" data-test="uploaded-image">
+            </div>
+        </div>
+        <div class="image-buttons d-flex justify-content-between">
+            <button class="changebutton">
+                <label class="khoji-no-margin-bottom">
+                    {{translation?.uploadImage.buttons.changePhoto}}
+                    <input type="file" [accept]="constants.IMAGE_ACCEPTABLE_FORMATES" (click)="$event.target.value=null"
+                        (change)="openModal(template, $event, false)" data-test="changeImage-button" hidden>
+                </label>
+            </button>
+            <img class="deletebutton" [src]="constants.KHOJI_IMAGE_DELETE_ICON" (click)="delete()" data-test="deleteImage-button"/>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #template>
+    <div  data-test="cropImage-modal">
+        <div class="justify-content-center khoji-margin">
+            <h4 class="text-center text-primary" data-test="modal-title">{{translation?.uploadImage.modal.title}}</h4>
+            <br>
+        </div>
+
+        <image-cropper [imageBase64]="avatarUrlBase" [imageChangedEvent]="imageChangedEvent"
+            [resizeToWidth]="constants.IMAGE_MINIMUM_SIZE" [cropperMinWidth]="constants.IMAGE_MINIMUM_SIZE"
+            (imageCropped)="imageCropped($event)">
+        </image-cropper>
+
+        <div class="d-flex float-right khoji-margin">
+          <button pRipple pButton data-test="file-submit-button" (click)="saveImageToBlob()">
+            {{translation?.uploadImage.buttons.save}}
+          </button>
+          <button pRipple pButton (click)="closeModal()" class="p-button-outlined ml-2">
+            {{translation?.uploadImage.buttons.cancel}}
+          </button>
+        </div>
+    </div>
+</ng-template>

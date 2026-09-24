@@ -1,0 +1,42 @@
+<!-- /*
+Copyright 2026 UWorx Services.
+Licensed under the Apache License, Version 2.0.
+See LICENSE for the full license text.
+*/ -->
+
+<p-tabView
+  styleClass="orientation-left"
+  [activeIndex]="activeIndex"
+>
+  <p-tabPanel
+    header="App settings"
+    [disabled]="!accessLevelsStatus.hasTenantAdminAccess"
+    [tooltip]="accessLevelsStatus.hasTenantAdminAccess ? '' : translation?.error.adminAccessRequired"
+  >
+    <khoji-delete-app *ngIf="accessLevelsStatus.hasTenantAdminAccess"></khoji-delete-app>
+  </p-tabPanel>
+  <p-tabPanel
+    header="Feature settings"
+    *ngIf="worklogInsightsFeatureEnabled"
+    [disabled]="!(accessLevelsStatus.hasAdminAccess || instanceFeaturesStatus?.isMyWorkEnabled)"
+    [pTooltip]="accessLevelsStatus.hasAdminAccess || instanceFeaturesStatus?.isMyWorkEnabled ? '' : translation?.error.adminAccessRequired"
+  >
+    <khoji-worklog-settings
+      *ngIf="accessLevelsStatus.hasAdminAccess || instanceFeaturesStatus?.isMyWorkEnabled"
+      [showSkeletalLoading]="true"
+      [buttonsOnRight]="true"
+    ></khoji-worklog-settings>
+  </p-tabPanel>
+  <p-tabPanel
+    header="Integrations"
+    *ngIf="instanceFeaturesStatus?.isMyWorkEnabled && msOAuthEnabled"
+  >
+    <khoji-integrations></khoji-integrations>
+  </p-tabPanel>
+  <p-tabPanel
+    header="Feature Flags (Dev)"
+    *ngIf="showFeatureFlagsDevTab"
+  >
+    <khoji-feature-flags-test></khoji-feature-flags-test>
+  </p-tabPanel>
+</p-tabView>

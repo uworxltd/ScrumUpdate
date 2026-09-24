@@ -1,0 +1,38 @@
+:host {
+  display: block;
+}
+
+.center-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.ms-tems-connect-link{
+  color: #5059C9;
+}
+
+.modal-content-ms-teams{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ms-calendar-connect-link {
+  color: blue;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.ms-calendar-connect-link:hover {
+  color: darkblue;
+  text-decoration: none;
+}
+
+:host ::ng-deep .p-button.p-button-link:enabled:focus {
+  background: transparent;
+  box-shadow: none;
+  border: none;
+  border-color: transparent;
+}

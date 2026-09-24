@@ -1,0 +1,28 @@
+<!-- /*
+Copyright 2026 UWorx Services.
+Licensed under the Apache License, Version 2.0.
+See LICENSE for the full license text.
+*/ -->
+
+
+<ng-container *ngTemplateOutlet="(category == 'Other' && isOthersChartDataAvailable) || (category == 'Main' && isMainChartDataAvailable) ? chartTpl : messageTpl"> </ng-container>
+
+<ng-template #chartTpl>
+  <div [attr.data-rpa]="constants.RPA_TEAM_WORKLOG_READY_DISTRIBUTION + '-' + this.category">
+    <div
+      #chart
+      echarts
+      [merge]="updateOption"
+      [options]="chartOption"
+      style="min-height: 300px"
+      [style.min-width.px]="minChartWidth"
+      [attr.id]="chartId"
+    ></div>
+  </div>
+</ng-template>
+
+<ng-template #messageTpl>
+  <div style="height: 300px;">
+    <khoji-message [message]="message"></khoji-message>
+  </div>
+</ng-template>

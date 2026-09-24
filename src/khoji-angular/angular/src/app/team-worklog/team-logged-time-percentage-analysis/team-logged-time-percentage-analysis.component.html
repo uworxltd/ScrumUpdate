@@ -1,0 +1,68 @@
+<!-- /*
+Copyright 2026 UWorx Services.
+Licensed under the Apache License, Version 2.0.
+See LICENSE for the full license text.
+*/ -->
+
+
+<ng-container *ngTemplateOutlet="ragData && ragData.length > 0 ? tableTpl : messageTpl"></ng-container>
+
+<ng-template #tableTpl>
+    <div [ngClass]="ragData.length > 5 ?'ragStatus':'ragTable'">
+
+        <table class="rag-table" [id]="tableId">
+            <thead>
+                <th data-test="teamName-column">{{translation.ragStatusTimelog.table.columns.teamName}}</th>
+                <th data-test="worklog-percentage-column">{{translation.ragStatusTimelog.table.columns.worklogRag}}
+                    <khoji-worklog-popover-tootip [tooltipTitle]="translation.ragStatusTimelog.table.columns.worklogRag"
+                        [tooltipSubTitle]="translation.timelog.tooTips.worklog" [tooltipPosition]="'right'"></khoji-worklog-popover-tootip>
+                </th>
+                <th data-test="main/others-column">
+                  {{translation.ragStatusTimelog.table.columns.categorisePercentages}}
+                </th>
+                <th data-test="member-rag-column" >{{translation.ragStatusTimelog.table.columns.ragDist}}</th>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of ragData" (click)="showTeamDetails(data.teamName, teamDetailsTpl)">
+                    <td [attr.data-test]="data.teamName.toLowerCase().replace(' ','-')+'-logged-time-percentage-link'">
+                        {{data.teamName}} <khoji-open-modal-icon [attr.data-test]="data.teamName.toLowerCase().replace(' ','-')+'-open-modal-icon'" [tooltipText]="translation.timelog.tooTips.teamWorklogAnalysisModal">
+                        </khoji-open-modal-icon>
+                    </td>
+                    <td [attr.data-test]="data.teamName.toLowerCase().replace(' ','-')+'-worklog-percentage-text'">
+                        <khoji-timelog-rag [type]="'team'" [value]="data.percentage"
+                            [backgroundColor]="data.thresholdColor"></khoji-timelog-rag>
+                    </td>
+                    <td [attr.data-test]="data.teamName.toLowerCase().replace(' ','-')+'-main/others-text'">
+                      <div class="flex">
+                        <ng-container *ngFor="let categoryThreshold of data.otherThresholdColor; let lastIndex = last">
+                          <khoji-timelog-rag [type]="'team'" [value]="categoryThreshold.value"
+                            [backgroundColor]="categoryThreshold.backgroundColor" [color]="categoryThreshold.color"></khoji-timelog-rag>
+
+                          <span *ngIf="!lastIndex" class="p-1 m-1"> / </span>
+                        </ng-container>
+                      </div>
+                    </td>
+                    <td [attr.data-test]="data.teamName.toLowerCase().replace(' ','-')+'-members-rag-text'">
+                        <div style="display:flex">
+                            <div *ngFor="let memberRagDist of data.membersDistribution | keyvalue">
+                                <khoji-timelog-rag [type]="'member'" [value]="memberRagDist.value[1]"
+                                    [backgroundColor]="memberRagDist.value[0]" [attr.data-test]="data.teamName.toLowerCase().replace(' ','-')+'-'+memberRagDist.value[0]+'-text'"></khoji-timelog-rag>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</ng-template>
+
+<ng-template #teamDetailsTpl>
+    <khoji-modal-wrapper [title]="selectedTeamName" (onClose)="modalRef.hide()">
+        <khoji-member-worklog-details [teamName]="selectedTeamName"></khoji-member-worklog-details>
+    </khoji-modal-wrapper>
+</ng-template>
+
+
+<ng-template #messageTpl>
+    <khoji-message [message]="message"></khoji-message>
+</ng-template>

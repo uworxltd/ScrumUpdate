@@ -1,0 +1,10 @@
+Sprint was of one week
+
+## Sprint Burndown data
+Ticket, Story Point, Day It was closed
+
+KFX-1, 5, 5
+KFX-2, 3, 4
+KFX-3, 3, 3
+KFX-4, 2, 4
+KFX-5, 2, 5

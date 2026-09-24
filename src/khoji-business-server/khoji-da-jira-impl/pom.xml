@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>uk.co.uworx</groupId>
+    <artifactId>khoji-baseservice-boot</artifactId>
+    <version>${revision}</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+  <artifactId>khoji-da-jira-impl</artifactId>
+  <packaging>jar</packaging>
+  <name>Business Server Jira Impl</name>
+  <properties>
+    <json.version>20240303</json.version>
+    <jolt-deps.version>0.1.8</jolt-deps.version>
+  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>uk.co.uworx</groupId>
+      <artifactId>khoji-agile-tenant-registry</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
+      <version>${json.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.bazaarvoice.jolt</groupId>
+      <artifactId>jolt-core</artifactId>
+      <version>${jolt-deps.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.inject</groupId>
+          <artifactId>javax.inject</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.bazaarvoice.jolt</groupId>
+      <artifactId>json-utils</artifactId>
+      <version>${jolt-deps.version}</version>
+    </dependency>
+  </dependencies>
+</project>

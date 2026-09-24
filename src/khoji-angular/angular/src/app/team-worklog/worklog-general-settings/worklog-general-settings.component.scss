@@ -1,0 +1,24 @@
+.heading {
+  font-size: 20px;
+}
+
+:host ::ng-deep p-inputnumber {
+  width: 41.66% !important;
+}
+
+:host ::ng-deep .p-inputnumber {
+  width: 100% !important;
+}
+
+
+:host ::ng-deep .tooltip-width {
+  .p-tooltip-text {
+    width: max-content;
+  }
+}
+
+:host ::ng-deep {
+  .p-inputwrapper.disabled {
+    opacity: 0.5;
+  }
+}

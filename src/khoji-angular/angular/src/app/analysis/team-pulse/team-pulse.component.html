@@ -1,0 +1,156 @@
+<div class="team-pulse-container">
+  <!-- Loading State -->
+  <div class="flex justify-content-center align-items-center" style="min-height: 400px;"
+    *ngIf="loadingState === LoadingState.Loading">
+    <i class="pi pi-spin pi-spinner" style="font-size: 3rem;"></i>
+  </div>
+
+  <!-- Error State -->
+  <div class="flex justify-content-center align-items-center" style="min-height: 400px;"
+    *ngIf="loadingState === LoadingState.Error">
+    <p-card>
+      <div class="text-center">
+        <i class="pi pi-exclamation-triangle text-red-500 text-6xl mb-3"></i>
+        <p class="text-xl font-semibold">Failed to load team pulse data</p>
+        <p class="text-600">Please try again later</p>
+      </div>
+    </p-card>
+  </div>
+
+  <!-- Content -->
+  <div *ngIf="loadingState === LoadingState.Done">
+    <!-- Stats Cards -->
+    <div class="grid mb-4">
+      <div class="col-12 md:col-4">
+        <p-card styleClass="stat-card">
+          <div class="flex align-items-start justify-content-between">
+            <div>
+              <p class="text-700 text-sm font-semibold mb-2">Team Members</p>
+              <h3 class="text-3xl font-bold text-900 m-0">{{ stats.total }}</h3>
+              <p class="text-xs text-600 mt-2">{{ stats.completed }} updates received</p>
+            </div>
+            <div class="stat-icon bg-blue-100 text-blue-700">
+              <i class="pi pi-users"></i>
+            </div>
+          </div>
+        </p-card>
+      </div>
+
+      <div class="col-12 md:col-4">
+        <p-card styleClass="stat-card">
+          <div class="flex align-items-start justify-content-between">
+            <div>
+              <p class="text-700 text-sm font-semibold mb-2">Completion Rate</p>
+              <h3 class="text-3xl font-bold text-900 m-0">{{ getCompletionRate() }}%</h3>
+              <p class="text-xs text-600 mt-2">
+                {{ stats.missing > 0 ? stats.missing + ' pending updates' : 'All updates in' }}
+              </p>
+            </div>
+            <div class="stat-icon"
+              [ngClass]="stats.missing === 0 ? 'bg-green-100 text-green-600' : 'bg-yellow-100 text-yellow-600'">
+              <i class="pi pi-chart-bar"></i>
+            </div>
+          </div>
+        </p-card>
+      </div>
+
+      <div class="col-12 md:col-4">
+        <p-card styleClass="stat-card">
+          <div class="flex align-items-start justify-content-between">
+            <div>
+              <p class="text-700 text-sm font-semibold mb-2">Active Blockers</p>
+              <h3 class="text-3xl font-bold text-900 m-0">{{ stats.blockers }}</h3>
+              <p class="text-xs text-600 mt-2">
+                {{ stats.blockers > 0 ? 'Requires attention' : 'Smooth sailing' }}
+              </p>
+            </div>
+            <div class="stat-icon"
+              [ngClass]="stats.blockers > 0 ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-600'">
+              <i class="pi pi-exclamation-circle"></i>
+            </div>
+          </div>
+        </p-card>
+      </div>
+    </div>
+
+    <!-- Team Member Updates Grid -->
+    <div class="grid">
+      <div class="col-12 xl:col-6" *ngFor="let item of parsedUpdates">
+        <p-card [styleClass]="'update-card ' + (item.hasBlockers ? 'has-blocker' : '')">
+
+          <!-- Header -->
+          <ng-template pTemplate="header">
+            <div class="flex align-items-start justify-content-between p-3 border-bottom-1 surface-border">
+              <div class="flex align-items-center gap-3">
+                <img [src]="item.userImageUrl" [alt]="item.userFullName"
+                  class="border-circle border-2 border-primary-100"
+                  style="width: 40px; height: 40px; object-fit: cover;">
+                <div>
+                  <h3 class="font-bold text-900 m-0 mb-1">{{ item.userFullName }}</h3>
+                  <p class="text-xs text-700 m-0 flex align-items-center gap-1">
+                    {{ item.roleName }} •
+                    <span class="text-primary font-semibold">{{ item.instanceName }}</span>
+                  </p>
+                </div>
+              </div>
+
+              <div class="flex align-items-center gap-3">
+                <div class="text-right">
+                  <p class="text-xs text-500 font-semibold uppercase m-0 mb-1" style="letter-spacing: 0.05em;">SUBMITTED
+                  </p>
+                  <p class="text-xs font-semibold text-800 m-0">{{ item.updatedAt | date:'d MMM yyyy, h:mm a' }}</p>
+                </div>
+                <div class="blocker-icon bg-red-50 p-2 border-circle flex align-items-center justify-content-center"
+                  *ngIf="item.hasBlockers">
+                  <i class="pi pi-exclamation-circle text-red-500 text-xl"></i>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+
+          <!-- Content -->
+          <div class="p-4">
+            <div class="grid">
+              <div class="col-12 md:col-4">
+                <p class="text-xs text-500 font-bold uppercase flex align-items-center gap-2 m-0 mb-2"
+                  style="letter-spacing: 0.08em;">
+                  <i class="pi pi-check-circle" style="font-size: 10px;"></i> Yesterday
+                </p>
+                <p class="text-base text-800 line-height-3 m-0" [innerHTML]="item.last_day"></p>
+              </div>
+
+              <div class="col-12 md:col-4">
+                <p class="text-xs text-500 font-bold uppercase flex align-items-center gap-2 m-0 mb-2"
+                  style="letter-spacing: 0.08em;">
+                  <i class="pi pi-replay" style="font-size: 10px;"></i> Today
+                </p>
+                <p class="text-base text-800 line-height-3 m-0" [innerHTML]="item.current_day"></p>
+              </div>
+
+              <div class="col-12 md:col-4 p-3 border-round" [ngClass]="item.hasBlockers ? 'blocker-section' : ''">
+                <p class="text-xs font-bold uppercase flex align-items-center gap-2 m-0 mb-2"
+                  [ngClass]="item.hasBlockers ? 'text-red-600' : 'text-500'" style="letter-spacing: 0.08em;">
+                  <i class="pi pi-exclamation-circle" style="font-size: 10px;"></i> Blockers
+                </p>
+                <p class="text-base line-height-3 m-0"
+                  [ngClass]="item.hasBlockers ? 'text-red-800 font-semibold' : 'text-600 italic'"
+                  [innerHTML]="item.blockers || 'None reported'">
+                </p>
+              </div>
+            </div>
+          </div>
+        </p-card>
+      </div>
+
+      <!-- Empty State -->
+      <div class="col-12" *ngIf="parsedUpdates.length === 0">
+        <p-card styleClass="empty-state">
+          <div class="text-center py-6 text-600">
+            <i class="pi pi-inbox text-6xl mb-3 opacity-20"></i>
+            <p>No updates submitted yet for this selection.</p>
+          </div>
+        </p-card>
+      </div>
+    </div>
+  </div>
+</div>

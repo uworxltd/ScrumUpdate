@@ -1,0 +1,16 @@
+<div class="flex w-full h-screen align-items-center justify-content-center">
+  <div class="card w-8 flex flex-column align-items-center gap-3 p-7">
+    <img
+      src="assets/images/error_access_invite.png"
+      alt="invite-error-image"
+    />
+    <h3>Oops! Something went wrong</h3>
+    <span class="text-2xl">You are unable to access this site. Please check your access permissions or contact the site administrator.</span>
+    <button
+      pButton
+      label="Back"
+      class="mt-4 p-button-outlined p-button-text"
+      (click)="goBackToJiraInstancePage()"
+    ></button>
+  </div>
+</div>

@@ -1,0 +1,11 @@
+.center-block{
+    text-align: center;
+}
+.no-data{
+    padding-bottom: 100px;
+    padding-top: 100px;
+}
+.error-text-style{
+    font-size: 32px;
+    color: grey;
+}

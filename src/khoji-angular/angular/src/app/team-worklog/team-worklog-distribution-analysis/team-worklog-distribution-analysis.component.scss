@@ -1,0 +1,30 @@
+/*
+  Copyright 2026 UWorx Services.
+  Licensed under the Apache License, Version 2.0.
+  See LICENSE for the full license text.
+*/
+
+
+.total-stories-box {
+    background: #eeeeee;
+    color: #736262;
+    width: 30%;
+    border-radius: 5px;
+    padding: 4px;
+    font-size: 14px;
+    border: 1px solid #928a8a;
+    font-family: "Helvetica Neue", Roboto, Arial, "Droid Sans", sans-serif;
+    text-align: center;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 7px;
+    box-shadow: 4px 2px 7px 0px #a8b0b7;
+    font-family: "Nunito", "Helvetica Neue", Arial, "Droid Sans", sans-serif;
+}
+
+:host ::ng-deep .carousel-tooltip {
+  .p-tooltip-text {
+    width: max-content;
+  }
+}

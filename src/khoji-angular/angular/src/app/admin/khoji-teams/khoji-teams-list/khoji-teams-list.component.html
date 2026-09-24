@@ -1,0 +1,276 @@
+<!-- /*
+Copyright 2026 UWorx Services.
+Licensed under the Apache License, Version 2.0.
+See LICENSE for the full license text.
+*/ -->
+
+<div>
+  <ng-container
+    #outlet
+    [ngTemplateOutlet]="content"
+  >
+  </ng-container>
+</div>
+
+<ng-template #content>
+  <ng-container [ngTemplateOutlet]="showEditComponent ? editTeamsModal : mainContent"></ng-container>
+
+  <ng-template #mainContent>
+    <div>
+      <!--Ptoolbar to show create,delete teams and allocate supervisors button-->
+      <p-toolbar styleClass="surface-ground mb-1 border-noround">
+        <div class="p-toolbar-group-left">
+          <div
+            class="max-w-max khoji-success-button"
+            [pTooltip]="teamLimitation === khojiTeamsList.length ? translation?.adminPanel.dashboardButtons.newTeamDisabledTooltip : ''"
+            tooltipPosition="right"
+            tooltipStyleClass="carousel-tooltip"
+          >
+            <p-button
+              [ngClass]="{ 'p-disabled': teamLimitation === khojiTeamsList.length }"
+              data-test="new-team-button"
+              styleClass="table-button"
+              [label]="translation?.adminPanel.dashboardButtons.newTeam"
+              [icon]="teamLimitation === khojiTeamsList.length ? 'pi pi-lock' : 'pi pi-plus'"
+              (click)="openCreateTeamsModal(createTeamsModal)"
+            >
+            </p-button>
+          </div>
+          <!-- <button *ngIf="teamLimitation > 1 && tableData.length > 1" [title]="selectedRows.length>0?translation?.adminPanel.dashboardButtons.deleteTeamsEnabledBtnTitle:
+                      this.translation?.adminPanel.dashboardButtons.deleteTeamsDisabledBtnTitle" pButton pRipple
+                      icon="pi pi-trash" class="p-button-danger" [disabled]="selectedRows.length<=0 || teamLimitation === 1"
+                      (click)="deleteTeams()" data-test="delete-selected-teams-icon"></button> -->
+          <span
+            class="ml-3 text-gray-600 new-team-message"
+            *ngIf="!tableData.length && cols.length"
+            data-test="manage-teams-header"
+            ><i>{{ translation?.adminPanel.dashboardButtons.createNewTeamMessage }}</i></span
+          >
+        </div>
+        <div class="p-toolbar-group-right">
+          <label
+            *ngIf="enableSearch"
+            title="{{ constants.DATA_TABLE_SEARCH_INPUT_TOOLTIP }}"
+            class="p-input-icon-left"
+          >
+            <i class="pi pi-search"></i>
+            <input
+              data-test="teams-search-text"
+              type="search"
+              pInputText
+              size="50"
+              placeholder="{{ translation.adminPanel.projectIntegration.project.searchBar.searchBarPlaceHolder }}"
+              (input)="customFilter(dt, $event.target.value, 'contains')"
+              class="search-input"
+            />
+          </label>
+        </div>
+      </p-toolbar>
+
+      <div class="classic-dashboard-nav flex justify-content-end">
+        <p-dialog
+          header="{{ translation?.adminPanel.dashboardButtons.manageSettings }}"
+          [(visible)]="openManageSupervisors"
+          [style]="{ width: '98vw', height: '95vh' }"
+          [modal]="true"
+          [dismissableMask]="true"
+          [draggable]="false"
+          position="center"
+          data-test="manage-settings-modal"
+          (onHide)="onDialogClose()"
+        >
+          <ng-container *ngIf="showUsersList; else supervisorTeamsList">
+            <ng-container *ngTemplateOutlet="supervisorsList"></ng-container>
+          </ng-container>
+        </p-dialog>
+      </div>
+
+      <div>
+        <p-table
+          [id]="tableId"
+          [(selection)]="selectedRows"
+          [value]="tableData"
+          data-test="view-teams-table"
+          #dt
+          sortField="teamName"
+          [sortOrder]="1"
+          [rowsPerPageOptions]="[10, 25, 50, 100]"
+          [rows]="constants.INITIAL_ROWS_PER_PAGE"
+          [totalRecords]="tableData.length"
+          [showCurrentPageReport]="true"
+          [currentPageReportTemplate]="checkPaginationText()"
+          [paginator]="enablePaging && tableData.length > 10"
+          [columns]="cols"
+          (onPage)="resetDisplayedStories()"
+          (onSort)="resetDisplayedStories()"
+          (onFilter)="onSearch()"
+          (sortFunction)="customSort($event)"
+          [customSort]="true"
+        >
+          <ng-template pTemplate="header">
+            <tr *ngIf="cols.length > 0">
+              <!-- <th *ngIf="teamLimitation > 1" data-test="selectAll-teams-checkbox" class="prime-ng-table-checkbox border-none" [disable]="">
+                              <p-tableHeaderCheckbox class="align_checkbox_center"></p-tableHeaderCheckbox>
+                          </th> -->
+              <th
+                *ngFor="let col of cols"
+                class="header_font border-none"
+                [ngStyle]="{ width: col.width, 'max-width': col.width, 'min-width': col.width }"
+                [pSortableColumn]="col.field"
+                [pSortableColumnDisabled]="col.field != constants.TEAM_NAME ? true : false"
+              >
+                <div class="vertical_header">
+                  <span data-test="column-header">
+                    {{ col.header }}
+                  </span>
+                  <div *ngIf="col.field == constants.TEAM_NAME">
+                    <p-sortIcon
+                      *ngIf="teamLimitation > 1"
+                      [field]="col.field"
+                    ></p-sortIcon>
+                  </div>
+                </div>
+              </th>
+              <!--This header is to show edit and delete teams buttons-->
+              <th class="border-none btn-colmn-width"></th>
+            </tr>
+          </ng-template>
+
+          <ng-template
+            pTemplate="body"
+            let-rowData
+            let-columns="cols"
+            let-rowIndex="rowIndex"
+          >
+            <tr [pSelectableRow]="rowData">
+              {{
+                addToDisplayedStories(rowData, rowIndex)
+              }}
+              <!-- <td *ngIf="teamLimitation > 1" data-test="select-team-checkbox" class="prime-ng-table-checkbox border-none">
+                              <p-tableCheckbox [pSelectableRow]="rowData" [value]="rowData"
+                                  class="align_checkbox_center">
+                              </p-tableCheckbox>
+                          </td> -->
+              <td
+                *ngFor="let col of cols"
+                class="body_data_ellipsis border-none"
+                [ngStyle]="{ width: col.width, 'max-width': col.width, 'min-width': col.width }"
+                [ngClass]="setTeamNameClass(col.field)"
+                [title]="rowData[col.field]"
+              >
+                {{ this.displayData(rowData[col.field], col.field) }}
+              </td>
+              <td class="border-none btn-colmn-width">
+                <div class="btn-position-center">
+                  <!-- Edit Button -->
+                  <button
+                    type="button"
+                    pButton
+                    icon="pi pi-pencil"
+                    class="p-button-rounded p-button-outlined p-button-icon-only border-0"
+                    (click)="openEditTeamsModal(rowData)"
+                    [title]="'Edit'"
+                  ></button>
+
+                  <!-- Delete Button -->
+                  <button
+                    type="button"
+                    *ngIf="khojiTeamsList.length > 1"
+                    pButton
+                    icon="pi pi-trash"
+                    class="p-button-rounded p-button-outlined p-button-icon-only border-0"
+                    (click)="deleteTeams(rowData)"
+                    [title]="'Delete'"
+                  ></button>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+
+          <ng-template
+            pTemplate="emptymessage"
+            let-columns
+          >
+            <tr *ngIf="khojiTeamsLoadingState === loadingState.Done">
+              <td
+                [attr.colspan]="columns.length + 2"
+                style="text-align: center"
+                class="border-none"
+              >
+                <span *ngIf="columns.length > 0; else noColsAvailable">{{ displayEmptyMessage() }}</span>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+
+    <ng-template #messageTpl>
+      <h5 class="text-center">{{ translation.dataTables.noDatatableConfigFound }}</h5>
+    </ng-template>
+
+    <p-confirmDialog
+      #cd
+      [style]="{ width: '450px' }"
+      key="deleteTeamConfirm"
+      data-test="confirmation-dialog"
+    >
+      <ng-template pTemplate="header">
+        <span class="p-dialog-title">{{ this.deletingSingleTeam ? this.translation?.adminPanel.dashboard.createTeams.deleteTeamDialog.header : this.translation?.adminPanel.dashboard.createTeams.deleteTeamDialog.multipleTeamsHeader }}</span>
+        <div class="p-dialog-header-icons">
+          <button
+            data-test="close-icon"
+            type="button"
+            class="p-dialog-header-icon p-dialog-header-close p-link"
+            (click)="crossIconClick()"
+          >
+            <span class="pi pi-times"></span>
+          </button>
+        </div>
+      </ng-template>
+
+      <ng-template pTemplate="footer">
+        <button
+          data-test="cancel-delete-team-button"
+          type="button"
+          pButton
+          pRipple
+          class="p-button-text"
+          [label]="cd.rejectButtonLabel"
+          (click)="deleteTeamReject()"
+        ></button>
+        <button
+          data-test="confirm-delete-team-button"
+          type="button"
+          pRipple
+          pButton
+          [label]="cd.acceptButtonLabel"
+          (click)="deleteTeamConfirm()"
+        ></button>
+      </ng-template>
+    </p-confirmDialog>
+
+    <ng-template #noColsAvailable>
+      {{ translation?.dataTables.noDatatableConfigFound }}
+    </ng-template>
+
+    <ng-template #supervisorsList>
+      <khoji-manage-supervisor (userTeams)="navigateToLists($event, false)"></khoji-manage-supervisor>
+    </ng-template>
+    
+    <ng-template #supervisorTeamsList>
+      <khoji-allocate-supervisor (navigationEvent)="navigateToLists('', true)"></khoji-allocate-supervisor>
+    </ng-template>
+  </ng-template>
+
+  <ng-template #editTeamsModal>
+    <div style="margin: 0 20rem 0 0">
+      <create-khoji-teams
+        (onClose)="insertNewTeam($event); showEditComponent = false"
+        [updateTeamData]="editTeamData"
+        data-test="edit-team-modal"
+      >
+      </create-khoji-teams>
+    </div>
+  </ng-template>
+</ng-template>

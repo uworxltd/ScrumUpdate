@@ -1,0 +1,100 @@
+:host ::ng-deep {
+  .p-paginator {
+    justify-content: right;
+    background: transparent;
+    border: none;
+    margin-top: 4px !important;
+  }
+
+  .p-datatable-wrapper {
+    border-radius: 10px;
+    border: 1px solid #bfbfbf;
+  }
+
+  .p-datatable .p-datatable-thead > tr > th {
+    font-weight: 600;
+    padding: 13px;
+  }
+
+  .p-datatable .p-datatable-header {
+    border: 0;
+    background-color: white;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .p-paginator-bottom {
+    padding-right: 0px;
+  }
+
+  .paginator .p-paginator-pages .p-paginator-page .p-highlight {
+    background-color: #89cff0 !important;
+    border-radius: 50% !important;
+  }
+
+  .paginator .p-paginator-pages .p-paginator-page.p-highlight {
+    border-radius: 50%;
+  }
+
+  .p-paginator {
+    border-color: transparent !important;
+    background-color: transparent !important;
+  }
+}
+
+.zoom-9 {
+  zoom: 0.9;
+}
+
+.table-title {
+  display: inline-block;
+  border-bottom: 2px solid var(--khoji-color-primary);
+  font-weight: 500;
+  font-size: 1.3rem;
+  color: var(--gray-800);
+  align-self: baseline;
+}
+
+.rag-box {
+  height: 20px;
+  width: 20px;
+  border-radius: 3px;
+  margin-right: 10px;
+}
+
+.export-button {
+  padding: 5px 10px !important;
+}
+
+.ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.no-data {
+  font-weight: bold;
+}
+
+:host .khoji-headings-title {
+  border-bottom: 3px solid var(--gray-400);
+  color: var(--gray-800);
+  align-self: baseline;
+  margin-right: 20px;
+  font-size: 1.4rem !important;
+  &:hover {
+    border-color: var(--khoji-color-primary);
+  }
+}
+
+:host ::ng-deep button.unlock-button {
+  .p-button-label {
+    color: var(--khoji-color-primary);
+    font-weight: bold;
+  }
+
+  .p-button-icon {
+    color: var(--khoji-color-primary);
+    font-weight: bold;
+  }
+}

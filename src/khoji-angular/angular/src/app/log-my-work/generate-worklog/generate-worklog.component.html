@@ -1,0 +1,614 @@
+<ngx-guided-tour [tourStepWidth]="tourStepWidth" [skipText]="skipText" [doneText]="'Got it!'"></ngx-guided-tour>
+<div
+  *ngIf="formattedDate !== undefined"
+>
+  <ng-container *ngIf="submitAIGeneratedWorklogLoadingState === 0; else buttonsSuccessAndLoadingTemplate">
+    <ng-container *ngIf="aiGeneratedWorklogLoadingState === 0; else loadingTemplate">
+      <div
+        *ngIf="!allWorklogDone"
+        class="w-100 flex flex-column align-items-center"
+      >
+       <ng-container [ngTemplateOutlet]="generateWorklogButtonTpl"></ng-container>
+      </div>
+      <div
+        *ngIf="allWorklogDone"
+        class="w-100 flex flex-column align-items-center"
+      >
+        <p class="text-black-alpha-90 text-md">Your work log for this week is already completed.</p>
+        <img
+          [src]="constants.POPPERS"
+          height="100px"
+          width="100px"
+        />
+      </div>
+    </ng-container>
+  </ng-container>
+</div>
+
+<ng-template #loadingTemplate>
+  <ng-container *ngIf="aiGeneratedWorklogLoadingState === 1 || !progressTasksDone; else generateTable">
+    <khoji-generate-worklog-progress></khoji-generate-worklog-progress>
+  </ng-container>
+</ng-template>
+
+<ng-template #generateTable>
+  <ng-container *ngIf="(countOfAIGeneratedWorklog > 0 || aiGeneratedWorklogs.length > 0) && aiGeneratedWorklogLoadingState === 2; else noWorklogFound">
+    <div class="mb-3">
+      <span class="m-3 p-2 border-round-xs generate-ai-cursor generate-ai-button generate-worklog-button flex justify-content-center pl-2 pr-2">
+        <img [src]="constants.AI_ICON" />
+        Generated for: {{ formattedDate }}
+        <span
+          class="pi pi-info-circle text-lg text-gray-500 ml-1 khoji-custom-line-height cursor-pointer"
+          [pTooltip]="'The AI does not store or share personal information. Moreover, please review AI-generated outputs carefully as errors may occur.'"
+          [tooltipPosition]="'bottom'"
+        ></span>
+      </span>
+    </div>
+    <div>
+      <p-table
+        #dt
+        [value]="aiGeneratedWorklogs"
+        [rowHover]="true"
+        dataKey="id"
+        editMode="row"
+        [showCurrentPageReport]="true"
+        styleClass="p-datatable-sm khoji-table-fixed-layout"
+        sortField="hours"
+        [sortOrder]="-1"
+        [(selection)]="selectedWorklogs"
+        [editingRowKeys]="editingRowKeys"
+        (onRowSelect)="handleRowSelect($event)"
+      >
+        <ng-template pTemplate="caption">
+          <div class="flex justify-content-between align-items-center">
+            <button
+              pButton
+              pRipple
+              label="New"
+              icon="pi pi-plus"
+              class="text-md pt-2 pb-2"
+              (click)="addNewWorklog()"
+              [loading]="submitAIGeneratedWorklogLoadingState == 1"
+            ></button>
+            <div class="font-normal">
+              <!-- Day complete - Additional time counts as extra hours -->
+              <ng-container *ngIf="alreadyLoggedHour >= workingHoursPerDay">
+                <span class="hours-to-be-logged-highlited" [innerHTML]="translation?.logMyWork?.hoursToBeLogged.dayComplete"></span>
+              </ng-container>
+              <!-- Nothing logged yet - 8 hours to fill -->
+              <ng-container *ngIf="alreadyLoggedHour == 0">
+                <span class="hours-to-be-logged-primary" [innerHTML]="translation?.logMyWork?.hoursToBeLogged.nothingLogged.format(workingHoursPerDay)"></span>
+              </ng-container>
+              <!-- Progress: 1.5h logged | 6.5h remaining -->
+              <ng-container *ngIf="alreadyLoggedHour > 0 && alreadyLoggedHour < workingHoursPerDay">
+                <span class="hours-to-be-logged-primary" [innerHTML]="translation?.logMyWork?.hoursToBeLogged.progress.format(alreadyLoggedHour,remainingHours)"></span>
+              </ng-container>
+            </div>
+            <button
+              pButton
+              [disabled]="disableExportButton()"
+              label="{{ translation.timelog.worklogSummary.export }}"
+              icon="pi pi-upload"
+              class="p-button-outlined text-md pt-2 pb-2"
+              (click)="exportAiGeneratedWorklog()"
+            ></button>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 5%">
+              <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+            </th>
+            <th style="width: 30%">Ticket ID</th>
+            <th pSortableColumn="hours">Time spent (h)<p-sortIcon field="hours"></p-sortIcon></th>
+            <th style="width: 35%">Work log description</th>
+            <th style="width: 12%"></th>
+          </tr>
+        </ng-template>
+
+        <ng-template
+          pTemplate="body"
+          let-worklog
+          let-editing="editing"
+          let-rowIndex="rowIndex"
+        >
+          <tr [pEditableRow]="worklog">
+            <td>
+              <p-tableCheckbox [value]="worklog"></p-tableCheckbox>
+            </td>
+
+            <td>
+              <p-cellEditor>
+                <ng-template pTemplate="input">
+                  <p-autoComplete
+                    required
+                    [suggestions]="searchSuggestions"
+                    placeholder="Jira ticket id or description"
+                    [dropdown]="false"
+                    (completeMethod)="searchIssues($event)"
+                    [showEmptyMessage]="true"
+                    emptyMessage="No matching records found"
+                    (onSelect)="tableIssueSelected($event.value, worklog)"
+                    styleClass="w-full"
+                    field="key"
+                    appendTo="body"
+                    class="generate-worklog"
+                    [(ngModel)]="worklog.suggestionKey"
+                  >
+                    <ng-template
+                      let-suggestion
+                      pTemplate="item"
+                    >
+                      <div class="w-20rem white-space-nowrap overflow-hidden text-overflow-ellipsis">
+                        <span>{{ suggestion.key }} - {{ suggestion.summary }}</span>
+                      </div>
+                    </ng-template>
+                  </p-autoComplete>
+                </ng-template>
+
+                <ng-template pTemplate="output">
+                  <div class="w-18rem white-space-nowrap overflow-hidden text-overflow-ellipsis">
+                    <a
+                      [href]="worklog.taskUrl"
+                      target="_blank"
+                      [pTooltip]="worklog.taskTitle"
+                      tooltipPosition="top"
+                    >
+                      {{ worklog.taskTitle ? getTaskSummaryDetails(worklog) : worklog.taskId }}
+                    </a>
+                  </div>
+                </ng-template>
+              </p-cellEditor>
+            </td>
+
+            <td>
+              <p-cellEditor>
+                <ng-template pTemplate="input">
+                  <p-inputNumber
+                    class="hours-input"
+                    inputId="inputnumber"
+                    mode="decimal"
+                    [(ngModel)]="worklog.hours"
+                    placeholder="Time spent (h)"
+                    min="0"
+                    [step]="0.1"
+                    [minFractionDigits]="0"
+                    [maxFractionDigits]="2"
+                    required
+                    (onBlur)="validateTotalHoursPerDay(worklog, $event)"
+                  >
+                  </p-inputNumber>
+                </ng-template>
+
+                <ng-template pTemplate="output">
+                  {{ worklog.hours }}
+                </ng-template>
+              </p-cellEditor>
+            </td>
+
+            <td>
+              <p-cellEditor>
+                <ng-template pTemplate="input">
+                  <textarea
+                    pInputTextarea
+                    rows="1"
+                    cols="35"
+                    [(ngModel)]="worklog.comments"
+                    class="w-full"
+                    maxlength="1000"
+                    [autoResize]="true"
+                  ></textarea>
+                </ng-template>
+
+                <ng-template pTemplate="output">
+                  {{ worklog.comments }}
+                </ng-template>
+              </p-cellEditor>
+            </td>
+
+            <td>
+              <div
+                *ngIf="!editing"
+                class="flex justify-content-center gap-2"
+              >
+                <button
+                  pButton
+                  pRipple
+                  icon="pi pi-pencil"
+                  pInitEditableRow
+                  class="p-button-rounded p-button-outlined p-button-icon-only border-0"
+                  (click)="onRowEditInit(worklog)"
+                ></button>
+                <button
+                  pButton
+                  pRipple
+                  icon="pi pi-trash"
+                  class="p-button-rounded p-button-outlined p-button-danger p-button-icon-only border-0"
+                  (click)="deleteWorklog(worklog)"
+                ></button>
+              </div>
+
+              <div
+                class="flex justify-content-center gap-2"
+                *ngIf="editing"
+              >
+                <button
+                  pButton
+                  pRipple
+                  type="button"
+                  pSaveEditableRow
+                  icon="pi pi-check"
+                  [disabled]="!isValidSuggestionKey(worklog) || worklog.hours === null || worklog.hours < 0"
+                  (click)="onRowEditSave(worklog)"
+                  class="p-button-rounded p-button-text p-button-success mr-2"
+                ></button>
+                <button
+                  pButton
+                  pRipple
+                  type="button"
+                  pCancelEditableRow
+                  icon="pi pi-times"
+                  (click)="onRowEditCancel(worklog, rowIndex)"
+                  class="p-button-rounded p-button-text p-button-danger"
+                ></button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td [attr.colspan]="5">
+              <span class="flex justify-content-center">Work log entries have been removed. You can manually add new entries. </span>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+    <div class="flex justify-content-end submit-button mr-2" *ngIf="getValidWorklogs(selectedWorklogs) as validWorklogs">
+      <button
+        pButton
+        pRipple
+        [disabled]="!validWorklogs.count || isEditWorklog()"
+        [label]="'Submit: (' + validWorklogs.hours + ' hour' + (validWorklogs.hours === 1 ? '' : 's') + ')'"
+        class="custom-button"
+        [ngClass]="{'animate-outline-button':!(!validWorklogs.count || validWorklogs.hours < 0)}"
+        (click)="submitWorklog()"
+        [loading]="submitAIGeneratedWorklogLoadingState == 1"
+      ></button>
+    </div>
+  </ng-container>
+</ng-template>
+
+<ng-template #buttonsSuccessAndLoadingTemplate>
+  <ng-container *ngIf="submitAIGeneratedWorklogLoadingState === 1">
+    <div class="w-100 flex flex-column align-items-center">
+      <img
+        [src]="constants.GENERATE_AI_WORKLOG_LOADING_GIF"
+        height="100px"
+        width="100px"
+      />
+      <p class="text-black-alpha-90">Please wait while your work log is being submitted.</p>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="submitAIGeneratedWorklogLoadingState === 2">
+    <div
+      *ngIf="!allWorklogDone"
+      class="w-100 flex flex-column align-items-center"
+    >
+      <p
+        class="text-black-alpha-90 text-md"
+        *ngIf="!isManualWorklogSubmmitted"
+      >
+        Congratulations! You have successfully submitted
+        <strong>{{ submittedHoursForWorklog }}</strong> hours of work log for <strong>{{ submittedDateForWorklog | date : 'MMM d' }}</strong> using AI.
+      </p>
+      <img
+        *ngIf="!isManualWorklogSubmmitted"
+        [src]="constants.POPPERS"
+        height="100px"
+        width="100px"
+      />
+      <div
+        class="w-100 flex flex-column align-items-center pt-4"
+      >
+        <ng-container [ngTemplateOutlet]="generateWorklogButtonTpl"></ng-container>
+           </div>
+    </div>
+    <div
+      *ngIf="allWorklogDone"
+      class="w-100 flex flex-column align-items-center"
+    >
+      <p class="text-black-alpha-90 text-md">Your work log for this week is already completed.</p>
+      <img
+        [src]="constants.POPPERS"
+        height="100px"
+        width="100px"
+      />
+    </div>
+  </ng-container>
+  <ng-container *ngIf="submitAIGeneratedWorklogLoadingState === 3 && successfullySubmittedWorklogsCount === 0">
+    <ng-template *ngTemplateOutlet="generateTable"> </ng-template>
+  </ng-container>
+</ng-template>
+
+<p-dialog
+  [(visible)]="showModal"
+  (onHide)="openModal(false)"
+  [style]="{ width: '40vw' }"
+  [modal]="true"
+  [draggable]="false"
+  [closeOnEscape]="true"
+  [resizable]="false"
+>
+  <ng-template pTemplate="header">
+    <div class=" flex w-100 justify-content-between">
+      <div class="flex gap-1">
+        <ng-container *ngIf="openModalForLeave; else manualWorkLogIcon">
+          <i class="fa fa-calendar my-auto" style="font-size: 1.6rem;" aria-hidden="true"></i>
+        </ng-container>
+        <h4 class="m-auto">{{openModalForLeave ? 'Add leave record' : 'Add work log record'}}</h4>
+        <span class="pl-3 pr-3 pt-1 pb-1 ml-2 height-fit-content font-medium">{{ worklogModalDate }}</span>
+      </div>
+      <div class="flex align-items-center gap-2 mr-2">
+        <div *ngIf="openModalForLeave" class="hours-days-toggle">
+          <span
+            class="hours"
+            [ngClass]="{ 'active': !isAdvancedMode }"
+            (click)="onToggleMode()"
+          >
+            Basic
+          </span>
+          <span
+            class="days"
+            [ngClass]="{ 'active': isAdvancedMode }"
+            (click)="onToggleMode()"
+          >
+            Advanced
+          </span>
+        </div>
+      </div>      
+    </div>
+  </ng-template>
+<ng-template pTemplate="content">
+  <form
+    [formGroup]="addManualWorklogForm"
+    (ngSubmit)="onSubmit()"
+    class="flex flex-column gap-4 p-2"
+  >
+    <div class="flex flex-column">
+      <label class="text-sm text-black-alpha-90 font-semibold" for="ticketId"
+        >Ticket ID</label
+      >
+
+      <p-autoComplete
+        formControlName="ticketKey"
+        required
+        [suggestions]="searchSuggestions"
+        placeholder="Search by Jira ticket id or description"
+        [dropdown]="false"
+        (completeMethod)="searchIssues($event)"
+        [showEmptyMessage]="true"
+        emptyMessage="No matching records found"
+        (onSelect)="issueSelected($event.value)"
+        styleClass="w-full"
+        field="key"
+        [(ngModel)]="ticketIdLeave"
+      >
+        <ng-template let-suggestion pTemplate="item">
+          <span>{{ suggestion.key }} - {{ suggestion.summary }}</span>
+        </ng-template>
+      </p-autoComplete>
+
+      <small
+      *ngIf="!isAdvancedMode && openModalForLeave"
+      class="text-black-alpha-60 font-italic  mt-2"
+      >Select a ticket to log your leave. Your selection will be saved, for future use.</small
+    >
+      <small
+        *ngIf="isFieldInvalid('ticketId') && !addManualWorklogForm.get('ticketId')?.hasError('invalidTicketId')"
+        class="p-invalid p-error mt-2"
+        >Ticket ID is required.</small
+      >
+      <small
+        *ngIf="addManualWorklogForm.get('ticketId')?.hasError('invalidTicketId')"
+        class="p-invalid p-error mt-2"
+      >
+        {{ addManualWorklogForm.get('ticketId')?.getError('errorMessage') }}
+      </small>
+    </div>
+
+    <!-- Show only in Advanced Mode -->
+    <div class="flex flex-column" *ngIf="isAdvancedMode || !openModalForLeave">
+      <label class="text-sm text-black-alpha-90 font-semibold" for="hours"
+        >Time spent (h)</label
+      >
+      <p-inputNumber
+        class="w-full"
+        id="hours"
+        formControlName="hours"
+        mode="decimal"
+        placeholder="Time spent (h)"
+        min="0"
+        [step]="0.1"
+        (blur)="onBlur('hours')"
+        [minFractionDigits]="0"
+        [maxFractionDigits]="2"
+        [(ngModel)]="leaveHours"
+      >
+      </p-inputNumber>
+    </div>
+
+    <!-- Show only in Basic Mode -->
+    <div class="flex flex-column" *ngIf="!isAdvancedMode && openModalForLeave">
+      <label class="text-sm text-black-alpha-90 font-semibold"
+        >Select leave type</label
+      >
+      <div class="flex gap-4">
+        <p-radioButton
+          *ngIf="!isAdvancedMode"
+          formControlName="hours"
+          [value]="workingHoursPerDay"
+          label="Full day"
+          [(ngModel)]="leaveHours"
+        ></p-radioButton>
+        <p-radioButton
+          *ngIf="!isAdvancedMode"
+          formControlName="hours"
+          [value]="workingHoursPerDay/2"
+          label="Half day"
+          [(ngModel)]="leaveHours"
+        ></p-radioButton>
+      </div>
+    </div>
+
+    <!-- Worklog Description: Shown only in Advanced Mode -->
+    <div class="flex flex-column" *ngIf="(isAdvancedMode && openModalForLeave) || !openModalForLeave">
+      <label class="text-sm text-black-alpha-90 font-semibold" for="comment"
+        >Work log description <span class="text-black-alpha-60 font-medium"
+          >(Optional)</span
+        ></label
+      >
+      <textarea
+        style="min-height: 100px"
+        id="comment"
+        placeholder=" Add a description for your work log"
+        pInputTextarea
+        formControlName="comment"
+      ></textarea>
+    </div>
+
+    <div class="w-full flex justify-content-end">
+      <button
+        style="width: 100px"
+        class="p-button-text"
+        pButton
+        type="button"
+        label="Cancel"
+        (click)="openModal(false)"
+      ></button>
+      <button
+        style="width: 100px"
+        pButton
+        type="submit"
+        [disabled]="addManualWorklogForm.invalid || worklogModalLoadingState === loadingStates.Loading"
+        label="Save"
+        [loading]="worklogModalLoadingState === loadingStates.Loading"
+      ></button>
+    </div>
+  </form>
+</ng-template>
+</p-dialog>
+
+<ng-template #noWorklogFound>
+  <div *ngIf="aiGeneratedWorklogLoadingState === 3">
+    <h6 class="text-center">{{ formattedDate }}</h6>
+    <div
+      class="flex flex-column align-items-center justify-content-center"
+      *ngIf="checkIfErrorOccurs([aiWorklogErrorCodes.ND006, aiWorklogErrorCodes.ND002, aiWorklogErrorCodes.ND001]); else error"
+    >
+      <h5>{{ checkIfErrorOccurs([aiWorklogErrorCodes.ND006, aiWorklogErrorCodes.ND002]) ? 'No relevant activity found to generate work log' : 'No relevant activity found on Jira.' }}</h5>
+
+      <p class="text-color mt-1">
+        {{
+          checkIfErrorOccurs([aiWorklogErrorCodes.ND006, aiWorklogErrorCodes.ND002])
+            ? (msOAuthEnabled
+                ? 'No activity found in Jira or MS Calendar. Make sure your tasks and meetings are properly recorded.'
+                : 'No activity found on Jira. Make sure your tasks are properly recorded.')
+            : (msOAuthEnabled
+                ? 'Try connecting MS Calender to ensure your work is captured effortlessly!'
+                : 'Try connecting your tools to ensure your work is captured effortlessly!')
+        }}
+      </p>
+
+      <div
+        class="flex justify-content-center gap-2"
+        *ngIf="checkIfErrorOccurs([aiWorklogErrorCodes.ND001]) && msOAuthEnabled"
+      >
+        <img
+          [src]="constants.OUTLOOK_SVG"
+          height="20"
+          width="20"
+        />
+        <a
+          class="underline cursor-pointer"
+          (click)="connectMSCalendar()"
+          >Connect MS Calendar</a
+        >
+      </div>
+      <div class="w-30rem">
+        <p-divider align="center">Or</p-divider>
+      </div>
+      <div class="flex gap-2">
+        <img [src]="constants.MANUAL_WORK_LOG_ICON" height="20" alt="icon">
+        <a class="underline cursor-pointer" (click)="addManualWorklog(false, formattedDate)">Add work log manually</a>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #error>
+  <div class="flex flex-column align-items-center justify-content-center">
+    <h5>{{ checkIfErrorOccurs([aiWorklogErrorCodes.ND004]) && msOAuthEnabled ? 'Unable to fetch data from MS Calendar!' : 'Something went wrong!' }}</h5>
+
+    <img style="width:200px" [src]="constants.ERROR_SVG" />
+
+    <div
+      *ngIf="checkIfErrorOccurs([aiWorklogErrorCodes.ND004]) && msOAuthEnabled; else errorTemplate"
+      class="flex flex-column align-items-center mt-3"
+    >
+      <p class="text-color">Please check your connection with MS Calendar again</p>
+      <div>
+        <img
+          [src]="constants.OUTLOOK_SVG"
+          alt="MS Calendar logo"
+          height="20"
+          width="20"
+        />
+        <a
+          class="ml-1 underline cursor-pointer"
+          (click)="connectMSCalendar()"
+          >Reconnect MS Calendar</a
+        >
+      </div>
+      <div class="w-30rem">
+        <p-divider align="center">Or</p-divider>
+      </div>
+      <div class="flex gap-2">
+        <img [src]="constants.AI_ICON" height="20" alt="icon">
+        <a class="underline cursor-pointer" (click)="generateWorklogAgain()">Generate work log without MS Calendar</a>
+      </div>
+    </div>
+
+    <ng-template #errorTemplate>
+      <p class="text-color">
+        Please check your internet connectivity is stable or
+        <span
+          class="text-cyan-800 font-bold cursor-pointer"
+          (click)="reloadPage()"
+          >Retry</span
+        >
+        generating the missing work log.
+      </p>
+    </ng-template>
+  </div>
+</ng-template>
+
+<ng-template #generateWorklogButtonTpl>
+  <div class="btn-animated-border-container">
+    <p-splitButton
+      (onClick)="onAiWandClick(formattedDate)"
+      [model]="this.menuItemsGenerateWorklogManual"
+      styleClass="p-button-raised tour-generate-ai-worklog"
+    >
+      <ng-template pTemplate="content">
+          <img alt="AI" [src]="constants.WAND_ICON_AI_WHITE" />
+          <span class="ml-2 flex align-items-center">Generate work log for {{formattedDate}}</span>
+      </ng-template>
+    </p-splitButton>
+  </div>
+</ng-template>
+
+<ng-template #manualWorkLogIcon>
+  <img class="my-auto" [src]="constant.MANUAL_WORK_LOG_ICON" height="22" alt="icon"/>
+</ng-template>

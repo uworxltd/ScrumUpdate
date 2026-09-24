@@ -1,0 +1,194 @@
+{%- comment -%} Preparing Reusable Queries {%- endcomment -%}
+{%- comment -%} Make sure there is no empty space before the start or end of the file {%- endcomment -%}
+
+{%- assign workLogRange = "worklogDate >= " | append: dateFrom | append: " AND worklogDate <= " | append: dateTo -%}
+
+{%- assign teamStoriesPrefix = '(worklogAuthor=\\\"' -%}
+{%- assign teamStoriesSuffix = '\\\" AND ' | append: workLogRange | append: ")" -%}
+{%- assign teamStoriesDelimiter = '\\\" AND ' | append: workLogRange | append: ') OR (worklogAuthor=\\\"' -%}
+
+{%- assign teamBoardsPrefix = 'AND (cf[' | append: teamBoardCfKey | append: ']=\"' -%}
+{%- assign teamBoardsSuffix = '\")' -%}
+{%- assign teamBoardsDelimiter = '\" OR cf[' | append: teamBoardCfKey | append: ']=\"' -%}
+
+{%- assign teamBugsPrefix = "(worklogAuthor='" -%}
+{%- assign teamBugsSuffix = "' AND " | append: workLogRange | append: ")" -%}
+{%- assign teamBugsDelimiter = "' AND " | append: workLogRange | append: ") OR (worklogAuthor='" -%}
+
+{%- assign individualBugsPrefix = '(worklogAuthor="' -%}
+{%- assign individualBugsSuffix = '" AND ' | append: workLogRange | append: ")" -%}
+{%- assign individualBugsDelimiter = '\" AND ' | append: workLogRange | append: ' AND issuetype = Bug) OR (worklogAuthor=\"' -%}
+
+{%- assign individualsIssuesPrefix = '(worklogAuthor=\"' -%}
+{%- assign individualsIssuesSuffix = '\" AND ' | append: workLogRange | append: ")" -%}
+{%- assign individualsIssuesDelimiter = '\" AND ' | append: workLogRange | append: ') OR (worklogAuthor=\"' -%}
+
+{%- assign issueSearchPrefix = "id = " -%}
+{%- assign issueSearchDelimiter = " OR id = " -%}
+
+{%- assign releaseStatisticsJQL = "fixVersion = '" | append: release | append: "'" -%}
+{%- assign issueTypesString = issueTypes | join: "','"  -%}
+{%- assign releaseStatisticsWithIssueTypesJQL = "fixVersion = '" | append: release | append: "'" | append : " AND issuetype in (" | append: issueTypesString | append: ")"-%}
+
+{%- comment -%} Filters Keys Transformations {%- endcomment -%}
+
+{%- if filterKeys != null -%}
+  {%- assign filterKeysJQL = filterKeys | join: " AND key != " -%}
+  {%- assign commaSeparatedFilterKeys = filterKeys | join: ", " -%}
+{%- else -%}
+  {%- assign filterKeysJQL = "" -%}
+  {%- assign commaSeparatedFilterKeys = "" -%}
+{%- endif -%}
+{%- if filterKeysJQL != "" -%}
+  {%- assign filterKeysJQL = "AND key != " | append: filterKeysJQL -%}
+{%- endif -%}
+
+{%- assign filterKeysClause = "" -%}
+{%- if commaSeparatedFilterKeys != "" -%}
+  {%- assign filterKeysClause = " AND key not in (" | append: filterKeysClause | append: commaSeparatedFilterKeys | append: ")" -%}  
+{%- endif -%}
+
+{%- assign teamBoardsClause = "" -%}
+{%- assign sprintsCF = 'cf[' | append: sprintCfKey | append : '] in (' -%}
+{%- assign workLogDateClause = '(issueFunction in parentsOf(\"' | append: workLogRange | append: '\") OR (' | append: workLogRange | append: "))" -%}
+{%- assign teamBugsJQL = memberNames | join: teamBugsDelimiter | prepend: teamBugsPrefix | append: teamBugsSuffix -%}
+{%- assign individualBugsJQL = memberNames | join: individualBugsDelimiter | prepend: individualsIssuesPrefix | append: individualsIssuesSuffix -%}
+{%- assign membersJQLForStory = memberNames | join: teamStoriesDelimiter | prepend: teamStoriesPrefix | append: teamStoriesSuffix -%}
+{%- assign sprintsClause = sprintIds | join: ", " | prepend: sprintsCF | append: ")" -%}
+{%- assign dateClauseForIssueAndParents = '(issueFunction in parentsOf(\"' | append: workLogRange | append: '\") OR (' | append: workLogRange | append: "))" -%}
+{%- assign dateClauseForIssue = "(" | append: workLogRange | append: ")" -%}
+{%- assign teamboardCFClause = '(cf[' | append: teamBoardCfKey | append: '] in (' -%}
+
+{%- comment -%} Filtering Teamboards {%- endcomment -%}
+
+{%- assign boardsCFQuery = "" -%}
+{%- for board in teamBoards -%}
+  {%- if board.teamBoardDataSource == 'CustomField' -%}
+        {%- assign boardsCFQuery = boardsCFQuery | append: board.teamBoardIdentifier | append: ',' -%}
+  {%- endif -%}
+{%- endfor -%}
+{%- if boardsCFQuery != "" -%}
+    {%- assign cfs = boardsCFQuery | split: "," -%}
+    {%- assign combinedCFS = cfs | join: '\", \"' -%}
+    {%- assign teamBoardsClause = teamBoardsClause | append: '\"' | append: combinedCFS | append: '\"' -%}
+    {%- assign teamBoardsClause = teamBoardsClause | prepend: teamboardCFClause | append: "))" -%}
+{%- endif -%}
+
+{%- assign boardsFilterQuery = "" -%}
+{%- assign printedPrefix = false -%}
+{%- for board in teamBoards -%}
+  {%- if board.teamBoardDataSource == 'FilterQuery' -%}
+    {%- if printedPrefix == false -%}
+      {%- assign boardsFilterQuery = boardsFilterQuery -%}
+      {%- assign printedPrefix = true -%}
+    {%- else -%}
+      {%- assign boardsFilterQuery = boardsFilterQuery | append: " OR ( " -%}	
+    {%- endif -%}
+    {%- assign boardsFilterQuery = boardsFilterQuery | append: board.teamBoardIdentifier -%}
+  {%- endif -%}
+{%- endfor -%}
+{%- if teamBoardsClause != "" -%}
+  {%- if boardsFilterQuery != "" -%}
+    {%- assign teamBoardsClause = "(" | append: teamBoardsClause | append: " OR " | append: boardsFilterQuery | append: ")" -%}
+  {%- endif -%}
+{%- else -%}
+  {%- assign teamBoardsClause = "" | append: boardsFilterQuery -%}
+{%- endif -%}
+
+{%- assign filteredTeamBoardsJQL = teamBoardsClause -%}
+
+{%- if filterKeysJQL != "" -%}
+  {%- assign filteredTeamBoardsJQL = "" | append: "key not in (" | append: commaSeparatedFilterKeys | append: ") AND " | append: filteredTeamBoardsJQL -%}
+{%- endif -%}
+
+{%- comment -%} Adding User Activity Query Template {%- endcomment -%}
+{%- assign activityDateRange = "updated >= " | append: requestedDate | append: " OR worklogDate = " | append: requestedDate -%}
+{%- assign userActivityPrefix = '(issue in updatedBy(\"' -%}
+{%- assign userActivitySuffix = '\" , \"' | append: requestedDate | append: '\" , \"' | append: requestedDate | append: '\" ))' -%}
+{%- assign userWorklogActivity = '(worklogAuthor=\"' | append: userAccountId | append: '\" AND worklogDate = \"' | append: requestedDate | append: '\")' -%}
+{%- assign userStatusChangeActivity = 'status CHANGED ON \"' | append: requestedDate | append: '\" OR assignee CHANGED ON \"' | append: requestedDate | append: '\"' -%}
+{%- assign userActivityClause = userStatusChangeActivity | append: ' OR ' | append: userWorklogActivity | append: ' OR ' | append: userActivityPrefix | append: userName | append: userActivitySuffix -%}
+
+{% comment %} Adding User Activity Query Template within Date Range {% endcomment %}
+{%- assign userActivityDuringRange = '(issue IN updatedBy("' | append: userName | append: '", "' | append: dateFrom | append: '", "' | append: dateTo | append: '") OR (worklogAuthor = \"' | append: userAccountId | append: '\" AND worklogDate >= \"' | append: dateFrom | append: '\" AND worklogDate <= \"' | append: dateTo | append: '\") OR ((assignee = \"' | append: userName | append: '\" OR reporter = \"' | append: userName | append: '\") AND statusCategory != Done AND updated >= -20d))' -%}
+
+{%- comment -%} Generate JQL Query based on dynamic names {%- endcomment -%}
+{%- assign query = 'updatedDate >= \"' | append: requestedDateMinus30Days | append: '\" AND updatedDate <= \"' | append: todayDatePlus1 | append: '\" AND (' -%}
+{%- assign projectsWorkedOn = "updated >= -3d AND (issue in issueHistory() AND assignee = '" | append: userName | append: "' OR issuekey IN updatedBy('" | append: userName | append: "'))" -%}
+{%- assign lastWeekActivity = 'worklogAuthor =\"' | append: userAccountId | append : '\" AND worklogDate >= \"' | append: dateFrom | append: '\" AND worklogDate <= \"' | append: dateTo | append: '\"' -%}
+
+{%- for term in summaryKeyWords -%}
+    {%- if forloop.first == false -%}
+        {%- assign query = query | append: ' OR ' -%}
+    {%- endif -%}
+    {%- assign query = query | append: 'summary ~ \"' | append: term | append: '\"' -%}
+{%- endfor -%}
+
+{%- assign query = query | append: ')' -%}
+
+{%- comment -%} Method Implementations {%- endcomment -%}
+
+{%- if queryId == "TEAM_STORIES" -%}
+  {{ "(" | append: dateClauseForIssue | append: ")" | append: " AND " | append: filteredTeamBoardsJQL }}
+{%- elsif queryId == "TEAM_STORIES_WITH_ISSUE_TYPES" -%}
+{% assign issueTypesString = issueTypes | join: "','"  %}{{ "(" | append: dateClauseForIssue | append: ")" | append : " AND issuetype in (" | append: issueTypesString | append: ")" | append: " AND " | append: filteredTeamBoardsJQL }}
+{%- elsif queryId == "INDIVIDUAL_STORIES" -%}
+  {{ '(issueFunction in parentsOf(\"' | append: membersJQLForStory | append: '\")' | append: " AND issuetype = Story " }}
+  {{ filterKeysJQL}}
+{%- elsif queryId == "TEAM_BUGS" -%}
+  {{ "(" | append: dateClauseForIssue | append: ")" | append: " AND " | append: filteredTeamBoardsJQL }}
+{%- elsif queryId == "INDIVIDUAL_BUGS" -%}
+  {{ individualBugsJQL }}
+{%- elsif queryId == "INDIVIDUALS_ISSUES" -%}
+  {{ memberNames | join: individualsIssuesDelimiter | prepend: individualsIssuesPrefix | append: individualsIssuesSuffix }}
+{%- elsif queryId == "RELEASE_STATISTICS" -%}
+  {{ releaseStatisticsJQL | append: filterKeysJQL }}
+{%- elsif queryId == "RELEASE_STATISTICS_ISSUE_TYPES" -%}
+  {{ releaseStatisticsWithIssueTypesJQL | append: filterKeysJQL }}
+{%- elsif queryId == "TEAM_BUGS_AND_STORIES_WITH_ISSUE_TYPES" -%}
+{% assign issueTypesString = issueTypes | join: "','"  %}{{ "(" | append: dateClauseForIssue | append: ")" | append : " AND issuetype in (" | append: issueTypesString | append: ")" | append: " AND " | append: filteredTeamBoardsJQL}}
+{%- elsif queryId == "TEAM_BUGS_AND_STORIES" -%}
+ {{ "(" | append: dateClauseForIssue | append: ")" | append: " AND " | append: filteredTeamBoardsJQL}}
+{%- elsif queryId == "TEAM_WORKLOG_FOR_BUGS_AND_STORIES" -%}
+  {{ "" | append: dateClauseForIssueAndParents | append: ") AND issuetype in (Bug, Story) AND "| append: teamBoardsClause }}
+{%- elsif queryId == "TEAMBOARDS_WITH_START_AND_END_DATE_ISSUE_TYPES" -%}
+{% assign issueTypesString = issueTypes | join: "','"  %}{{ "" | append: dateClauseForIssue | append : " AND issuetype in (" | append: issueTypesString | append: ")" | append: " AND " | append: filteredTeamBoardsJQL}}
+{%- elsif queryId == "TEAMBOARDS_WITH_START_AND_END_DATE" -%}
+ {{ "" | append: dateClauseForIssue | append: " AND " | append: filteredTeamBoardsJQL}}
+{%- elsif queryId == "ISSUES_AGAINST_EPIC" -%}
+  {{ '\"Epic Link\" = \"' | append: epicId | append: '\" AND issuetype in (Bug, Story) ' | append: filterKeysJQL }}
+{%- elsif queryId == "ISSUES_AND_EPIC" -%}
+	{% assign resultValue = epicIds | join: "','"  %}{{"'Epic Link' in ('" | append:resultValue |append: "') OR 'issueKey' in ('" | append:resultValue |append: "') OR 'parentEpic' in ('" | append:resultValue |append:"') " | append: filterKeysJQL }}
+{%- elsif queryId == "ISSUES_AGAINST_EPICS" -%}
+  {{ epicIds | join: "', '" | prepend: "'" | append: "'" | prepend: "'Epic Link' in (" | append: ")" | append: filterKeysJQL }}
+{%- elsif queryId == "SUBTASKS_AGAINST_PARENT" -%}
+  {{ "parent='" | append: parentId | append: "' " | append: filterKeysJQL }}
+{%- elsif queryId == "SUBTASKS_AGAINST_PARENTS" -%}
+  {{ parentIds | join: "', '" | prepend: "'" | append: "'" | prepend: "parent in (" | append: ") " | append: filterKeysJQL }}
+{%- elsif queryId == "TEAMBOARDS_AND_SPRINTS_ISSUE_TYPES" -%}
+{% assign issueTypesString = issueTypes | join: "','"  %}{{ "" | append: sprintsClause | append: filterKeysClause | append : " AND issuetype in (" | append: issueTypesString | append: ")" | append: " AND " | append: teamBoardsClause}}
+{%- elsif queryId == "SPRINTS_WITH_ISSUE_TYPES" -%}
+{% assign issueTypesString = issueTypes | join: "','"  %}{{ "" | append: sprintsClause | append: filterKeysClause | append : " AND issuetype in (" | append: issueTypesString | append: ")"}}
+{%- elsif queryId == "SPRINTS" -%}
+{{ "" | append: sprintsClause | append: filterKeysClause}}
+{%- elsif queryId == "TEAMBOARDS_AND_SPRINTS" -%}
+    {{ "" | append: sprintsClause | append: filterKeysClause | append: " AND " | append: teamBoardsClause }}
+{%- elsif queryId == "ISSUES_AGAINST_ISSUEKEY" -%}
+  {{ "issueKey='" | append: issueId | append: "'" }}
+{%- elsif queryId == "CUSTOM" -%}
+  {{ customJQL | append: " " | append: filterKeysJQL }}
+{%- elsif queryId == "ISSUES" -%}
+  {{ issueIds | join: issueSearchDelimiter | prepend: issueSearchPrefix}}
+{%- elsif queryId == "ISSUES_AGAINST_ISSUEKEYS" -%}
+  {{"issue in ("}}{{ issueIds | join: ","}}{{") " | append: filterKeysJQL }}
+{%- elsif queryId == "USER_ACTIVITY" -%}
+    {{ userActivityClause }}
+{%- elsif queryId == "DEFAULT_ACTIVITY" -%}
+    {{ query }}
+{%- elsif queryId == "PROJECTS_WORKED" -%}
+    {{ projectsWorkedOn }}
+{%- elsif queryId == "LAST_WEEK_ACTIVITY" -%}
+    {{ lastWeekActivity }}
+{%- elsif queryId == "DATE_RANGE_ACTIVITY" -%}
+    {{ userActivityDuringRange }}
+{%- endif -%}

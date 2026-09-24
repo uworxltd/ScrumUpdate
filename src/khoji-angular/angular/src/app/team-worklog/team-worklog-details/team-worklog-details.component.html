@@ -1,0 +1,575 @@
+<div
+  class="card zoom-9"
+  *ngIf="worklogTeamsSelected$ | async as worklogTeamsSelected"
+>
+  <ng-container [ngTemplateOutlet]="worklogTeamsSelected.length > 1 ? teamWorklogTable : memberWorklogTable"></ng-container>
+</div>
+<ng-template #memberWorklogTable>
+  <p-table
+    #dt
+    data-test="worklog-details-table"
+    [attr.data-rpa]="constants.RPA_TEAM_WORKLOG_DETAILS_TABLE"
+    *ngIf="teamWorklog"
+    [value]="teamWorklog.memberWorklogs"
+    [scrollable]="scrollable"
+    scrollHeight="calc(100vh - 220px)"
+    [style]="{ width: '100%' }"
+    [globalFilterFields]="['memberName']"
+    [rowsPerPageOptions]="[10, 25, 50, 100]"
+    [rows]="25"
+    [totalRecords]="teamWorklog.memberWorklogs.length"
+    [showCurrentPageReport]="false"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    [paginator]="true"
+    data-test="member-worklog-details-table"
+    sortField="totalMainPercents.Worklog"
+    @fadeInOut
+  >
+    <ng-template pTemplate="caption">
+      <div class="flex align-items-center justify-content-between" style="text-align: right">
+        <div class="flex">
+          <div class="khoji-headings-title">Team details</div>
+          <khoji-team-worklog-selection [domWidth]="650"></khoji-team-worklog-selection>
+        </div>
+        <div class="flex">
+          <div class="mr-4">
+            <span
+              class="p-input-icon-left"
+              [title]="constants.DATA_TABLE_SEARCH_INPUT_TOOLTIP"
+            >
+              <i class="pi pi-search"></i>
+              <input
+                type="search"
+                pInputText
+                size="50"
+                placeholder="Search"
+                (input)="dt.filterGlobal($event.target.value, 'contains')"
+                [disabled]="!memberWorklogs.length"
+                class="search-input"
+              />
+            </span>
+          </div>
+          <button
+            pButton
+            *ngIf="isUserSupervisor && showRemindTeamButton"
+            [label]="translation?.timelog.workLogStatistics.remindTeam"
+            icon="fa fa-bell"
+            [disabled]="!memberWorklogs.length"
+            class="tool-button p-button-outlined mr-4"
+            [title]="translation?.timelog.workLogStatistics.remindTeam"
+            (click)="openWorklogReminderModalForTheTeam()"
+          ></button>
+          <button
+            pButton
+            label="Export"
+            [disabled]="!memberWorklogs.length"
+            icon="pi pi-upload"
+            class="tool-button p-button-outlined"
+            [title]="'export as CSV'"
+            (click)="exportMemberWorklogCsv()"
+          ></button>
+        </div>
+      </div>
+    </ng-template>
+
+    <ng-template pTemplate="header">
+      <tr class="member-header-row">
+        <th
+          style="text-align: center; width: 200px"
+          [attr.rowspan]="categorizationEnabled ? 3 : 2"
+          class="sticky-left"
+          pSortableColumn="memberName"
+        >
+          Members <p-sortIcon field="memberName"></p-sortIcon>
+        </th>
+        <th
+          style="text-align: center"
+          colspan="2"
+          [attr.rowspan]="categorizationEnabled ? 2 : 1"
+          class="colum-teamworklog sticky-left-worklog"
+        >
+          <span class="worklog-align">
+            {{ translation.timelog.table.columns.worklog }}
+          </span>
+          <ng-container
+            *ngTemplateOutlet="worklogColumnTooltip">
+          </ng-container>
+        </th>
+        <ng-container *ngIf="categorizationEnabled">
+          <th
+            *ngIf="(teamWorklog.memberWorklogColumns.main.length - 1) > 0"
+            [attr.colspan]="(teamWorklog.memberWorklogColumns.main.length - 1) * 2"
+            [attr.data-rpa]="constants.RPA_TEAM_WORKLOG_DETAILS_TABLE_CATEGORY_COLUMNS"
+            style="text-align: center"
+          >
+            {{ mainCategoryAlias }}
+            <ng-container
+              *ngTemplateOutlet="khojiToolTip context:{col: translation.timelog.table.columns.productiveColumnsTooltip, position: 'top' }">
+            </ng-container>
+          </th>
+          <th
+            *ngIf="teamWorklog.memberWorklogColumns.other.length"
+            [attr.colspan]="teamWorklog.memberWorklogColumns.other.length * 2"
+            style="text-align: center"
+          >
+            {{ otherCategoryAlias }}
+            <ng-container
+              *ngTemplateOutlet="khojiToolTip context:{col: translation.timelog.table.columns.unproductiveColumnsTooltip, position: 'top' }">
+            </ng-container>
+          </th>
+        </ng-container>
+        <ng-container *ngIf="!categorizationEnabled">
+          <th
+            style="text-align: center"
+            colspan="2"
+            *ngFor="let col of teamWorklog.memberWorklogColumns.other"
+          >
+            {{ col }}
+          </th>
+        </ng-container>
+      </tr>
+      <tr
+        class="member-header-row"
+        *ngIf="categorizationEnabled"
+      >
+        <ng-container *ngFor="let col of teamWorklog.memberWorklogColumns.main">
+          <th
+            *ngIf="col !== 'Worklog'"
+            style="text-align: center"
+            colspan="2"
+          >
+            {{ col }}
+            <ng-container
+              *ngTemplateOutlet="khojiToolTip context:{col:generateToolTipForMainCategoryColumn(col),position:getToolTipPosition(col)}">
+            </ng-container>
+          </th>
+        </ng-container>
+        <th
+          style="text-align: center"
+          colspan="2"
+          *ngFor="let col of teamWorklog.memberWorklogColumns.other"
+        >
+          {{ col }}
+        </th>
+      </tr>
+      <tr class="member-header-row">
+        <ng-container *ngIf="categorizationEnabled">
+          <ng-container *ngFor="let col of teamWorklog.memberWorklogColumns.main">
+            <th
+              [ngClass]="{ 'colum-teamworklog': col === 'Worklog', 'sticky-left-worklog': col === 'Worklog' }"
+              style="text-align: center; min-width: 106px"
+              pSortableColumn="totalMainPercents.{{ col }}"
+            >
+              %
+              <p-sortIcon field="totalMainPercents.{{ col }}"> </p-sortIcon>
+            </th>
+            <th
+              style="text-align: center; min-width: 83px"
+              pSortableColumn="totalMainDays.{{ col }}"
+              [ngClass]="{ 'colum-teamworklog': col === 'Worklog', 'sticky-left-days': col === 'Worklog' }"
+            >
+              Days
+              <p-sortIcon field="totalMainDays.{{ col }}"> </p-sortIcon>
+            </th>
+          </ng-container>
+        </ng-container>
+        <ng-container *ngIf="!categorizationEnabled">
+          <ng-container *ngFor="let col of teamWorklog.memberWorklogColumns.main; let colIndex = index">
+            <th
+              *ngIf="colIndex < 1"
+              [ngClass]="{ 'colum-teamworklog': col === 'Worklog', 'sticky-left-worklog': col === 'Worklog' }"
+              style="text-align: center; min-width: 106px"
+              pSortableColumn="totalMainPercents.{{ col }}"
+            >
+              %
+              <p-sortIcon field="totalMainPercents.{{ col }}"> </p-sortIcon>
+            </th>
+            <th
+              *ngIf="colIndex < 1"
+              style="text-align: center; min-width: 83px"
+              pSortableColumn="totalMainDays.{{ col }}"
+              [ngClass]="{ 'colum-teamworklog': col === 'Worklog', 'sticky-left-days': col === 'Worklog' }"
+            >
+              Days
+              <p-sortIcon field="totalMainDays.{{ col }}"> </p-sortIcon>
+            </th>
+          </ng-container>
+        </ng-container>
+        <ng-container *ngFor="let col of teamWorklog.memberWorklogColumns.other">
+          <th
+            style="text-align: center; min-width: 106px"
+            pSortableColumn="totalOthersPercents.{{ col }}"
+          >
+            % <p-sortIcon field="totalOthersPercents.{{ col }}"></p-sortIcon>
+          </th>
+          <th
+            style="text-align: center; min-width: 83px"
+            pSortableColumn="totalOthersDays.{{ col }}"
+          >
+            Days <p-sortIcon field="totalOthersDays.{{ col }}"> </p-sortIcon>
+          </th>
+        </ng-container>
+      </tr>
+    </ng-template>
+
+    <ng-template
+      pTemplate="body"
+      let-memberWorklog
+    >
+      <tr>
+        <td class="sticky-left flex align-items-center" style="width: 200px;">
+          <div class="flex justify-content-start align-items-center">
+            <div
+              class="max-w-11rem white-space-nowrap overflow-hidden text-overflow-ellipsis"
+              title="{{ memberWorklog.memberName }}"
+            >
+              {{ memberWorklog.memberName }}
+            </div>
+          </div>
+        </td>
+        <ng-container *ngIf="categorizationEnabled">
+          <ng-container *ngFor="let col of teamWorklog.memberWorklogColumns.main">
+            <td [ngClass]="{ 'colum-teamworklog': col === 'Worklog', 'sticky-left-worklog': col === 'Worklog' }">
+              <div [ngClass]="{ flex: col === 'Worklog' }">
+                <span
+                  [ngStyle]="{ 'background-color': memberWorklog.thresholdColor }"
+                  *ngIf="col === 'Worklog'"
+                  class="total-worklog-box"
+                ></span>
+                {{ memberWorklog.totalMainPercents[col] | number : '1.2-2' }}%
+              </div>
+            </td>
+            <td [ngClass]="{ 'colum-teamworklog sticky-left-days': col === 'Worklog' }">
+              {{ memberWorklog.totalMainDays[col] | number : '1.2-2' }}
+            </td>
+          </ng-container>
+        </ng-container>
+        <ng-container *ngIf="!categorizationEnabled">
+          <ng-container *ngFor="let col of teamWorklog.memberWorklogColumns.main; let colIndex = index">
+            <td
+              *ngIf="colIndex < 1"
+              [ngClass]="{ 'colum-teamworklog': col === 'Worklog', 'sticky-left-worklog': col === 'Worklog' }"
+            >
+              <div [ngClass]="{ flex: col === 'Worklog' }">
+                <span
+                  [ngStyle]="{ 'background-color': memberWorklog.thresholdColor }"
+                  *ngIf="col === 'Worklog'"
+                  class="total-worklog-box"
+                ></span>
+                {{ memberWorklog.totalMainPercents[col] | number : '1.2-2' }}%
+              </div>
+            </td>
+            <td
+              *ngIf="colIndex < 1"
+              [ngClass]="{ 'colum-teamworklog sticky-left-days': col === 'Worklog' }"
+            >
+              {{ memberWorklog.totalMainDays[col] | number : '1.2-2' }}
+            </td>
+          </ng-container>
+        </ng-container>
+        <ng-container *ngFor="let col of teamWorklog.memberWorklogColumns.other">
+          <td>{{ memberWorklog.totalOthersPercents[col] | number : '1.2-2' }}%</td>
+          <td>{{ memberWorklog.totalOthersDays[col] | number : '1.2-2' }}</td>
+        </ng-container>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <ng-container *ngIf="teamWorklog.memberWorklogColumns.other.length > 0">
+          <td class="sticky-left" style="border-right-color:white">
+            <div class="flex" style="width:189px"></div>
+          </td>
+        </ng-container>
+        <td
+          class="no-data"
+          style="text-align: center; border-left-color:white"
+          [attr.colspan]="teamWorklog.memberWorklogColumns.other.length > 0 ? (teamWorklog.memberWorklogColumns.main.length+teamWorklog.memberWorklogColumns.other.length)*2 : 3"
+        >
+          <div *ngIf="teamWorklog.memberWorklogColumns.other.length > 0" style="position: relative; left: -189px">{{ translation.error.noDataAvailable }}</div>
+          <div *ngIf="teamWorklog.memberWorklogColumns.other.length == 0">{{ translation.error.noDataAvailable }}</div>
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="paginatorleft">
+      <span> {{ translation.members }}{{ memberWorklogs.length }} </span>
+    </ng-template>
+
+    <ng-template
+      pTemplate="footer"
+      let-memberWorklog
+    >
+      <tr *ngIf="dt.totalRecords>0">
+        <td class="sticky-left">{{teamWorklog.memberWorklogColumns.other.length? translation.timelog.table.footer.avgTimeLog: '' }}</td>
+        <ng-container *ngIf="categorizationEnabled">
+          <ng-container *ngFor="let col of teamWorklog.memberWorklogColumns.main">
+            <td [ngClass]="{ 'sticky-left-worklog': col === 'Worklog', flex: col === 'Worklog' }">
+              <span
+                [ngStyle]="{ 'background-color': teamWorklog?.thresholdColor }"
+                *ngIf="col == 'Worklog'"
+                class="total-worklog-box"
+              ></span>
+              {{ getTotalAverageTimeLogPercentage(col, true) }}%
+            </td>
+            <td [ngClass]="{ 'sticky-left-days': col === 'Worklog' }">{{ getTotalTimeLogDays(col, true) }} d</td>
+          </ng-container>
+        </ng-container>
+        <ng-container *ngIf="!categorizationEnabled">
+          <ng-container *ngFor="let col of teamWorklog.memberWorklogColumns.main; let colIndex = index">
+
+            <td
+              *ngIf="colIndex < 1"
+              [ngClass]="{ 'sticky-left-worklog': col === 'Worklog', flex: col === 'Worklog' }"
+            >
+              <span
+                [ngStyle]="{ 'background-color': teamWorklog?.thresholdColor }"
+                *ngIf="col == 'Worklog'"
+                class="total-worklog-box"
+              ></span>
+              {{ getTotalAverageTimeLogPercentage(col, true) }}%
+            </td>
+            <td
+              *ngIf="colIndex < 1"
+              [ngClass]="{ 'sticky-left-days': col === 'Worklog' }"
+            >
+              {{ getTotalTimeLogDays(col, true) }} d
+            </td>
+          </ng-container>
+        </ng-container>
+        <ng-container *ngFor="let col of teamWorklog.memberWorklogColumns.other">
+          <td>{{ getTotalAverageTimeLogPercentage(col, false) }}%</td>
+          <td>{{ getTotalTimeLogDays(col, false) }} d</td>
+        </ng-container>
+      </tr>
+    </ng-template>
+  </p-table>
+</ng-template>
+
+<ng-template #teamWorklogTable>
+  <p-table
+    [id]="constants.TEAM_WORKLOG_TABLE_CONTAINER"
+    *ngIf="worklogStats"
+    [value]="worklogStats.teamWorklogs"
+    dataKey="teamName"
+    [scrollable]="true"
+    scrollHeight="calc(100vh - 260px)"
+    [responsive]="true"
+    [autoLayout]="true"
+    [style]="{ width: '100%' }"
+    [expandedRowKeys]="expandedRows"
+    data-test="team-worklog-details-table"
+    @fadeInOut
+  >
+    <ng-template pTemplate="caption">
+      <div class="flex align-items-center justify-content-between" style="text-align: right">
+        <div class="flex">
+          <div class="khoji-headings-title">Team details</div>
+          <khoji-team-worklog-selection [domWidth]="250"></khoji-team-worklog-selection>
+        </div>
+        <div class="flex">
+          <button
+            pButton
+            label="Export"
+            [disabled]="!worklogStats.teamWorklogs.length"
+            icon="pi pi-upload"
+            class="tool-button p-button-outlined"
+            [title]="'export as CSV'"
+            (click)="exportTeamWorklogCsv()"
+          ></button>
+        </div>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+      <tr class="team-worklog-table">
+        <th
+          [width]="400"
+          [pSortableColumnDisabled]="worklogStats.teamWorklogs.length <= 1"
+          class="sticky-left mt-8"
+          style="text-align: center"
+          pSortableColumn="teamName"
+        >
+          <span>
+            <span> Team name </span>
+            <span *ngIf="worklogStats.teamWorklogs.length > 1">
+              <p-sortIcon field="teamName"></p-sortIcon>
+            </span>
+          </span>
+        </th>
+        <ng-container *ngIf="categorizationEnabled">
+          <th
+            [pSortableColumnDisabled]="worklogStats.teamWorklogs.length <= 1"
+            class="ml-3"
+            style="text-align: center"
+            [ngClass]="{ 'sticky-left-worklog': col.name == 'Worklog' }"
+            *ngFor="let col of worklogStats.teamWorklogColumns"
+            pSortableColumn="avgPercents.{{ col.name }}"
+          >
+            <span>
+              <span>
+                <span *ngIf="col.name != 'Worklog' && col.name != 'Others'">
+                  {{ col.name }}
+                </span>
+                <span *ngIf="col.name == 'Worklog'"> Work log (%) </span>
+                <span *ngIf="col.name == 'Others'">&nbsp;{{ otherCategoryAlias }}&nbsp;</span>
+              </span>
+              <span>
+                <span>
+                <ng-container
+                  *ngTemplateOutlet="col.name === 'Worklog' ? worklogColumnTooltip : khojiToolTip context:{col:generateToolTipForMainCategoryColumn(col.name),position:getToolTipPosition(col.name)}">
+                </ng-container>
+                </span>
+                <span *ngIf="worklogStats.teamWorklogs.length > 1">
+                  <p-sortIcon field="avgPercents.{{ col.name }}"></p-sortIcon>
+                </span>
+              </span>
+            </span>
+          </th>
+        </ng-container>
+        <ng-container *ngIf="!categorizationEnabled">
+          <th
+            [pSortableColumnDisabled]="worklogStats.teamWorklogs.length <= 1"
+            class="ml-3 sticky-left-worklog"
+            style="text-align: center"
+            pSortableColumn="avgPercents.Worklog"
+          >
+            <span>
+              <span>
+                <span>Work log (%)</span>
+              </span>
+              <span>
+                <span>
+                <ng-container *ngTemplateOutlet="worklogColumnTooltip"></ng-container>
+              </span>
+                <span *ngIf="worklogStats.teamWorklogs.length > 1">
+                  <p-sortIcon field="avgPercents.Worklog"></p-sortIcon>
+                </span>
+              </span>
+            </span>
+          </th>
+        </ng-container>
+      </tr>
+    </ng-template>
+    <ng-template
+      pTemplate="body"
+      let-teamWorklog
+      let-expanded="expanded"
+    >
+      <tr
+        class="avgRow"
+        [id]="teamWorklog.teamName.replace(' ', '_') + '-row'"
+      >
+        <td class="sticky-left team-name">
+          <div class="flex justify-content-between">
+            <div class="flex align-items-center mr-2">
+              <!-- stopping the propagation of modal open event on child collapse icon -->
+              <button
+                type="button"
+                pButton
+                pRipple
+                [pRowToggler]="teamWorklog"
+                (click)="$event.stopPropagation()"
+                class="p-button-text p-button-rounded p-button-plain"
+                [icon]="expanded ? 'pi pi-chevron-up' : 'pi pi-chevron-down'"
+              ></button>
+              <span class="max-w-9rem white-space-nowrap overflow-hidden text-overflow-ellipsis mr-2" [title]="teamWorklog.teamName">{{ teamWorklog.teamName }}</span>
+              <div class="flex align-items-center color-grey-text ml-2">
+                <i class="pi pi-users mr-1"></i>
+                <span style="margin-top: 2px">{{ teamWorklog.memberWorklogs.length }}</span>
+              </div>
+            </div>
+            <div
+              class="flex align-items-center khoji-color-secondary cursor-pointer mr-2"
+              *ngIf="teamReminderMap.get(teamWorklog.teamName)"
+              (click)="openWorklogReminderModalForTheTeam(teamWorklog.teamName)"
+            >
+              <i class="fa fa-bell mr-2"></i>
+              <span class="text-nowrap" style="margin-top: 1px; font-weight: normal">Send reminder</span>
+            </div>
+          </div>
+        </td>
+        <ng-container *ngIf="categorizationEnabled">
+          <td
+            *ngFor="let col of worklogStats.teamWorklogColumns"
+            [ngClass]="{ 'colum-teamworklog': col.name === 'Worklog', 'sticky-left-worklog': col.name == 'Worklog', flex: col.name == 'Worklog' }"
+          >
+            <span
+              [ngStyle]="{ 'background-color': teamWorklog.thresholdColor }"
+              *ngIf="col.name == 'Worklog'"
+              class="total-worklog-box"
+            ></span>
+            {{ teamWorklog.avgPercents[col.name] | number : '1.2-2' }}%
+          </td>
+        </ng-container>
+        <ng-container *ngIf="!categorizationEnabled">
+          <td class="colum-teamworklog sticky-left-worklog flex">
+            <span
+              [ngStyle]="{ 'background-color': teamWorklog.thresholdColor }"
+              class="total-worklog-box"
+            ></span>
+            {{ teamWorklog.avgPercents.Worklog | number : '1.2-2' }}%
+          </td>
+        </ng-container>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td
+          class="no-data"
+          style="text-align: center"
+          [attr.colspan]="worklogStats.teamWorklogColumns.length + 2"
+        >
+          {{ translation.error.noDataAvailable }}
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template
+      pTemplate="rowexpansion"
+      let-teamWorklog
+    >
+      <tr *ngFor="let memberWorklog of teamWorklog.memberWorklogs">
+        <td class="sticky-left">
+          {{ memberWorklog.memberName }}
+        </td>
+        <ng-container *ngIf="categorizationEnabled">
+          <td
+            *ngFor="let col of worklogStats.teamWorklogColumns"
+            [ngClass]="{ 'colum-teamworklog': col.name === 'Worklog', 'sticky-left-worklog': col.name == 'Worklog', flex: col.name == 'Worklog' }"
+          >
+            <span
+              [ngStyle]="{ 'background-color': memberWorklog.thresholdColor }"
+              *ngIf="col.name == 'Worklog'"
+              class="total-worklog-box"
+            ></span>
+            {{ memberWorklog.totalMainPercents[col.name] | number : '1.2-2' }}%
+          </td>
+        </ng-container>
+        <ng-container *ngIf="!categorizationEnabled">
+          <td class="colum-teamworklog sticky-left-worklog flex">
+            <span
+              [ngStyle]="{ 'background-color': memberWorklog.thresholdColor }"
+              class="total-worklog-box"
+            ></span>
+            {{ memberWorklog.totalMainPercents.Worklog | number : '1.2-2' }}%
+          </td>
+        </ng-container>
+      </tr>
+    </ng-template>
+  </p-table>
+</ng-template>
+
+<khoji-worklog-reminder *ngIf="showRemindTeamModal" [teamNameForReminder]="teamNameForReminder" [(showRemindTeamModal)]="showRemindTeamModal" (modalClosed)="onModalClosed()" [supervisorId]="supervisorId"></khoji-worklog-reminder>
+
+<ng-template #worklogColumnTooltip let-col="col">
+  <span style="padding-left: 3px;">
+    <khoji-worklog-popover-tootip [tooltipTitle]="translation.ragStatusTimelog.table.columns.worklogRag"
+      [tooltipSubTitle]="translation.timelog.tooTips.worklog"
+      [tooltipPosition]="'left'"></khoji-worklog-popover-tootip>
+  </span>
+</ng-template>
+<ng-template #khojiToolTip let-col="col" let-position="position">
+  <span>
+    <khoji-tooltip-icon [tooltipText]="col" [inheritColor]="true" [toolTipPosition]="position"></khoji-tooltip-icon>
+  </span>
+</ng-template>

@@ -1,0 +1,42 @@
+/*
+  Copyright 2026 UWorx Services.
+  Licensed under the Apache License, Version 2.0.
+  See LICENSE for the full license text.
+*/
+
+
+.alert-container-info {
+  background: #CFE4FF;
+  border: 1px solid #78B3FF;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.16);
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+.alert-icon-info {
+  color: #F45B2B
+}
+
+.alert-container-success {
+  background: #D9E8D7;
+  border: 1px solid #428A36;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.16);
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+.alert-icon-success {
+  color: #428A36
+}
+
+.alert-icon-notification {
+  color: #78B3FF
+}
+
+.alert-container-notification {
+  background: #CFE4FF;
+  border: 1px solid #78B3FF;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.16);
+  border-radius: 8px;
+  font-size: 16px;
+}

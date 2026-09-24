@@ -1,0 +1,49 @@
+<p-card [ngClass]="{'full-screen':fullScreen}">
+  <ng-template pTemplate="header">
+    <div class="flex justify-content-between align-items-center px-3 border-bottom-1 border-gray-200">
+      <div class="flex align-items-center">
+        <i class="pi pi-comments text-indigo-600" style="font-size: 1.5rem;"></i>
+        <h2 class="m-3 text-lg">Scrum Assistant</h2>
+      </div>
+      <div class="flex align-items-center">
+        <button pButton type="button" (click)="fullScreen=!fullScreen"
+          icon="pi {{fullScreen?'pi-window-minimize':'pi-window-maximize'}}" class="p-button-text"></button>
+      </div>
+    </div>
+  </ng-template>
+  
+  <div #chatWindow id="chatWindow" class="flex-1 overflow-y-auto py-3 sidebar-chat"
+    [ngClass]="{'fullscreen-chat':fullScreen}">
+
+    <div *ngFor="let message of chatBotState.messages" class="flex mb-4"
+      [ngClass]="{'justify-content-start':message.sender==='bot','justify-content-end':message.sender==='user'}">
+      <div class="p-2 rounded-lg bg-gray-100 text-gray-800" style="max-width: 90%;"
+        [ngClass]="{'bg-gray-100':message.sender==='bot','bg-gray-300':message.sender==='user'}">
+        <div class="whitespace-pre-wrap px-1" [innerHTML]="message.text"></div>
+        <div *ngIf="message.actions" class="actions">
+          <div *ngFor="let action of message.actions" [ngClass]="action.type"
+            (click)="sendMessage(action.value, 'action')">
+            {{action.label}} </div>
+        </div>
+        <div *ngIf="message.data">
+          <div *ngFor="let item of message.data | keyvalue">
+            <div class="font-bold">{{item.key}}</div>
+            <div class="p-1">{{item.value}}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="loadingState===LoadingState.Loading">
+      <i class="pi pi-spinner pi-spin"></i>
+    </div>
+  </div>
+  <div class="py-3 border-top-1 border-gray-200 chat-input-bar">
+    <div class="flex" [ngClass]="{'p-disabled':!chatBotState.conversationId}">
+      <input #messageTxt pInputText type="text" (keypress)="sendMessage(messageTxt, $event)"
+        placeholder="Type your message..." class="w-full p-2" />
+      <button pButton (click)="sendMessage(messageTxt, 'text')" class="p-button-primary ml-2">
+        <i class="pi pi-send"></i>
+      </button>
+    </div>
+  </div>
+</p-card>

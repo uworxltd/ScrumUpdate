@@ -1,0 +1,22 @@
+{
+  "name": "khoji-automation",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test-in-ui": "npx playwright test --ui",
+    "test": "npx playwright test",
+    "test-on-chromium": "npx playwright test --project=chromium",
+    "report": "npx playwright show-report"
+  },
+  "author": "Khoji Contributors",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.49.1",
+    "@types/node": "^22.10.5"
+  },
+  "type": "module",
+  "dependencies": {
+    "khoji-automation": "file:"
+  }
+}

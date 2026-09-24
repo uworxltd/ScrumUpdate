@@ -1,0 +1,38 @@
+/*
+  Copyright 2026 UWorx Services.
+  Licensed under the Apache License, Version 2.0.
+  See LICENSE for the full license text.
+*/
+
+
+.rag-table {
+  table-layout: fixed;
+  border-collapse: collapse;
+  width: 100%;
+
+  khoji-open-modal-icon {
+    margin-left: 30px;
+    display: none;
+  }
+
+  th, td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+
+  tbody > tr:hover {
+    cursor: pointer;
+    background-color: whitesmoke;
+
+    khoji-open-modal-icon {
+      display: inline-block;
+    }
+  }
+}
+
+.ragStatus {
+  max-height: 235px;
+  overflow: hidden;
+  overflow-y: auto;
+}

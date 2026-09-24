@@ -1,0 +1,23 @@
+name: sprint_title
+description: |
+  Returns the sprint title (name) for a given sprint_id.
+version: 1.0
+
+inputs:
+  sprint_id: { type: int, default: 1 }
+
+steps:
+  - id: sprint_title_query
+    type: sql
+    service: main-db
+    query: |
+      SELECT
+        s.sprint_id,
+        s.name AS sprint_title
+      FROM {{ schema }}.sprints s
+      WHERE s.sprint_id = $1::int
+    params:
+      - "{{ inputs.sprint_id }}"
+    output: { name: sprint_title_data }
+
+return: "sprint_title_query.sprint_title_data"

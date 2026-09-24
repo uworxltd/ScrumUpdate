@@ -1,0 +1,187 @@
+name: status_snapshot_yesterday
+description: |
+  Shared metric: Retrieves status counts for issues from "yesterday."
+  Returns counts of issues in each status category (To Do, In Progress, Done)
+  as they were at the end of yesterday (1 day ago).
+  
+  Uses the same ticket/status reconstruction and per-issue category mapping as
+  status_categories_tickets_yesterday.yaml so counts match ticket lists.
+version: 1.4
+
+inputs:
+  sprint_id: { type: int, default: 1 }
+
+steps:
+  - id: yesterday_status
+    type: sql
+    service: main-db
+    query: |
+      WITH yesterday_cutoff AS (
+        SELECT CURRENT_DATE - (
+          CASE
+            WHEN EXTRACT(ISODOW FROM CURRENT_DATE) = 1 THEN INTERVAL '3 day'
+            WHEN EXTRACT(ISODOW FROM CURRENT_DATE) = 7 THEN INTERVAL '2 day'
+            ELSE INTERVAL '1 day'
+          END
+        ) AS cutoff_date
+      ),
+      sprint_membership AS (
+        SELECT DISTINCT issue_key
+        FROM {{ schema }}.sprint_issues
+        WHERE sprint_id = $1::int
+        
+        UNION
+        
+        SELECT DISTINCT issue_key
+        FROM (
+          SELECT 
+            i.issue_key,
+            cl.created_date,
+            cl.to_value,
+            cl.from_value,
+            ROW_NUMBER() OVER (
+              PARTITION BY i.issue_key 
+              ORDER BY cl.created_date DESC
+            ) as rn
+          FROM {{ schema }}.changelogs cl
+          INNER JOIN {{ schema }}.issues i ON cl.issue_key = i.issue_id::text
+          CROSS JOIN yesterday_cutoff yc
+          WHERE cl.field_name = 'Sprint'
+            AND cl.created_date < yc.cutoff_date + INTERVAL '1 day'
+        ) latest_sprint_change
+        WHERE rn = 1
+          AND (',' || REPLACE(to_value, ' ', '') || ',') LIKE '%,' || $1::text || ',%'
+          AND (
+            from_value IS NULL 
+            OR from_value = '' 
+            OR (',' || REPLACE(from_value, ' ', '') || ',') NOT LIKE '%,' || $1::text || ',%'
+          )
+      ),
+      status_changes AS (
+        SELECT 
+          i.issue_key,
+          cl.created_date AS ts,
+          cl.from_display_value,
+          cl.to_display_value,
+          ROW_NUMBER() OVER (PARTITION BY i.issue_key ORDER BY cl.created_date) AS change_num
+        FROM {{ schema }}.changelogs cl
+        INNER JOIN {{ schema }}.issues i ON cl.issue_key = i.issue_id::text
+        INNER JOIN sprint_membership sm ON sm.issue_key = i.issue_key
+        WHERE cl.field_name = 'status'
+      ),
+      status_events AS (
+        SELECT 
+          issue_key,
+          ts - INTERVAL '0.001 second' AS ts,
+          from_display_value AS status
+        FROM status_changes
+        WHERE change_num = 1 AND from_display_value IS NOT NULL
+        
+        UNION ALL
+        
+        SELECT 
+          issue_key,
+          ts,
+          to_display_value AS status
+        FROM status_changes
+        WHERE to_display_value IS NOT NULL
+      ),
+      status_spans AS (
+        SELECT issue_key, status, ts AS from_ts,
+               LEAD(ts) OVER (PARTITION BY issue_key ORDER BY ts) AS to_ts
+        FROM status_events
+        WHERE status IS NOT NULL
+      ),
+      issue_status_yesterday AS (
+        SELECT DISTINCT ON (s.issue_key)
+          s.issue_key,
+          s.status
+        FROM status_spans s
+        CROSS JOIN yesterday_cutoff yc
+        WHERE s.from_ts < yc.cutoff_date
+          AND (s.to_ts IS NULL OR s.to_ts >= yc.cutoff_date)
+        ORDER BY s.issue_key, s.from_ts DESC, s.to_ts DESC NULLS FIRST
+      ),
+      initial_status AS (
+        SELECT DISTINCT ON (i.issue_key)
+          i.issue_key,
+          COALESCE(
+            (SELECT cl.from_display_value
+             FROM {{ schema }}.changelogs cl
+             WHERE cl.issue_key = i.issue_id::text 
+               AND cl.field_name = 'status'
+             ORDER BY cl.created_date
+             LIMIT 1),
+            i.status
+          ) AS status
+        FROM {{ schema }}.issues i
+        INNER JOIN sprint_membership sm ON sm.issue_key = i.issue_key
+      ),
+      tickets_with_status AS (
+        SELECT 
+          sm.issue_key,
+          COALESCE(isy.status, init.status) AS status
+        FROM sprint_membership sm
+        LEFT JOIN issue_status_yesterday isy ON isy.issue_key = sm.issue_key
+        LEFT JOIN initial_status init ON init.issue_key = sm.issue_key
+      ),
+      first_post_cutoff_status_change AS (
+        SELECT DISTINCT ON (i.issue_key)
+          i.issue_key,
+          cl.from_display_value,
+          cl.to_display_value,
+          cl.created_date
+        FROM {{ schema }}.issues i
+        INNER JOIN tickets_with_status t ON t.issue_key = i.issue_key
+        CROSS JOIN yesterday_cutoff yc
+        INNER JOIN {{ schema }}.changelogs cl ON cl.issue_key = i.issue_id::text
+        WHERE cl.field_name = 'status'
+          AND cl.created_date >= yc.cutoff_date
+        ORDER BY i.issue_key, cl.created_date ASC
+      ),
+      yesterday_with_category AS (
+        SELECT
+          t.issue_key,
+          t.status,
+          CASE
+            WHEN i.status = t.status THEN i.status_category
+            WHEN COALESCE(i.status_category_change_date, TIMESTAMP '1970-01-01') < yc.cutoff_date THEN i.status_category
+            WHEN fpc.from_display_value = t.status THEN
+              CASE i.status_category
+                WHEN 'Done' THEN
+                  CASE
+                    WHEN LOWER(TRIM(fpc.from_display_value)) IN ('to do', 'open', 'backlog', 'new', 'todo') THEN 'To Do'
+                    ELSE 'In Progress'
+                  END
+                WHEN 'In Progress' THEN 'To Do'
+                WHEN 'To Do' THEN
+                  CASE
+                    WHEN LOWER(TRIM(fpc.from_display_value)) IN ('done', 'closed', 'resolved', 'complete', 'completed', 'finished') THEN 'Done'
+                    ELSE 'In Progress'
+                  END
+                ELSE 'In Progress'
+              END
+            WHEN COALESCE(i.status_category_change_date, TIMESTAMP '1970-01-01') >= yc.cutoff_date THEN
+              CASE i.status_category
+                WHEN 'Done' THEN 'In Progress'
+                WHEN 'In Progress' THEN 'To Do'
+                WHEN 'To Do' THEN 'Done'
+                ELSE 'In Progress'
+              END
+            ELSE i.status_category
+          END AS status_category
+        FROM tickets_with_status t
+        INNER JOIN {{ schema }}.issues i ON i.issue_key = t.issue_key
+        CROSS JOIN yesterday_cutoff yc
+        LEFT JOIN first_post_cutoff_status_change fpc ON fpc.issue_key = t.issue_key
+      )
+      SELECT
+        COUNT(*) FILTER (WHERE status_category = 'To Do') AS cnt_to_do_yesterday,
+        COUNT(*) FILTER (WHERE status_category = 'In Progress') AS cnt_in_progress_yesterday,
+        COUNT(*) FILTER (WHERE status_category = 'Done') AS cnt_done_yesterday
+      FROM yesterday_with_category
+    params:
+      - "{{ inputs.sprint_id }}"
+    output: { name: yesterday_counts }
+
+return: "yesterday_status.yesterday_counts"

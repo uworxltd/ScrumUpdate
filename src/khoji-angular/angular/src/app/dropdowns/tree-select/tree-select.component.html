@@ -1,0 +1,58 @@
+<div class="btn-group" role="group" #dropdown [ngClass]="{'disabled':items.length===0}">
+  <button
+    type="button"
+    class="p-button dropdown-toggle"
+    (click)="open=!open"
+    [disabled]="items.length===0">
+    <div class="badge-container" *ngIf="getSelectedItems() as selected">
+      <div [hidden]="items.length > 0" class="badge badge-warn">No data available</div>
+      <ng-container *ngIf="selected.length > 0">
+        <div class="badge badge-info" [ngClass]="{'indeterminate':isIndeterminate(selected[0])}">{{selected[0].label}}</div>
+      </ng-container>
+      <ng-container *ngIf="selected.length > 1">
+        <div class="badge badge-info" [ngClass]="{'indeterminate':isIndeterminate(selected[1])}">{{selected[1].label}}</div>
+      </ng-container>
+      <ng-container *ngIf="selected.length > 2">
+        <div class="badge badge-info badge-count">+{{selected.length-2}}</div>
+      </ng-container>
+    </div>
+  </button>
+  <ul class="dropdown-menu shadow {{cssClass}}" *ngIf="open && items.length > 0">
+    <div class="scroll-box">
+      <ng-container
+        [ngTemplateOutlet]="renderItems"
+        [ngTemplateOutletContext]="{items:items}"></ng-container>
+    </div>
+    <li class="dropdown-divider"></li>
+    <li class="dropdown-footer">
+      <button [disabled]="!hasChanged()"
+        class="p-button p-button-sm"
+        (click)="emitSelectedItems()">OK</button>
+    </li>
+  </ul>
+</div>
+<ng-template #renderItems let-items="items">
+  <li
+    *ngFor="let item of items"
+    class="dropdown-item"
+    [title]="item.label">
+    <div
+      class="custom-control custom-checkbox"
+      (click)="onSelect(item);$event.stopPropagation()">
+      <input
+        type="checkbox"
+        [checked]="isSelected(item)"
+        [indeterminate]="isIndeterminate(item)"
+        class="custom-control-input"
+        (click)="$event.stopPropagation()">
+      <label class="custom-control-label">{{item.label}}</label>
+      <div class="badge badge-light badge-pill">{{item.count}}</div>
+    </div>
+    <ul *ngIf="item.children.length>0" class="dropdown-menu dropdown-inner">
+      <ng-container
+        [ngTemplateOutlet]="renderItems"
+        [ngTemplateOutletContext]="{items:item.children}">
+      </ng-container>
+    </ul>
+  </li>
+</ng-template>

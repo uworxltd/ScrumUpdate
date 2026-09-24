@@ -1,0 +1,17 @@
+/*
+  Copyright 2026 UWorx Services.
+  Licensed under the Apache License, Version 2.0.
+  See LICENSE for the full license text.
+*/
+
+
+:host ::ng-deep {
+    .p-button.p-button-help {
+        border: 0px;
+        background: #78B3FF;
+    }
+
+    .p-button.p-button-help:enabled:hover{
+        background: #4d95f3;
+    }
+}

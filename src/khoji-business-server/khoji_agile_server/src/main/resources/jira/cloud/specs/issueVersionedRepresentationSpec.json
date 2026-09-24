@@ -1,0 +1,48 @@
+[
+  {
+    "operation": "shift",
+    "spec": {
+      "issues": {
+        "*": {
+          "versionedRepresentations": {
+            "status": {
+              "1": {
+                "name": "[&4].sourceStatus.name",
+                "id": "[&4].sourceStatus.id",
+                "statusCategory": {
+                  "name": "[&5].sourceCategory.name",
+                  "id": "[&5].sourceCategory.id",
+                  "colorName": "[&5].sourceCategory.color"
+                }
+              }
+            },
+            "customfield_10021": {
+              "2": {
+                "*": {
+                  "id": "[&5].sprintList[&1].id",
+                  "name": "[&5].sprintList[&1].name",
+                  "state": "[&5].sprintList[&1].status",
+                  "boardId": "[&5].sprintList[&1].originBoardId",
+                  "startDate": "[&5].sprintList[&1].startDate",
+                  "endDate": "[&5].sprintList[&1].endDate",
+                  "completeDate": "[&5].sprintList[&1].completionDate"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "operation": "uk.co.uworx.khoji.agile.transform.DanishDateTransform",
+    "spec": {
+      "values": {
+        "startDate": "startDate",
+        "endDate": "endDate",
+        "completionDate": "completionDate",
+        "isIssueList": true
+      }
+    }
+  }
+]

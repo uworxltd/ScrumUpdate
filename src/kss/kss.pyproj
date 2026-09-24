@@ -1,0 +1,164 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{2d78c441-bd7b-4053-9e3f-d9702c6321a0}</ProjectGuid>
+    <ProjectHome />
+    <StartupFile>main.py</StartupFile>
+    <SearchPath />
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <ProjectTypeGuids>{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
+    <LaunchProvider>Standard Python launcher</LaunchProvider>
+    <InterpreterId />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
+  <PropertyGroup>
+    <VisualStudioVersion Condition=" '$(VisualStudioVersion)' == '' ">10.0</VisualStudioVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include=".dockerignore" />
+    <Content Include=".env.example" />
+    <Content Include=".gitignore" />
+    <Content Include="architecture_diagram.md" />
+    <Content Include="data\sql\system\001_create_system_schema.sql" />
+    <Content Include="data\sql\system\002_create_functions.sql" />
+    <Content Include="data\sql\system\003_add_last_updated_at_to_tenants_table.sql" />
+    <Content Include="data\sql\system\999_cleanup_running_jobs.sql" />
+    <Content Include="data\sql\tenant\001_create_tables.sql" />
+    <Content Include="data\sql\tenant\001_create_tables.sql" />
+    <Content Include="data\sql\tenant\002_create_views.sql" />
+    <Content Include="data\sql\tenant\002_create_views.sql" />
+    <Content Include="data\sql\tenant\003_create_functions.sql" />
+    <Content Include="data\sql\tenant\003_create_functions.sql" />
+    <Content Include="data\sql\tenant\004_create_wiki.sql" />
+    <Content Include="data\sql\tenant\004_create_wiki.sql" />
+    <Content Include="data\sql\tenant\005_v_issue_status_transitions.sql" />
+    <Content Include="data\sql\tenant\005_v_issue_status_transitions.sql" />
+    <Content Include="data\sql\tenant\006_v_person_status_pair_stats.sql" />
+    <Content Include="data\sql\tenant\006_v_person_status_pair_stats.sql" />
+    <Content Include="data\sql\tenant\007_mv_sprint_burndown_daily.sql" />
+    <Content Include="data\sql\tenant\007_mv_sprint_burndown_daily.sql" />
+    <Content Include="data\sql\tenant\008_fn_sprint_burndown.sql" />
+    <Content Include="data\sql\tenant\008_fn_sprint_burndown.sql" />
+    <Content Include="data\sql\tenant\009_fn_sprint_facts.sql" />
+    <Content Include="data\sql\tenant\009_fn_sprint_facts.sql" />
+    <Content Include="data\sql\tenant\010_fn_sprint_ai_payload.sql" />
+    <Content Include="data\sql\tenant\010_fn_sprint_ai_payload.sql" />
+    <Content Include="data\sql\tenant\011_account_id_in_comments_and_changelog.sql" />
+    <Content Include="data\sql\tenant\011_account_id_in_comments_and_changelog.sql" />
+    <Content Include="data\sql\tenant\012_v_updated_with_account_ids.sql" />
+    <Content Include="data\sql\tenant\012_v_updated_with_account_ids.sql" />
+    <Content Include="data\sql\tenant\013_fn_updated_with_account_ids.sql" />
+    <Content Include="data\sql\tenant\013_fn_updated_with_account_ids.sql" />
+    <Content Include="data\sql\tenant\014_fn_updated_views_and_functions.sql" />
+    <Content Include="data\sql\tenant\014_fn_updated_views_and_functions.sql" />
+    <Content Include="data\sql\tenant\015_v_issue_assignee_spans.sql" />
+    <Content Include="data\sql\tenant\015_v_issue_assignee_spans.sql" />
+    <Content Include="data\sql\tenant\016_fn_updated_overdue_sprints.sql" />
+    <Content Include="data\sql\tenant\016_fn_updated_overdue_sprints.sql" />
+    <Content Include="data\sql\tenant\017_update_fn_sprint_facts.sql" />
+    <Content Include="data\sql\tenant\019_fn_issue_insights_grid.sql" />
+    <Content Include="data\sql\tenant\018_fn_issue_insights_grid.sql" />
+    <Content Include="data\sql\tenant\020_fn_sprint_hygiene_summary.sql" />
+    <Content Include="docker-build.bat" />
+    <Content Include="docker-compose.yml" />
+    <Content Include="docker-push.bat" />
+    <Content Include="docker-start.bat" />
+    <Content Include="Dockerfile" />
+    <Content Include="docs\kss_ingestion_pipeline.md" />
+    <Content Include="flow_diagram.md" />
+    <Content Include="Jenkinsfile" />
+    <Content Include="requirements.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="api\dependencies.py" />
+    <Compile Include="api\health.py" />
+    <Compile Include="api\jobs.py" />
+    <Compile Include="api\sprints.py" />
+    <Compile Include="api\tenant_management.py" />
+    <Compile Include="api\__init__.py" />
+    <Compile Include="celeryconfig.py" />
+    <Compile Include="config.py" />
+    <Compile Include="database.py" />
+    <Compile Include="jira_service.py" />
+    <Compile Include="jobs\base.py" />
+    <Compile Include="jobs\simple\board_sync.py" />
+    <Compile Include="jobs\simple\burndown_refresh.py" />
+    <Compile Include="jobs\simple\changelog_sync.py" />
+    <Compile Include="jobs\simple\comment_sync.py" />
+    <Compile Include="jobs\simple\jql_issue_sync.py" />
+    <Compile Include="jobs\simple\proactive_sprints_sync.py" />
+    <Compile Include="jobs\simple\sprints_list_sync.py" />
+    <Compile Include="jobs\simple\sprint_issue_sync.py" />
+    <Compile Include="jobs\simple\sprint_sync.py" />
+    <Compile Include="jobs\simple\worklog_sync.py" />
+    <Compile Include="jobs\simple\__init__.py" />
+    <Compile Include="jobs\sync_jobs.py" />
+    <Compile Include="jobs\utils\common_util.py" />
+    <Compile Include="jobs\utils\issue_transformer_util.py" />
+    <Compile Include="jobs\workflows\base.py" />
+    <Compile Include="jobs\workflows\jql_worklog.py" />
+    <Compile Include="jobs\workflows\sprint_issues_worklog.py" />
+    <Compile Include="jobs\workflows\__init__.py" />
+    <Compile Include="jobs\__init__.py" />
+    <Compile Include="main.py" />
+    <Compile Include="models\database.py" />
+    <Compile Include="models\enums.py" />
+    <Compile Include="models\errors.py" />
+    <Compile Include="models\requests.py" />
+    <Compile Include="models\responses.py" />
+    <Compile Include="models\__init__.py" />
+    <Compile Include="multi_tenant_manager.py" />
+    <Compile Include="repositories\base_repository.py" />
+    <Compile Include="repositories\board_repository.py" />
+    <Compile Include="repositories\cache_meta_repository.py" />
+    <Compile Include="repositories\changelog_repository.py" />
+    <Compile Include="repositories\comment_repository.py" />
+    <Compile Include="repositories\issue_link_repository.py" />
+    <Compile Include="repositories\issue_repository.py" />
+    <Compile Include="repositories\job_repository.py" />
+    <Compile Include="repositories\relationship_repository.py" />
+    <Compile Include="repositories\sprint_issue_repository.py" />
+    <Compile Include="repositories\sprint_repository.py" />
+    <Compile Include="repositories\sync_job_repository.py" />
+    <Compile Include="repositories\worklog_repository.py" />
+    <Compile Include="repositories\__init__.py" />
+    <Compile Include="services\base_jira_service.py" />
+    <Compile Include="services\board_service.py" />
+    <Compile Include="services\comment_service.py" />
+    <Compile Include="services\issue_service.py" />
+    <Compile Include="services\jira_client.py" />
+    <Compile Include="services\job_management_service.py" />
+    <Compile Include="services\oauth_jira_client.py" />
+    <Compile Include="services\source_token_refresh_service.py" />
+    <Compile Include="services\sprint_service.py" />
+    <Compile Include="services\worklog_service.py" />
+    <Compile Include="services\__init__.py" />
+    <Compile Include="tasks\celery_app.py" />
+    <Compile Include="tasks\celery_status_manager.py" />
+    <Compile Include="tasks\job_tracker.py" />
+    <Compile Include="tasks\signal_handlers.py" />
+    <Compile Include="tasks\worker.py" />
+    <Compile Include="tasks\__init__.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="api" />
+    <Folder Include="data\" />
+    <Folder Include="data\sql\" />
+    <Folder Include="data\sql\system\" />
+    <Folder Include="data\sql\tenant\" />
+    <Folder Include="docs\" />
+    <Folder Include="jobs" />
+    <Folder Include="jobs\simple\" />
+    <Folder Include="jobs\utils" />
+    <Folder Include="jobs\workflows\" />
+    <Folder Include="models" />
+    <Folder Include="repositories" />
+    <Folder Include="services" />
+    <Folder Include="tasks" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
+</Project>

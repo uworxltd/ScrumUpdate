@@ -1,0 +1,176 @@
+<div #worklogDetailsTable *ngIf="tableDetails">
+  <p-table
+    [value]="tableDetails.tickets"
+    [scrollable]="true"
+    [scrollHeight]="expandTable ? '100vh' : '400px'"
+    styleClass="p-datatable-sm"
+    class="custom-scrollbar"
+    [ngClass]="{'full-screen': expandTable}"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th
+          rowspan="2"
+          class="pt-7"
+          style="border-right-width:1.25px"
+          width="20%"
+          pFrozenColumn
+        >
+          {{ tableDetails.userName }}
+        </th>
+        <th colspan="7">
+          <div class="flex align-items-center justify-content-between">
+            <div class="flex align-items-center justify-content-center w-100">
+              {{ tableDetails.month }}
+            </div>
+            <i class="fa fa-solid hover:bg-gray-300 p-2" style="font-size:1.3rem" (click)="expandTable=!expandTable" [ngClass]="{'fa-expand':!expandTable,'fa-compress':expandTable}"></i>
+          </div>
+        </th>
+      </tr>
+      <tr>
+        <ng-container *ngFor="let dateDay of tableDetails.dateAndDay">
+          <th
+            *ngIf="isFutureDateObj(dateDay) as _isfutureDateObj"
+            [ngClass]="{ 'p-disabled': _isfutureDateObj.value || disableClickingOnTable }"
+            class="text-center"
+            width="10%"
+          >
+              <div
+                class="flex justify-content-center align-items-center"
+              >
+                <div>
+                  <span class="d-flex justify-content-center">
+                    {{ dateDay.date }}
+                  </span>
+                  <span class="d-flex justify-content-center">
+                    {{ dateDay.day }}
+                  </span>
+                </div>
+                <p-divider layout="vertical" *ngIf="!_isfutureDateObj.value"></p-divider>
+                <div class="flex align-items-center cursor-pointer"
+                  *ngIf="!_isfutureDateObj.value"
+                  (click)="toggleMenubar($event, dateDay, menu)"
+                  >
+                  <img [src]="constants.WAND_ICON_AI" />
+                  <img src="assets/images/down-sort.png" alt="Sort Down" class="ml-1 text-xs" />
+                </div>
+              </div>
+          </th>
+        </ng-container>
+      </tr>
+    </ng-template>
+
+    <ng-template
+      pTemplate="body"
+      let-rowData
+    >
+      <tr [attr.id]="'ticket-row-' + rowData.ticket">
+        <td pFrozenColumn>
+          <div class="flex" style="max-width:100%;">
+            <a
+              [href]="rowData.ticketUrl"
+              target="_blank"
+              [pTooltip]="rowData.data.description"
+              [tooltipPosition]="'right'"
+              class="text-truncate"
+            >
+              {{ rowData.ticket }} - {{ rowData.data.description }}
+            </a>
+          </div>
+        </td>
+        <ng-container *ngFor="let dateDay of tableDetails.dateAndDay; let last=last">
+          <td *ngIf="isFutureDateObj(dateDay) as _isfutureDateObj" class="editable-cell" [ngClass]="{ 'disabled-cell': _isfutureDateObj.value || resetActiveTabIndex || isAnyCallInLoading, 'last-cell': last }">
+            <div
+              style="min-width: 15px"
+              (click)="ticketDetail.toggle($event); getTicketDetails(rowData.ticket, rowData.data.description, dateDay._date)"
+              class="cursor-pointer text-center"
+              [ngClass]="{ 'popup-opener': !_isfutureDateObj.value }"
+            >
+              {{ getLoggedHoursForDay(dateDay, rowData.data[dateDay._date]) }}
+            </div>
+          </td>
+        </ng-container>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+      <tr class="action-row">
+        <td>
+          <button
+            pButton
+            class="p-button-text p-button-sm addEmptyWorklogButton"
+            *ngIf="!ticketSearchVisible"
+            [label]="(translation$|async)?.addEmptyWorklog"
+            icon="pi pi-plus"
+            (click)="showTicketSearch(); issueSearchSelectorInput.focus()"></button>
+          <khoji-jira-issue-selector-input
+            #issueSearchSelectorInput
+            [hidden]="!ticketSearchVisible"
+            [placeholder]="(translation$|async)?.addEmptyWorklogPlaceholder"
+            [selectedIssue]="selectedIssue"
+            (selectedIssueChange)="addEmptyWorklog($event)"></khoji-jira-issue-selector-input>
+        </td>
+        <ng-container *ngFor="let dateDay of tableDetails.dateAndDay; let last=last">
+          <td *ngIf="isFutureDateObj(dateDay) as _isfutureDateObj" [ngClass]="{ 'last-cell': last }">
+            <div
+              style="min-width: 15px"
+            ></div>
+          </td>
+        </ng-container>
+      </tr>
+      <tr style="background: #f8fafc; font-weight: 500">
+        <td pFrozenColumn>{{ formatHours(tableDetails.totalHours) }}</td>
+        <ng-container *ngFor="let dateDay of tableDetails.dateAndDay; let i = index">
+          <td
+            *ngIf="isFutureDateObj(dateDay) as _isfutureDateObj"
+            [ngClass]="{ 'disabled-cell': _isfutureDateObj.value }"
+          >
+            <div
+              class="flex justify-content-center"
+              *ngIf="!_isfutureDateObj.value; else showEmpty"
+            >
+              {{ formatHours(dateDay.loggedHour) }}
+            </div>
+            <ng-template #showEmpty> </ng-template>
+          </td>
+        </ng-container>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td [attr.colspan]="8">
+          <span class="flex justify-content-center">{{(translation$|async).emptyMessage}}</span>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+  <div *ngIf="tableDetails.tickets.length > 0" class="w-100 d-flex justify-content-end p-2 pt-3">
+    <span class="font-medium">
+      Total entries:
+    </span>
+    <span class="ml-1 font-bold">
+      {{tableDetails.tickets.length}}
+    </span>
+  </div>
+
+  <p-overlayPanel
+    #ticketDetail
+    [showCloseIcon]="true"
+    [dismissable]="true"
+    [draggable]="false"
+    [style]="{ 'width': '30rem', 'margin-left': '5rem' }"
+    (onHide)="resetActiveTabIndex = false"
+    (onShow)="resetActiveTabIndex = true"
+  >
+    <khoji-ticket-details *ngIf="resetActiveTabIndex" (closeModal)="handleCloseModal(op)"></khoji-ticket-details>
+  </p-overlayPanel>
+
+  <p-menu
+    #menu
+    [model]="menuItems"
+    [popup]="true"
+  >
+  </p-menu>
+</div>

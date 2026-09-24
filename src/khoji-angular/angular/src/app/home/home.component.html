@@ -1,0 +1,95 @@
+<h3>{{ greetingMessage }}</h3>
+
+<!-- <h6>Please select an app to start diving into the insights of your team's progress.</h6> -->
+ <h6>Please select an app to get started.</h6>
+
+<!-- My Apps Section -->
+<ng-container *ngIf="instances.length > 0">
+  <ng-container
+    *ngTemplateOutlet="
+      instanceList;
+      context: {
+        title: 'My apps',
+        actionLabel: 'Set up a new app',
+        instances: instances,
+        action: navigateToJiraInstancesPage.bind(this)
+      }
+    "
+  ></ng-container>
+</ng-container>
+
+<!-- Shared Apps Section -->
+<ng-container *ngIf="sharedInstances.length > 0">
+  <ng-container
+    *ngTemplateOutlet="
+      instanceList;
+      context: {
+        title: 'Shared apps',
+        actionLabel: 'Invitations',
+        instances: sharedInstances,
+        action: navigateToJiraInstancesPageAndInvitationsTab.bind(this)
+      }
+    "
+  ></ng-container>
+</ng-container>
+
+<!-- Generic Template -->
+<ng-template
+  #instanceList
+  let-title="title"
+  let-actionLabel="actionLabel"
+  let-instances="instances"
+  let-action="action"
+>
+  <div class="div-margin">
+    <div class="flex align-items-center justify-content-between">
+      <span class="font-semibold text-700">{{ title }}</span>
+      <button
+        *ngIf="actionLabel"
+        pButton
+        pRipple
+        [label]="actionLabel"
+        class="p-button-text p-0 mr-2"
+        (click)="action && action()"
+      ></button>
+    </div>
+    <p-divider></p-divider>
+  </div>
+
+  <div class="flex-container">
+    <ng-container *ngFor="let instance of instances">
+      <div
+        class="p-2 surface-card border-round-lg main mt-2 cursor-pointer"
+        (click)="navigateToInstance(instance)"
+      >
+      <div class="flex align-items-center">
+        <img
+          width="20"
+          height="20"
+          [src]="'assets/images/jira-transparent-logo.svg'"
+          class="mr-2"
+        />
+        <div class="flex justify-content-center align-items-center gap-2">
+          <span class="font-bold text-700 overflow-hidden text-overflow-ellipsis flex-1 w-20rem">{{ instance.name }}</span>
+        </div>
+        <i
+          class="flex pi pi-user m-2 gap-2 align-items-center"
+        >
+          <p>{{ instance.memberCount }}</p>
+        </i>
+      </div>
+      <div class="flex align-items-center" style="padding: 0.5rem 0;" >
+        <span class="flex align-items-center">
+          <img
+          width="20"
+          height="20"
+          [src]="instance.ownerInformation.imageUrl"
+          class="mr-2 border-circle"
+        />
+          {{instance.ownerInformation.fullName}}
+        </span>
+      </div>
+      </div>
+    </ng-container>
+  </div>
+</ng-template>

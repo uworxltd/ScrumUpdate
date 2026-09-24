@@ -1,0 +1,14 @@
+<ng-container *ngIf="loadingStateDone else loading">
+  <router-outlet></router-outlet>
+</ng-container>
+
+<!-- added to improve loading appearance -->
+<ng-template #loading>
+  <div class="w-full h-screen flex align-items-center justify-content-center">
+    <p-progressSpinner
+      [style]="{ width: '70px', height: '70px' }"
+      strokeWidth="4"
+      animationDuration="1s"
+    ></p-progressSpinner>
+  </div>
+</ng-template>

@@ -1,0 +1,23 @@
+{
+  "name": "khoji-workspace",
+  "version": "1.0.0",
+  "description": "Khoji monorepo with Angular and Express packages",
+  "private": true,
+  "workspaces": [
+    "angular",
+    "express"
+  ],
+  "scripts": {
+    "start": "concurrently \"yarn workspace khoji-angular start\" \"yarn workspace khoji-express start\"",
+    "dev": "concurrently \"yarn workspace khoji-angular dev\" \"yarn workspace khoji-express dev\"",
+    "build": "yarn workspace khoji-angular prod && yarn workspace khoji-express build",
+    "build:all": "yarn && yarn build",
+    "test": "yarn workspace khoji-angular test",
+    "test:watch": "yarn workspace khoji-angular test:watch",
+    "clean": "rm -rf angular/dist angular/dist-server express/dist-server node_modules .yarn/cache",
+    "lint": "yarn workspace khoji-angular lint"
+  },
+  "devDependencies": {
+    "concurrently": "^7.6.0"
+  }
+}

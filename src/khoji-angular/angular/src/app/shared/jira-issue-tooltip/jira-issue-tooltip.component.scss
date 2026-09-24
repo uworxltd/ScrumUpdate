@@ -1,0 +1,23 @@
+::ng-deep {
+
+    .issue-tooltip-container.p-overlaypanel {
+        background-color: transparent;
+
+        .p-overlaypanel-content {
+            padding: 0 !important;
+        }
+    }
+}
+
+.issue-tooltip {
+    color: white;
+    background-color: rgba(0, 0, 0, 0.9);
+    border-radius: 6px;
+    font-size: 0.75rem;
+    line-height: 1.4;
+    padding: 0.75rem;
+}
+
+// .assignee {
+//     color: gray;
+// }

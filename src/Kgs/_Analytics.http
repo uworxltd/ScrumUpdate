@@ -1,0 +1,14 @@
+@baseUrl = http://localhost:5130
+@instance = 2751
+@sprint = 300
+
+POST {{baseUrl}}/api/analytics/sprint_analyzer
+Cache-Control: max-age=120
+x-instanceId: {{instance}}
+Content-Type: application/json
+
+
+{
+  "sprint_id": {{sprint}},
+  "additionalInfo": "This sprint was amazing"
+}

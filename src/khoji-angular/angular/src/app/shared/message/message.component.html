@@ -1,0 +1,9 @@
+<div class="container">
+  <div class="center-block">
+    <div class="no-data" data-test="no-data-available-message">
+      <span *ngIf="!addSpinner" class="error-text-style">{{message}}</span>
+      <span *ngIf="addSpinner"><i class="fa fa-circle-o-notch fa-spin error-text-style">
+      </i></span>
+    </div>
+  </div>
+</div>

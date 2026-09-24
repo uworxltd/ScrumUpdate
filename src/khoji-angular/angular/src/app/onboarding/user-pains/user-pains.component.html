@@ -1,0 +1,55 @@
+<p-card class="border-round w-8">
+  <ng-template pTemplate="header">
+    <div class="flex justify-content-between align-items-center flex-wrap w-full px-8 pt-6 pb-4">
+      <div class="flex">
+        <img
+          src="assets/images/scrumupdate-logo-v1.svg"
+          alt="Khoii-Logo"
+          width="42"
+          height="35"
+        />
+      </div>
+    </div>
+    <div class="flex justify-content-center align-items-center w-full pb-4">
+      <h2 class="text-4xl md:text-5xl font-bold m-0 text-color">What's slowing you down?</h2>
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="content">
+    <div class="px-8">
+      <div class="pains-grid">
+        <div 
+          *ngFor="let pain of pains" 
+          class="pain-card surface-card border-2 border-round-lg p-4 flex justify-content-between align-items-start gap-3 cursor-pointer" 
+          [class.selected]="pain.id === selectedPain?.id" 
+          (click)="toggle(pain)" 
+          (keydown.enter)="toggle(pain)" 
+          tabindex="0"
+          role="button"
+          [attr.aria-pressed]="pain.id === selectedPain?.id">
+          <div class="flex gap-3 flex-1">
+            <div class="pain-icon text-5xl flex-shrink-0">{{pain.icon}}</div>
+            <div class="flex-1">
+              <div class="font-semibold text-lg mb-2 text-color line-height-3">{{pain.title}}</div>
+              <div class="text-base text-color-secondary line-height-3">{{pain.desc}}</div>
+            </div>
+          </div>
+          <div class="pain-check w-2rem h-2rem border-circle border-2 flex align-items-center justify-content-center flex-shrink-0">
+            <i *ngIf="pain.id === selectedPain?.id" class="pi pi-check text-white text-sm"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-content-center pt-8 pb-3">
+        <p-button 
+          [disabled]="!selectedPain" 
+          label="Submit" 
+          icon="pi pi-arrow-right" 
+          iconPos="right"
+          (click)="onSubmit()" 
+          class="font-semibold border-round-lg px-6 py-3">
+        </p-button>
+      </div>
+    </div>
+  </ng-template>
+</p-card>

@@ -1,0 +1,89 @@
+### Maven ###
+/target/
+!.mvn/wrapper/maven-wrapper.jar
+
+### IDEs ###
+
+# IntelliJ IDEA
+.idea
+*.iws
+*.iml
+*.ipr
+
+# STS
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+# NetBeans
+/nbproject/private/
+/build/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### Node ###
+node_modules/
+dist/
+
+### Java ###
+# Compiled Java class files
+*.class
+
+### Python ###
+# Compiled Python bytecode
+*.py[cod]
+
+### Logs ###
+*.log
+*.log.*
+log4j-application.log
+velocity.log
+log-file.log
+
+### OS Specific ###
+# MacOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+### Applications ###
+*.app
+*.exe
+*.war
+*.jar
+
+### Media Files ###
+*.mp4
+*.tiff
+*.avi
+*.flv
+*.mov
+*.wmv
+
+### Test Reports ###
+TEST*.xml
+
+### Miscellaneous ###
+# VSCode
+.vscode
+
+# HTTP Client
+*.http
+
+# Database files
+*.db
+
+# Project-specific
+khoji-agile-jira-client.iml
+khoji-security.iml
+
+# flattened Poms only for builds etc
+*/.flattened-pom.xml
+.flattened-pom.xml

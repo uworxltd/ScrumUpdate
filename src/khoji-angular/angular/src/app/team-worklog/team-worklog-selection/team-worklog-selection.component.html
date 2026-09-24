@@ -1,0 +1,47 @@
+<ng-container *ngIf="(worklogTeamsFilter$ | async)?.length > 1">
+  <div
+    class="chips-container"
+    khoji-dom-selector=".p-card-header,.p-datatable-header"
+    #selector="domSelector"
+    [style.width]="selector.parent?.position?.width - domWidth + 'px'"
+  >
+    <div class="chips-wrapper">
+      <div
+        class="chips-scroll-container"
+        #chipsScrollContainer
+      >
+        <div
+          *ngFor="let team of worklogTeamsFilter$ | async"
+          class="flex"
+        >
+          <p-chip
+            (click)="toggleWorklogTeamSelection(team.name)"
+            [ngClass]="{ 'selected-chip-background': team.selected, 'cursor-pointer m-1': true }"
+            label="{{ team.name }}"
+          >
+          </p-chip>
+        </div>
+      </div>
+      <div
+        *ngIf="showBackwardButton || showForwardButton"
+        class="flex align-items-center"
+      >
+        <i
+          class="pi pi-angle-left cursor-pointer"
+          (click)="scrollLeft()"
+        ></i>
+        <i
+          class="pi pi-angle-right cursor-pointer"
+          (click)="scrollRight()"
+        ></i>
+      </div>
+      <div class="align-items-center flex">
+        <a
+          class="text-primary cursor-pointer m-1 w-6rem flex"
+          (click)="clearAllWorklogTeamSelections()"
+          >{{ translation?.timelog.clearFilter }}</a
+        >
+      </div>
+    </div>
+  </div>
+</ng-container>

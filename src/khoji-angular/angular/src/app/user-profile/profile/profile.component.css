@@ -1,0 +1,28 @@
+/*
+  Copyright 2026 UWorx Services.
+  Licensed under the Apache License, Version 2.0.
+  See LICENSE for the full license text.
+*/
+
+
+.profile {
+    margin: 3% 5%;
+}
+
+.page-title{
+  color: black;
+  font-size: 20px;
+  font-weight: bolder;
+  font-family: Montserrat;
+}
+
+.tabs-style{
+  color:black;
+}
+
+/* sm property of the primeflex, custom class dont work with primeflex */
+@media only screen and (max-width: 576px) {
+  .profile {
+    margin: 3% 0%;
+  }
+}

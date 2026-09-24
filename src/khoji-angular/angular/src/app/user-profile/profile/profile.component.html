@@ -1,0 +1,54 @@
+<!-- /*
+Copyright 2026 UWorx Services.
+Licensed under the Apache License, Version 2.0.
+See LICENSE for the full license text.
+*/ -->
+
+<div class="profile" *ngIf="activeTab">
+  <button type="button"
+    pButton class="p-button-outlined border-0 p-1 text-md"
+    icon="pi pi-angle-left"
+    (click)="navigateToHomePage()"
+    [label]="translation?.adminMenuOrganization?.breadCrum?.home">
+    <span class="pi pi-home text-lg mr-1"></span>
+  </button>
+
+  <h4 class="text-color">Account Settings</h4>
+  <p-tabView orientation="left" (onChange)="changeQueryParam($event)" [activeIndex]="tabIndex"
+    data-test="user-profile-tab">
+
+    <p-tabPanel *ngIf="isComponentEnabled(constants.KHOJI_USER_PROFILE)" header="{{translation?.userProfile.tabs.profileSettings}}" class="line-height-3 m-0">
+       <h5 class="font-normal">Delete Account</h5>
+       <p class="text-color mt-4">Note that performing this action will delete all of your connected apps and its data</p>
+       <button
+          pButton
+          data-test="delete-account-button"
+          class="p-button-danger mt-3"
+          (click)="showDeleteAccountDialog()"
+       >
+         {{ translation?.userProfile.deleteAccount.deleteAccountBtn }}
+       </button>
+      <khoji-delete-account (closeDialog)="hideDeleteAccountDialog()"
+        [openDialog]="openDeleteAccountDialog"></khoji-delete-account>
+    </p-tabPanel>
+
+    <p-tabPanel
+      header="{{translation?.userProfile.tabs.manageSubscription}}"
+      class="line-height-3 m-0"
+      *ngIf="showBillingTab && planDetailsFeatureEnabled"
+      data-test="manage-subscription-tab"
+    >
+      <khoji-manage-subscription></khoji-manage-subscription>
+    </p-tabPanel>
+
+    <!-- <p-tabPanel *ngIf="isComponentEnabled(constants.KHOJI_USER_PROFILE)" header="{{translation?.userProfile.tabs.changePassword}}" class="line-height-3 m-0"
+      data-test="change-password-tab">
+      <khoji-change-password *ngIf="activeTab === 'password'"></khoji-change-password>
+    </p-tabPanel> -->
+
+    <p-tabPanel *ngIf="isUserEmailSettingsEnabled" header="Email Preferences" class="line-height-3 m-0"
+      data-test="settings-tab">
+      <khoji-change-setting *ngIf="activeTab === 'setting'"></khoji-change-setting>
+    </p-tabPanel>
+  </p-tabView>
+</div>

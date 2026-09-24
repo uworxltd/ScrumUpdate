@@ -1,0 +1,615 @@
+{
+	"analysisByTeamboard": {
+		"teamboard": [
+			{
+				"key": "boardType",
+				"enabled": true,
+				"groups": [
+					{
+						"name": "Scrum",
+						"value": "SCRUM",
+						"code": "SCRUM",
+						"description": "Scrum Board",
+						"exclude": false,
+						"expand": true,
+						"order": 1
+					},
+					{
+						"name": "Kanban",
+						"value": "KANBAN",
+						"code": "KANBAN",
+						"description": "Kanban Board",
+						"exclude": false,
+						"expand": false,
+						"order": 2
+					}
+				]
+			}
+		],
+		"sprint": [
+			{
+				"key": "status",
+				"enabled": true,
+				"groups": [
+					{
+						"name": "Cached",
+						"key": "cached",
+						"value": true,
+						"code": "Cached-releases",
+						"description": "Cached Sprints",
+						"exclude": false,
+						"expand": true,
+						"order": 1
+					},
+					{
+						"name": "Active",
+						"value": "active",
+						"code": "active",
+						"description": "Active Sprints",
+						"exclude": false,
+						"expand": false,
+						"order": 2
+					},
+					{
+						"name": "Future",
+						"value": "future",
+						"code": "future",
+						"description": "Future Sprints",
+						"exclude": false,
+						"expand": false,
+						"order": 3
+					},
+					{
+						"name": "Closed",
+						"value": "closed",
+						"code": "closed",
+						"description": "Closed Sprints",
+						"exclude": false,
+						"expand": false,
+						"order": 4
+					}
+				]
+			}
+		],
+		"sprintFilter": [
+			{
+				"key": "status",
+				"enabled": false,
+				"groups": []
+			}
+		]
+	},
+	"analysisByRelease": {
+		"release": [
+			{
+				"key": "status",
+				"enabled": true,
+				"groups": [
+					{
+						"name": "Cached",
+						"key": "cached",
+						"value": true,
+						"code": "Cached-releases",
+						"description": "Releases which are cached",
+						"exclude": false,
+						"expand": true,
+						"order": 1
+					},
+					{
+						"name": "Unreleased",
+						"value": "Unreleased",
+						"code": "Unreleased-releases",
+						"description": "Releases which are not released yet",
+						"exclude": false,
+						"expand": true,
+						"order": 2
+					},
+					{
+						"name": "Released",
+						"value": "Released",
+						"code": "Released-releases",
+						"description": "Releases which are released",
+						"exclude": false,
+						"expand": false,
+						"order": 2
+					}
+				]
+			}
+		],
+		"teamboard": [
+			{
+				"key": "boardType",
+				"enabled": false,
+				"groups": []
+			}
+		],
+		"epic": [
+			{
+				"key": "",
+				"enabled": false,
+				"groups": []
+			}
+		]
+	},
+	"analysisByWorklog": {
+		"team": [
+			{
+				"key": "status",
+				"enabled": true,
+				"groups": [
+					{
+						"name": "Active",
+						"value": "active",
+						"code": "active",
+						"description": "Active Teams",
+						"exclude": false,
+						"expand": true,
+						"order": 1
+					},
+					{
+						"name": "In-Active",
+						"value": "closed",
+						"code": "closed",
+						"description": "In-Active Teams",
+						"exclude": false,
+						"expand": false,
+						"order": 2
+					}
+				]
+			}
+		]
+	},
+	"teamWorklogAnalysis": {
+		"team": [
+			{
+				"key": "status",
+				"enabled": false,
+				"groups": [
+					{
+						"name": "Active",
+						"value": "active",
+						"code": "active",
+						"description": "Active Teams",
+						"exclude": false,
+						"expand": true,
+						"order": 1
+					},
+					{
+						"name": "In-Active",
+						"value": "closed",
+						"code": "closed",
+						"description": "In-Active Teams",
+						"exclude": false,
+						"expand": false,
+						"order": 2
+					}
+				]
+			}
+		],
+		"member": [
+			{
+				"key": "memberRole",
+				"enabled": true,
+				"groups": [
+					{
+						"name": "Administrator",
+						"value": "adm",
+						"code": "adm",
+						"description": "adm",
+						"exclude": false,
+						"expand": true,
+						"order": 1
+					},
+					{
+						"name": "Development Project Manager",
+						"value": "dpm",
+						"code": "dpm",
+						"description": "dpm",
+						"exclude": false,
+						"expand": false,
+						"order": 2
+					},
+					{
+						"name": "Developer",
+						"value": "developer",
+						"code": "developer",
+						"description": "developer",
+						"exclude": false,
+						"expand": false,
+						"order": 3
+					},
+					{
+						"name": "Quality Assurance",
+						"value": "qa",
+						"code": "qa",
+						"description": "qa",
+						"exclude": false,
+						"expand": false,
+						"order": 4
+					},
+					{
+						"name": "Business Analyst",
+						"value": "ba",
+						"code": "ba",
+						"description": "ba",
+						"exclude": false,
+						"expand": false,
+						"order": 5
+					},
+					{
+						"name": "Support",
+						"value": "support",
+						"code": "support",
+						"description": "support",
+						"exclude": false,
+						"expand": false,
+						"order": 6
+					}
+				]
+			}
+		]
+	},
+	"teamProgressReport": {
+		"teamboard": [
+			{
+				"key": "boardType",
+				"enabled": false,
+				"groups": [
+					{
+						"name": "Scrum",
+						"value": "SCRUM",
+						"code": "SCRUM",
+						"description": "Scrum Board",
+						"exclude": false,
+						"expand": true,
+						"order": 1
+					},
+					{
+						"name": "Kanban",
+						"value": "KANBAN",
+						"code": "KANBAN",
+						"description": "Kanban Board",
+						"exclude": false,
+						"expand": false,
+						"order": 2
+					}
+				]
+			}
+		],
+		"sprint": [
+			{
+				"key": "status",
+				"enabled": true,
+				"groups": [
+					{
+						"key": "status",
+						"enabled": true,
+						"groups": [
+							{
+								"name": "Active",
+								"value": "active",
+								"code": "active",
+								"description": "Active Sprints",
+								"exclude": false,
+								"expand": true,
+								"order": 1
+							},
+							{
+								"name": "Future",
+								"value": "future",
+								"code": "future",
+								"description": "Future Sprints",
+								"exclude": false,
+								"expand": false,
+								"order": 2
+							},
+							{
+								"name": "Closed",
+								"value": "closed",
+								"code": "closed",
+								"description": "Closed Sprints",
+								"exclude": false,
+								"expand": false,
+								"order": 3
+							}
+						]
+					}
+				]
+			}
+		]
+	},
+	"releaseReport": {
+		"release": [
+			{
+				"key": "released",
+				"enabled": true,
+				"groups": [
+					{
+						"name": "Active",
+						"value": false,
+						"code": "Unreleased-status",
+						"description": "releases which are not released yet",
+						"exclude": false,
+						"expand": true,
+						"order": 1
+					},
+					{
+						"name": "Closed",
+						"value": true,
+						"code": "Released-status",
+						"description": "releases which are released",
+						"exclude": true,
+						"expand": false,
+						"order": 1
+					}
+				]
+			}
+		],
+		"teamboard": [
+			{
+				"key": "boardType",
+				"enabled": false,
+				"groups": []
+			}
+		],
+		"epic": [
+			{
+				"key": "",
+				"enabled": false,
+				"groups": []
+			}
+		]
+	},
+	"indicatorSummaryByTeam": {
+		"teamboard": [
+			{
+				"key": "boardType",
+				"enabled": true,
+				"groups": [
+					{
+						"name": "Scrum",
+						"value": "SCRUM",
+						"code": "SCRUM",
+						"description": "Scrum Board",
+						"exclude": false,
+						"expand": true,
+						"order": 1
+					},
+					{
+						"name": "Kanban",
+						"value": "KANBAN",
+						"code": "KANBAN",
+						"description": "Kanban Board",
+						"exclude": false,
+						"expand": false,
+						"order": 2
+					}
+				]
+			}
+		]
+	},
+	"manageTeams": {
+		"users": [
+			{
+				"key": "roleName",
+				"enabled": true,
+				"groups": [
+          {
+            "name": "Team Member",
+            "value": "Team Member (Default)",
+            "code": "TM",
+            "description": "TM",
+            "exclude": false,
+            "expand": true,
+            "order": 2
+          },
+          {
+						"name": "Product Owner",
+						"value": "Product Owner",
+						"code": "PO",
+						"description": "PO",
+						"exclude": false,
+						"expand": true,
+						"order": 3
+					},
+          {
+						"name": "Project Manager",
+						"value": "Project Manager",
+						"code": "PM",
+						"description": "PM",
+						"exclude": false,
+						"expand": true,
+						"order": 4
+					},
+          {
+						"name": "Developer",
+						"value": "Developer",
+						"code": "DEV",
+						"description": "DEV",
+						"exclude": false,
+						"expand": true,
+						"order": 5
+					},
+          {
+						"name": "Business Analyst",
+						"value": "Business Analyst",
+						"code": "BA",
+						"description": "BA",
+						"exclude": false,
+						"expand": true,
+						"order": 6
+					},
+          {
+						"name": "Quality Assurance Engineer",
+						"value": "Quality Assurance Engineer",
+						"code": "QAE",
+						"description": "QAE",
+						"exclude": false,
+						"expand": true,
+						"order": 7
+					},
+          {
+						"name": "Network Administrator",
+						"value": "Network Administrator",
+						"code": "NA",
+						"description": "NA",
+						"exclude": false,
+						"expand": true,
+						"order": 8
+					},
+          {
+						"name": "Scrum Master",
+						"value": "Scrum Master",
+						"code": "SM",
+						"description": "SM",
+						"exclude": false,
+						"expand": true,
+						"order": 9
+					},
+          {
+						"name": "Team Lead",
+						"value": "Team Lead",
+						"code": "TL",
+						"description": "TL",
+						"exclude": false,
+						"expand": true,
+						"order": 10
+					},
+          {
+						"name": "Solution Architect",
+						"value": "Solution Architect",
+						"code": "SA",
+						"description": "SA",
+						"exclude": false,
+						"expand": true,
+						"order": 11
+					},
+          {
+						"name": "UI/UX Designer",
+						"value": "UI/UX Designer",
+						"code": "UID",
+						"description": "UID",
+						"exclude": false,
+						"expand": true,
+						"order": 12
+					},
+          {
+						"name": "Data Scientist",
+						"value": "Data Scientist",
+						"code": "DA",
+						"description": "DA",
+						"exclude": false,
+						"expand": true,
+						"order": 13
+					},
+          {
+						"name": "Data Engineer",
+						"value": "Data Engineer",
+						"code": "DE",
+						"description": "DE",
+						"exclude": false,
+						"expand": true,
+						"order": 14
+					},
+          {
+						"name": "Researcher",
+						"value": "Researcher",
+						"code": "RES",
+						"description": "RES",
+						"exclude": false,
+						"expand": true,
+						"order": 15
+					},
+          {
+						"name": "HR Personnel",
+						"value": "HR Personnel",
+						"code": "HRP",
+						"description": "HRP",
+						"exclude": false,
+						"expand": true,
+						"order": 16
+					},
+          {
+						"name": "Talent Acquisition Specialist",
+						"value": "Talent Acquisition Specialist",
+						"code": "TAS",
+						"description": "TAS",
+						"exclude": false,
+						"expand": true,
+						"order": 17
+					},
+          {
+						"name": "Owner",
+						"value": "Owner",
+						"code": "OWN",
+						"description": "OWN",
+						"exclude": false,
+						"expand": true,
+						"order": 18
+					},
+          {
+						"name": "C-Suite",
+						"value": "C-Suite",
+						"code": "CS",
+						"description": "CS",
+						"exclude": false,
+						"expand": true,
+						"order": 19
+					},
+          {
+						"name": "Vice President",
+						"value": "Vice President",
+						"code": "VP",
+						"description": "VP",
+						"exclude": false,
+						"expand": true,
+						"order": 20
+					},
+          {
+						"name": "Director",
+						"value": "Director",
+						"code": "DIR",
+						"description": "DIR",
+						"exclude": false,
+						"expand": true,
+						"order": 21
+					},
+					{
+						"name": "Program Manager",
+						"value": "Program Manager",
+						"code": "PROM",
+						"description": "PROM",
+						"exclude": false,
+						"expand": true,
+						"order": 22
+					},
+					{
+						"name": "Administrator",
+						"value": "adm",
+						"code": "adm",
+						"description": "adm",
+						"exclude": false,
+						"expand": true,
+						"order": 1
+					},
+					{
+						"name": "External users (import Jira users to Khoji)",
+						"value": "sourceUsers",
+						"code": "sourceUsers",
+						"description": "sourceUsers",
+						"exclude": false,
+						"expand": false,
+						"order": 23
+					}
+				]
+			}
+		],
+		"teamboards": [
+			{
+				"key": "",
+				"enabled": true,
+				"groups": []
+			}
+		]
+	}
+}

@@ -1,0 +1,152 @@
+<!-- /*
+Copyright 2026 UWorx Services.
+Licensed under the Apache License, Version 2.0.
+See LICENSE for the full license text.
+*/ -->
+
+<div class="w-full h-full flex flex-column overflow-hidden">
+  <div class="flex flex-column h-full overflow-hidden p-2 gap-3 -mt-3">
+    <!-- Header Section -->
+    <!-- <div class="flex-shrink-0">
+      <h3 class="text-xl font-bold text-color m-0">{{ summaryData?.title || 'Summary' }}</h3>
+      <p *ngIf="summaryData?.description && summaryData?.isConcerning" class="mt-2 mb-0">
+        Sprint {{ summaryData.description }} has concerning signals
+      </p>
+      <p *ngIf="summaryData?.description && !summaryData?.isConcerning" class="mt-2 mb-0">
+        {{ summaryData.description }} is progressing well
+      </p>
+    </div> -->
+
+    <!-- Summary Items -->
+    <!-- <ul class="flex-shrink-0 m-0 pl-6">
+      <li *ngIf="hasStoryPoints()" class="text-base text-color mb-2">
+        <span>Only </span>
+        <span class="font-bold">{{ summaryData!.completedPoints }} of {{ summaryData!.totalPoints }} story points </span>
+        <span>completed<span *ngIf="summaryData?.completionPercentage != null"> ({{ summaryData.completionPercentage }}%)</span></span>
+      </li>
+      <li *ngIf="hasStaleTickets()" class="text-base text-color mb-2">
+        <span class="font-bold cursor-pointer clickable-metric" 
+              [ngClass]="{'active': isFilterActive('staleTickets')}"
+              (click)="filterStaleTickets()">
+          {{ summaryData!.staleTickets }} stale ticket{{ summaryData!.staleTickets !== 1 ? 's' : '' }}
+        </span>
+        <span> requiring attention</span>
+      </li>
+      <li *ngIf="hasCriticalBlockers()" class="text-base text-color mb-2">
+        <span class="font-bold cursor-pointer clickable-metric" 
+              [ngClass]="{'active': isFilterActive('blockers')}"
+              (click)="filterBlockers()">
+          {{ summaryData?.criticalBlockers || 1 }} critical blocker{{ (summaryData?.criticalBlockers || 1) > 1 ? 's' : '' }}
+        </span>
+        <span> affecting delivery</span>
+      </li>
+      <li *ngIf="hasTicketHygiene()" class="text-base text-color mb-2">
+        <span class="font-bold">{{ summaryData!.ticketHygienePercentage }}% ticket hygiene </span>
+        <span>needs improvement</span>
+      </li>
+    </ul> -->
+
+    <!-- Status Changes Section -->
+    <div class="flex-1 gap-3 flex flex-column overflow-hidden status-changes-container">
+      <!-- <h4 class="text-lg font-semibold text-color m-0 mb-3">Status Changes (Yesterday → Today)</h4> -->
+      <h4 class="text-xl font-bold text-color m-0">{{ getStatusChangesHeader() }}</h4>
+      <div *ngIf="!hasStatusChanges()" class="flex align-items-center justify-content-center surface-100 border-round text-sm text-color-secondary p-3">
+        <span class="italic">No status changes detected</span>
+      </div>
+
+      <!-- Badges -->
+      <div *ngIf="hasStatusBadges()" class="flex-shrink-0 flex align-items-center flex-wrap gap-2 mb-1">
+        <div *ngIf="statusChanges?.progressed != null && statusChanges.progressed > 0" 
+             class="px-3 py-1 border-round text-sm font-semibold bg-green-100 text-green-700">
+          +{{ statusChanges.progressed }} Progressed
+        </div>
+        <div *ngIf="statusChanges?.regressed != null && statusChanges.regressed > 0" 
+             class="px-3 py-1 border-round text-sm font-semibold bg-red-100 text-red-700">
+          -{{ statusChanges.regressed }} Regressed
+        </div>
+        <div *ngIf="statusChanges?.net != null" 
+             class="px-3 py-1 border-round text-sm font-semibold bg-blue-100 text-blue-700">
+          Net: {{ statusChanges.net >= 0 ? '+' : '' }}{{ statusChanges.net }}
+        </div>
+      </div>
+
+       <!-- (click)="filterByStatus('toDo')" -->
+        <!-- removed for now -->
+
+      <!-- Status Columns -->
+      <div *ngIf="hasStatusColumns()" class="flex overflow-hidden gap-3">
+     <div *ngIf="statusChanges?.toDo" 
+       class="flex-1 flex flex-column align-items-center justify-content-center surface-100 border-round p-3 status-column cursor-pointer hover:surface-200"
+       [ngClass]="{'border-2 border-primary': isFilterActive('status_toDo')}"
+       
+       pTooltip="{{ getTicketsTooltip('toDo') }}"
+       tooltipPosition="bottom"
+       appendTo="body">
+          <div *ngIf="statusChanges.toDo.change != null"
+               class="text-2xl font-bold mb-1"
+               [ngClass]="{
+                 'text-red-600': statusChanges.toDo.change < 0,
+                 'text-green-700': statusChanges.toDo.change > 0,
+                 'text-primary': isFilterActive('status_toDo')
+               }">
+            {{ statusChanges.toDo.change > 0 ? '+' : '' }}{{ statusChanges.toDo.change }}
+          </div>
+          <div *ngIf="statusChanges.toDo.from != null && statusChanges.toDo.to != null"
+               class="text-sm text-color-secondary mb-2">
+            ({{ statusChanges.toDo.from }} → {{ statusChanges.toDo.to }})
+          </div>
+          <div class="text-sm text-color-secondary">{{ statusChanges.toDo.label || 'To Do' }}</div>
+        </div>
+
+     <div *ngIf="statusChanges?.inProgress" 
+       class="flex-1 flex flex-column align-items-center justify-content-center surface-100 border-round p-3 status-column cursor-pointer hover:surface-200"
+       [ngClass]="{'border-2 border-primary': isFilterActive('status_inProgress')}"
+
+       pTooltip="{{ getTicketsTooltip('inProgress') }}"
+       tooltipPosition="bottom"
+       appendTo="body">
+          <div *ngIf="statusChanges.inProgress.change != null"
+               class="text-2xl font-bold mb-1"
+               [ngClass]="{
+                 'text-red-600': statusChanges.inProgress.change < 0,
+                 'text-green-700': statusChanges.inProgress.change > 0,
+                 'text-primary': isFilterActive('status_inProgress')
+               }">
+            {{ statusChanges.inProgress.change > 0 ? '+' : '' }}{{ statusChanges.inProgress.change }}
+          </div>
+          <div *ngIf="statusChanges.inProgress.from != null && statusChanges.inProgress.to != null"
+               class="text-sm text-color-secondary mb-2">
+            ({{ statusChanges.inProgress.from }} → {{ statusChanges.inProgress.to }})
+          </div>
+          <div class="text-sm text-color-secondary">{{ statusChanges.inProgress.label || 'In Progress' }}</div>
+        </div>
+
+     <div *ngIf="statusChanges?.done" 
+       class="flex-1 flex flex-column align-items-center justify-content-center surface-100 border-round p-3 status-column cursor-pointer hover:surface-200"
+       [ngClass]="{'border-2 border-primary': isFilterActive('status_done')}"
+       
+       pTooltip="{{ getTicketsTooltip('done') }}"
+       tooltipPosition="bottom"
+       appendTo="body">
+          <div *ngIf="statusChanges.done.change != null"
+               class="text-2xl font-bold mb-1"
+               [ngClass]="{
+                 'text-red-600': statusChanges.done.change < 0,
+                 'text-green-700': statusChanges.done.change > 0,
+                 'text-primary': isFilterActive('status_done')
+               }">
+            {{ statusChanges.done.change > 0 ? '+' : '' }}{{ statusChanges.done.change }}
+          </div>
+          <div *ngIf="statusChanges.done.from != null && statusChanges.done.to != null"
+               class="text-sm text-color-secondary mb-2">
+            ({{ statusChanges.done.from }} → {{ statusChanges.done.to }})
+          </div>
+          <div class="text-sm text-color-secondary">{{ statusChanges.done.label || 'Done' }}</div>
+        </div>
+      </div>
+      <div *ngIf="isCalculatingScopeChanges" class="text-600 font-italic">
+        Calculating scope changes. Some data will refresh when complete.
+      </div>
+    </div>
+  </div>
+</div>

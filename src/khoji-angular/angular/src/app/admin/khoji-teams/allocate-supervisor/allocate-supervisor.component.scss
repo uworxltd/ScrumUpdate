@@ -1,0 +1,43 @@
+/*
+  Copyright 2026 UWorx Services.
+  Licensed under the Apache License, Version 2.0.
+  See LICENSE for the full license text.
+*/
+
+@import "../khoji-teams-list/khoji-teams-list.component.scss";
+:host ::ng-deep {
+  .p-datatable .p-datatable-tbody>tr:hover {
+      background-color: transparent !important;
+    }
+
+    .p-multiselect {
+      height: 41px;
+      border: 1px solid #ced4da;
+      min-width: 400px;
+      max-width: 400px;
+    }
+
+    .p-multiselect:not(.p-disabled).p-focus  {
+      border-color: #ced4da;
+    }
+
+
+    .save-teams-button {
+      min-width: 230px;
+      max-width: 230px;
+    }
+
+    .danger-button, .danger-button:hover {
+      background-color: #E91224;
+    }
+
+    .p-button{
+      border: 1px #E91224;
+    }
+    
+    .p-confirm-dialog-message {
+      margin: 0px !important;
+    }
+}
+
+

@@ -1,0 +1,139 @@
+name: sprint_initial_scope
+description: |
+  Calculates the initial scope (total story points) at the START of the sprint.
+  
+  Uses similar logic to status_categories_tickets_sprint_start to identify which
+  tickets were in the sprint at start, then for each ticket:
+  - Checks changelogs for Story Points field changes before/at sprint start
+  - If story points changed, uses the value at sprint start
+  - If no changelog exists, uses current story points value
+  
+  Returns the sum of initial story points for scope change calculation.
+
+version: 1.0
+
+inputs:
+  sprint_id: { type: int, default: 1 }
+
+steps:
+  - id: get_initial_scope
+    type: sql
+    service: main-db
+    query: |
+      WITH sprint_start AS (
+        -- Get the sprint start date
+        SELECT start_date
+        FROM {{ schema }}.sprints
+        WHERE sprint_id = $1::int
+      ),
+      -- Get tickets that were in the sprint at sprint start date
+      sprint_membership_at_start AS (
+        SELECT DISTINCT
+          i.issue_key
+        FROM {{ schema }}.issues i
+        CROSS JOIN sprint_start ss
+        WHERE EXISTS (
+          -- Check if ticket was added to this sprint at or before sprint start
+          SELECT 1
+          FROM (
+            SELECT 
+              cl.issue_key AS changelog_issue_key,
+              cl.created_date,
+              cl.to_value,
+              cl.from_value,
+              ROW_NUMBER() OVER (
+                PARTITION BY cl.issue_key 
+                ORDER BY cl.created_date DESC
+              ) as rn
+            FROM {{ schema }}.changelogs cl
+            WHERE cl.field_name = 'Sprint'
+              AND cl.issue_key = i.issue_id::text
+              AND cl.created_date <= ss.start_date
+          ) latest_sprint_change
+          WHERE rn = 1
+            -- Check if sprint_id is in the comma-separated to_value
+            AND (',' || REPLACE(to_value, ' ', '') || ',') LIKE '%,' || $1::text || ',%'
+        )
+        -- Also include current sprint members that have NO sprint changelog
+        -- (they were added initially and never moved)
+        OR (
+          i.issue_key IN (SELECT issue_key FROM {{ schema }}.sprint_issues WHERE sprint_id = $1::int)
+          AND NOT EXISTS (
+            SELECT 1 
+            FROM {{ schema }}.changelogs cl2 
+            WHERE cl2.field_name = 'Sprint' 
+              AND cl2.issue_key = i.issue_id::text
+          )
+          AND i.created_date <= ss.start_date
+        )
+      ),
+      -- Get story points changes at or before sprint start
+      story_points_at_or_before_start AS (
+        SELECT 
+          i.issue_key,
+          cl.created_date,
+          CASE 
+            WHEN cl.to_display_value IS NULL OR cl.to_display_value = '' THEN 0
+            ELSE COALESCE(NULLIF(cl.to_display_value, '')::numeric, 0)
+          END AS story_points,
+          ROW_NUMBER() OVER (
+            PARTITION BY i.issue_key 
+            ORDER BY cl.created_date DESC
+          ) as rn
+        FROM {{ schema }}.changelogs cl
+        INNER JOIN {{ schema }}.issues i ON cl.issue_key = i.issue_id::text
+        INNER JOIN sprint_membership_at_start sm ON sm.issue_key = i.issue_key
+        CROSS JOIN sprint_start ss
+        WHERE cl.field_name = 'Story point estimate'
+          AND cl.created_date <= ss.start_date
+      ),
+      -- Get first story points change AFTER sprint start (to get from_value)
+      story_points_after_start AS (
+        SELECT 
+          i.issue_key,
+          CASE 
+            WHEN cl.from_display_value IS NULL OR cl.from_display_value = '' THEN 0
+            ELSE COALESCE(NULLIF(cl.from_display_value, '')::numeric, 0)
+          END AS story_points_from_first_change,
+          ROW_NUMBER() OVER (
+            PARTITION BY i.issue_key 
+            ORDER BY cl.created_date ASC
+          ) as rn
+        FROM {{ schema }}.changelogs cl
+        INNER JOIN {{ schema }}.issues i ON cl.issue_key = i.issue_id::text
+        INNER JOIN sprint_membership_at_start sm ON sm.issue_key = i.issue_key
+        CROSS JOIN sprint_start ss
+        WHERE cl.field_name = 'Story point estimate'
+          AND cl.created_date > ss.start_date
+      ),
+      initial_story_points AS (
+        SELECT 
+          sm.issue_key,
+          COALESCE(
+            -- 1. If there's a changelog at or before sprint start, use that value
+            spb.story_points,
+            -- 2. If there's a changelog AFTER sprint start, use the from_value (what it was at start)
+            spa.story_points_from_first_change,
+            -- 3. If no changelog at all, use current story points (never changed)
+            COALESCE(i.story_points, 0)
+          ) AS story_points_at_start
+        FROM sprint_membership_at_start sm
+        LEFT JOIN story_points_at_or_before_start spb ON spb.issue_key = sm.issue_key AND spb.rn = 1
+        LEFT JOIN story_points_after_start spa ON spa.issue_key = sm.issue_key AND spa.rn = 1
+        LEFT JOIN {{ schema }}.issues i ON i.issue_key = sm.issue_key
+      )
+      SELECT 
+        COALESCE(SUM(story_points_at_start), 0) AS initial_scope,
+        COUNT(*) AS initial_ticket_count,
+        jsonb_agg(
+          jsonb_build_object(
+            'issue_key', issue_key,
+            'story_points', story_points_at_start
+          ) ORDER BY issue_key
+        ) AS tickets_breakdown
+      FROM initial_story_points
+    params:
+      - "{{ inputs.sprint_id }}"
+    output: { name: initial_scope_data }
+
+return: "get_initial_scope.initial_scope_data"

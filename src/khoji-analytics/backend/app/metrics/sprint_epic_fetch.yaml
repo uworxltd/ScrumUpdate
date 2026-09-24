@@ -1,0 +1,126 @@
+name: epic_fetch
+description: |
+  This metric retrieves epic information for issues in a sprint.
+  Returns a list of epics with their keys and names (summaries) for the epic progress card.
+version: 1.0
+inputs:
+  sprint_id: { type: int, default: 1 }
+
+steps:
+  - id: fetch_epics
+    type: sql
+    service: main-db
+    query: |
+      WITH latest_epic AS (
+          SELECT
+              i.issue_key AS issue_key,          -- STRING KEY (KFX-120)
+              c.to_display_value AS epic_key
+          FROM (
+              SELECT
+                  issue_key,                     -- NUMERIC issue_id
+                  to_display_value,
+                  ROW_NUMBER() OVER (
+                      PARTITION BY issue_key
+                      ORDER BY created_date DESC
+                  ) rn
+              FROM changelogs
+              WHERE field_name = 'IssueParentAssociation'
+          ) c
+          JOIN issues i
+              ON i.issue_id = c.issue_key        -- 🔥 FIX: map ID → KEY
+          WHERE c.rn = 1
+      ),
+
+      resolved_issue_epic AS (
+          -- Use changelog epic when available
+          SELECT
+              si.issue_key,
+              le.epic_key
+          FROM sprint_issues si
+          JOIN latest_epic le
+              ON le.issue_key = si.issue_key
+          WHERE si.sprint_id = $1
+
+          UNION ALL
+
+          -- Fallback ONLY if no changelog exists
+          SELECT
+              si.issue_key,
+              r.parent_issue_key AS epic_key
+          FROM sprint_issues si
+          JOIN issue_relationships r
+              ON r.child_issue_key = si.issue_key
+             AND r.relationship_type = 'epic'
+          WHERE si.sprint_id = $1
+            AND NOT EXISTS (
+                SELECT 1
+                FROM latest_epic le
+                WHERE le.issue_key = si.issue_key
+            )
+      ),
+
+      epic_issues AS (
+          SELECT
+              rie.epic_key,
+              i.issue_key,
+              i.summary,
+              i.status,
+              i.story_points
+          FROM resolved_issue_epic rie
+          JOIN issues i
+              ON i.issue_key = rie.issue_key
+      )
+
+      SELECT
+          ei.epic_key,
+          ep.summary AS epic_name,
+
+          SUM(ei.story_points) AS total_story_points,
+
+          SUM(
+              CASE WHEN ei.status = 'Done'
+              THEN ei.story_points ELSE 0 END
+          ) AS completed_story_points,
+
+          CASE
+              WHEN SUM(ei.story_points) > 0 THEN
+                  ROUND(
+                      SUM(
+                          CASE WHEN ei.status = 'Done'
+                          THEN ei.story_points ELSE 0 END
+                      ) / SUM(ei.story_points) * 100,
+                      2
+                  )
+              ELSE 0
+          END AS percent_completed,
+
+          json_agg(ei.issue_key ORDER BY ei.issue_key) AS child_issue_keys,
+
+          json_agg(
+              json_build_object(
+                  'key', ei.issue_key,
+                  'summary', ei.summary,
+                  'status', ei.status,
+                  'story_points', ei.story_points
+              )
+              ORDER BY ei.issue_key
+          ) AS child_issues
+
+      FROM epic_issues ei
+      JOIN issues ep
+          ON ep.issue_key = ei.epic_key
+
+      GROUP BY ei.epic_key, ep.summary
+      ORDER BY ei.epic_key
+    params:
+      - "{{ inputs.sprint_id }}"
+    output: { name: epic_list }
+
+  - id: transform
+    type: function
+    function: app.processors.sprint_cards.extract_epic_progress
+    inputs:
+      epic_data: "{{ steps.fetch_epics.outputs.epic_list }}"
+    output: { name: epic_progress }
+
+return: "transform.epic_progress"

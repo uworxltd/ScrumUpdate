@@ -1,0 +1,32 @@
+.container-categories {
+	padding-top: 20px;
+}
+
+.bottom-20px {
+	bottom: 20px;
+}
+
+.hide-element {
+	visibility: hidden;
+}
+
+.top-12px {
+	top: 12px;
+}
+
+.font-size-13px {
+	font-size: 13px;
+}
+
+:host ::ng-deep .white-tooltip {
+	.p-tooltip-text {
+		width: fit-content;
+	}
+}
+
+:host ::ng-deep {
+	.wrapper.adjustable-height .source,
+	.wrapper.adjustable-height .target {
+		height: 60vh !important;
+	}
+}

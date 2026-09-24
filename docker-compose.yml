@@ -1,0 +1,390 @@
+services:
+  # ── Infrastructure ──────────────────────────────────────────────
+  postgres:
+    image: timescale/timescaledb:latest-pg17
+    ports:
+      - "5435:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-khoji-admin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-khoji}
+      POSTGRES_DB: ${POSTGRES_DB:-khoji}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./devops/postgres-init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-khoji-admin}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # ── Mailpit — local SMTP sink for testing emails ─────────────────
+  mailpit:
+    image: axllent/mailpit:latest
+    ports:
+      - "1025:1025"   # SMTP — set EMAIL_HOST=mailpit / EMAIL_PORT=1025
+      - "8025:8025"   # web UI + REST API to inspect received messages
+
+  # ── Unleash — self-hosted feature flags ──────────────────────────
+  unleash:
+    image: unleashorg/unleash-server:8.1.0
+    ports:
+      - "4242:4242"
+    environment:
+      # Dedicated 'unleash' DB on the shared Postgres (created by
+      # devops/postgres-init/20-unleash-db.sql on a fresh volume).
+      DATABASE_HOST: postgres
+      DATABASE_PORT: "5432"
+      DATABASE_NAME: unleash
+      DATABASE_USERNAME: ${POSTGRES_USER:-khoji-admin}
+      DATABASE_PASSWORD: ${POSTGRES_PASSWORD:-khoji}
+      DATABASE_SSL: "false"
+      LOG_LEVEL: ${UNLEASH_LOG_LEVEL:-warn}
+      # URLs reachable by the browser / admin UI (the SPA hits /api/frontend here).
+      UNLEASH_URL: ${NG_UNLEASH_URL:-http://localhost:4242}
+      # Seed the KGS + SPA tokens on first boot (INIT_* run once on a fresh
+      # volume). Features/context fields are created and synced on every boot by
+      # the one-shot unleash-init service (see src/unleash-init).
+      INIT_BACKEND_API_TOKENS: ${UNLEASH_BACKEND_API_TOKEN:-}
+      INIT_FRONTEND_API_TOKENS: ${UNLEASH_FRONTEND_API_TOKEN:-}
+      # Admin UI login (used by the unleash-init seeding job).
+      UNLEASH_DEFAULT_ADMIN_USERNAME: ${UNLEASH_ADMIN_USERNAME:-admin}
+      UNLEASH_DEFAULT_ADMIN_PASSWORD: ${UNLEASH_ADMIN_PASSWORD:-unleash4all}
+      # Don't phone home to version.unleash.run.
+      CHECK_VERSION: "false"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:4242/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+
+  # ── Unleash init — one-shot feature/context-field seeding ───────
+  # Short-lived container that creates/enforces feature flags from
+  # features-map.json and ensures custom context fields exist. Runs after
+  # Unleash is healthy on every `docker compose up`; the map is the source of
+  # truth (manual admin-UI toggles are reverted on the next up). Admin
+  # credentials are consumed only by this job, never by app containers.
+  unleash-init:
+    build:
+      context: src/unleash-init
+    environment:
+      UNLEASH_URL: http://unleash:4242
+      UNLEASH_ADMIN_USERNAME: ${UNLEASH_ADMIN_USERNAME:-admin}
+      UNLEASH_ADMIN_PASSWORD: ${UNLEASH_ADMIN_PASSWORD:-unleash4all}
+      UNLEASH_PROJECT: ${NG_UNLEASH_PROJECT:-default}
+      UNLEASH_ENVIRONMENT: ${NG_UNLEASH_ENVIRONMENT:-development}
+      UNLEASH_FEATURES_MAP: /features-map.json
+    volumes:
+      - ./src/unleash-init/features-map.json:/features-map.json:ro
+    depends_on:
+      unleash:
+        condition: service_healthy
+    restart: "no"
+
+  # ── KGS — .NET 10 GenAI Server ────────────────────────────────
+  kgs:
+    build:
+      context: src/Kgs
+      dockerfile: Dockerfile
+    ports:
+      - "9090:9090"
+    environment:
+      # - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=${POSTGRES_DB:-khoji};Username=${POSTGRES_USER:-khoji-admin};Password=${POSTGRES_PASSWORD:-khoji}
+      - KHOJIX_BASE_URL=http://localhost:${NG_APP_PORT:-4241}
+      - KHOJIX_BUSINESS_SERVER_URL=http://kbs:4243
+      - KHOJI_BASICAUTHUSERNAME=${KHOJI_BASICAUTHUSERNAME:-khoji@scrumupdate.local}
+      - KHOJI_BASICAUTHUSERPASSWORD=${KHOJI_BASICAUTHUSERPASSWORD:-khoji}
+      - LLM_API=claude
+      - CLAUDE_MODEL=claude-haiku-4-5-20251001
+      - CLAUDE_API_KEY=${CLAUDE_API_KEY}
+      # Enable the /api/llm/invoke capability backing AI-powered analytics
+      # metrics (e.g. KAS sprint_insight). Uses CLAUDE_API_KEY set above.
+      - KGS-LLM=true
+      - OPENAI_MODEL=meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo
+      - OPENAI_API_URL=https://api.together.xyz/v1
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - Unleash__HostUrl=${UNLEASH_INTERNAL_URL:-http://unleash:4242}
+      - Unleash__ApiKey=${UNLEASH_BACKEND_API_TOKEN:-}
+      - TEAMS_APP_ID=${TEAMS_APP_ID:-}
+      - Connections__BotServiceConnection__Settings__ClientId=${MS_BOT_CLIENT_ID:-}
+      - Connections__BotServiceConnection__Settings__ClientSecret=${MS_BOT_CLIENT_SECRET:-}
+      - TokenValidation__Audiences__0=${MS_BOT_CLIENT_ID:-}
+      # - OLLAMA_URL=http://host.docker.internal:11434/v1
+      # - MCP_ATLASSIAN_URL=http://atlassian-mcp:7010/mcp/
+      # Uncomment the following to log request files
+      # - DEBUGGING=TRUE
+      # Uncomment following line when agents are required
+      #- KGS-AGENTS=Enabled
+    volumes:
+      - ./src/Kgs/KhojiGenAIServer/Intents:/app/Intents
+      - ./src/Kgs/KhojiGenAIServer/Instructions:/app/Chat/Instructions
+      - ./src/Kgs/KhojiGenAIServer/Prompts:/app/Prompts
+      - ./src/Kgs/KhojiGenAIServer/Skills:/app/Skills
+    depends_on:
+      postgres:
+        condition: service_healthy
+      unleash:
+        condition: service_healthy
+
+  # ── KBS — Java Business Server ────────────────────────────────
+  kbs:
+    build:
+      context: src/khoji-business-server
+      dockerfile: Dockerfile
+    ports:
+      - "4243:4243"
+      - "5005:5005"
+    environment:
+      SERVER_NAME: kbs
+      # SPRING_APPLICATION_JSON wins over the dev-profile defaults, which point
+      # at localhost (invalid inside Docker). Hosts below are compose service names.
+      SPRING_APPLICATION_JSON: '{
+        "khoji.insights.ai.base.url": "http://kgs:9090/api/kia",
+        "khoji.analytics.service.base.url": "http://analytics:8000/metrics/",
+        "mini.kss.base.url": "http://kss-api:8000",
+        "jira.client.redirect.uri": "http://localhost:4241/login",
+        "spring.profiles.active": "dev"
+      }'
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-khoji}?currentSchema=khoji
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-khoji-admin}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-khoji}
+      JIRA_CLIENT_ID: ${JIRA_CLIENT_ID}
+      JIRA_CLIENT_SECRET: ${JIRA_CLIENT_SECRET}
+      JIRA_CLIENT_REDIRECT_URI: ${JIRA_CLIENT_REDIRECT_URI}
+      INTEGRATIONS_MS_OAUTH_CLIENT_ID: ${INTEGRATIONS_MS_OAUTH_CLIENT_ID}
+      INTEGRATIONS_MS_OAUTH_CLIENT_SECRET: ${INTEGRATIONS_MS_OAUTH_CLIENT_SECRET}
+      INTEGRATIONS_MS_REDIRECT_URI: ${INTEGRATIONS_MS_REDIRECT_URI}
+      RECAPTCHA_SECRET: ${RECAPTCHA_SECRET}
+      EMAIL_USERNAME: ${EMAIL_USERNAME}
+      EMAIL_PASSWORD: ${EMAIL_PASSWORD}
+      EMAIL_HOST: ${EMAIL_HOST}
+      EMAIL_PORT: ${EMAIL_PORT:-587}
+      EMAIL_FROM: ${EMAIL_FROM}
+      EMAIL_STARTTLS: ${EMAIL_STARTTLS:-true}
+      EMAIL_SSL_PROTOCOLS: ${EMAIL_SSL_PROTOCOLS:-TLSv1.2}
+      # Basic auth for the APP authority (machine-to-machine). The compose
+      # defaults match the local dev creds so the stack works out of the box;
+      # deployments must override via .env (KBS startup fails outside dev if
+      # these are blank — see KhojiUsersConfig).
+      KHOJI_BASICAUTHUSERNAME: ${KHOJI_BASICAUTHUSERNAME:-khoji@scrumupdate.local}
+      KHOJI_BASICAUTHUSERPASSWORD: ${KHOJI_BASICAUTHUSERPASSWORD:-khoji}
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # ── Angular Dashboard + Express BFF ───────────────────────────
+  angular:
+    build:
+      context: src/khoji-angular
+      dockerfile: Dockerfile
+    ports:
+      - "4241:8081"
+    environment:
+      NODE_ENV: production
+      PORT: 8081
+      PGHOST: postgres
+      PGPORT: "5432"
+      PGDATABASE: ${POSTGRES_DB:-khoji}
+      PGUSER: ${POSTGRES_USER:-khoji-admin}
+      PGPASSWORD: ${POSTGRES_PASSWORD:-khoji}
+      NG_DB_HOST: postgres
+      NG_DB_PORT: "5432"
+      NG_DB_NAME: ${POSTGRES_DB:-khoji}
+      NG_DB_USER: ${POSTGRES_USER:-khoji-admin}
+      NG_DB_PASS: ${POSTGRES_PASSWORD:-khoji}
+      NG_DB_SCHE: ${POSTGRES_DB:-khoji}
+      NG_SERVER_NAME: ${NG_SERVER_NAME:-}
+      NG_SERVER_PORT: ${NG_SERVER_PORT:-}
+      NG_APP_PORT: ${NG_APP_PORT:-}
+      NG_JIRA_ISSUE_COLLECTOR_LINK: ${NG_JIRA_ISSUE_COLLECTOR_LINK:-}
+      NG_SUPPORT_EMAIL: ${NG_SUPPORT_EMAIL:-}
+      NG_REQUEST_PANEL_VISIBILITY: ${NG_REQUEST_PANEL_VISIBILITY:-}
+      NG_TRACKING_PROVIDER: ${NG_TRACKING_PROVIDER:-}
+      NG_TRACKING_API_TOKEN: ${NG_TRACKING_API_TOKEN:-}
+      NG_TRACKING_API_HOST: ${NG_TRACKING_API_HOST:-}
+      NG_TRACKING_AUTO_EVENTS: ${NG_TRACKING_AUTO_EVENTS:-}
+      NG_TRACKING_NAVIGATION_EVENTS: ${NG_TRACKING_NAVIGATION_EVENTS:-}
+      NG_TRACKING_USER_ACTION_EVENTS: ${NG_TRACKING_USER_ACTION_EVENTS:-}
+      NG_TRACKING_APPLICATION_STATUS_EVENTS: ${NG_TRACKING_APPLICATION_STATUS_EVENTS:-}
+      NG_JIRA_CLIENT_ID: ${JIRA_CLIENT_ID:-}
+      NG_JIRA_CLIENT_SECRET: ${JIRA_CLIENT_SECRET:-}
+      NG_JIRA_SCOPES: ${NG_JIRA_SCOPES:-read:me read:jira-user offline_access}
+      NG_CAPTCHA_KEY: ${NG_CAPTCHA_KEY:-}
+      NG_DISABLE_CAPTCHA: ${NG_DISABLE_CAPTCHA:-false}
+      NG_MS_OAUTH_CLIENT_ID: ${INTEGRATIONS_MS_OAUTH_CLIENT_ID:-}
+      NG_MS_OAUTH_TOKEN_URL: ${NG_MS_OAUTH_TOKEN_URL:-https://login.microsoftonline.com/common/oauth2/v2.0/authorize?}
+      NG_MS_OAUTH_REQUESTED_SCOPES: ${NG_MS_OAUTH_REQUESTED_SCOPES:-openid profile User.Read Calendars.ReadBasic offline_access}
+      NG_MS_OAUTH_ENABLED: ${INTEGRATIONS_MS_OAUTH_CLIENT_ID:+true}
+      NG_UNLEASH: ${NG_UNLEASH:-true}
+      NG_UNLEASH_URL: ${NG_UNLEASH_URL:-http://localhost:4242}
+      NG_UNLEASH_API_TOKEN: ${UNLEASH_FRONTEND_API_TOKEN:-}
+      # Single source of truth for feature-flag defaults (seeded by unleash-init).
+      NG_FEATURES_MAP: /app/features-map.json
+    volumes:
+      - ./src/unleash-init/features-map.json:/app/features-map.json:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+      unleash:
+        condition: service_healthy
+
+  # ── KSS — Python Sync Server (API) ───────────────────────────
+  kss-api:
+    build:
+      context: src/kss
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_NAME: ${POSTGRES_DB:-khoji}
+      DB_USER: ${POSTGRES_USER:-khoji-admin}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-khoji}
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/0
+      # KBS basic-auth creds for the token-refresh inter-service call
+      # (see source_token_refresh_service.py).
+      KHOJI_BASICAUTHUSERNAME: ${KHOJI_BASICAUTHUSERNAME:-khoji@scrumupdate.local}
+      KHOJI_BASICAUTHUSERPASSWORD: ${KHOJI_BASICAUTHUSERPASSWORD:-khoji}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  # ── KSS — Celery Workers ─────────────────────────────────────
+  # Queue topology mirrors the staging/testing stack: one general
+  # worker consuming all sync queues, plus a dedicated sprints-list
+  # worker for the Standup Board flow (see task_routes in celeryconfig.py).
+  kss-worker:
+    build:
+      context: src/kss
+      dockerfile: Dockerfile
+    command: celery -A tasks.worker worker --loglevel=info --concurrency=${CELERY_WORKER_CONCURRENCY:-4} --queues=proactive,worklogs,changelogs,comments,burndown,sprint_issues,boards,sprints,jql_issues,workflows,system,default
+    environment:
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_NAME: ${POSTGRES_DB:-khoji}
+      DB_USER: ${POSTGRES_USER:-khoji-admin}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-khoji}
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/0
+      # KBS basic-auth creds for the token-refresh inter-service call
+      # (see source_token_refresh_service.py).
+      KHOJI_BASICAUTHUSERNAME: ${KHOJI_BASICAUTHUSERNAME:-khoji@scrumupdate.local}
+      KHOJI_BASICAUTHUSERPASSWORD: ${KHOJI_BASICAUTHUSERPASSWORD:-khoji}
+    # Override the shared kss image HEALTHCHECK (HTTP probe) — this container
+    # runs Celery, not uvicorn. Self-reports by pinging its own control queue.
+    healthcheck:
+      test: ["CMD-SHELL", "celery -A tasks.worker inspect ping --timeout 5 | grep -q pong"]
+      interval: 30s
+      timeout: 10s
+      start_period: 15s
+      retries: 3
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  # ── KSS — Dedicated Sprints-List Worker ─────────────────────
+  # Consumes the sprints_list queue only (plus system/default), so
+  # Standup Board sprint-list syncs are never blocked behind other jobs.
+  sprints-worker:
+    build:
+      context: src/kss
+      dockerfile: Dockerfile
+    command: celery -A tasks.worker worker --loglevel=info --queues=sprints_list,system,default
+    environment:
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_NAME: ${POSTGRES_DB:-khoji}
+      DB_USER: ${POSTGRES_USER:-khoji-admin}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-khoji}
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/0
+      # KBS basic-auth creds for the token-refresh inter-service call
+      # (see source_token_refresh_service.py).
+      KHOJI_BASICAUTHUSERNAME: ${KHOJI_BASICAUTHUSERNAME:-khoji@scrumupdate.local}
+      KHOJI_BASICAUTHUSERPASSWORD: ${KHOJI_BASICAUTHUSERPASSWORD:-khoji}
+    healthcheck:
+      test: ["CMD-SHELL", "celery -A tasks.worker inspect ping --timeout 5 | grep -q pong"]
+      interval: 30s
+      timeout: 10s
+      start_period: 15s
+      retries: 3
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  # ── Analytics — Python FastAPI ────────────────────────────────
+  analytics:
+    build:
+      context: src/khoji-analytics/backend
+      dockerfile: Dockerfile
+    ports:
+      - "9000:8000"
+    environment:
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-khoji-admin}:${POSTGRES_PASSWORD:-khoji}@postgres:5432/${POSTGRES_DB:-khoji}
+      # The metric pipeline resolves its pool DSN from services.yaml, which is
+      # templated from these individual DB_* vars (not DATABASE_URL).
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_USER: ${POSTGRES_USER:-khoji-admin}
+      DB_PASS: ${POSTGRES_PASSWORD:-khoji}
+      DB_NAME: ${POSTGRES_DB:-khoji}
+      # AI-powered metrics (e.g. sprint_insight) call the LLM via
+      # services.yaml ai_services.llm.endpoint = http://{AI_HOST}:{AI_PORT}/api/llm/invoke.
+      # In this stack that's KGS, reachable at the kgs service (port 9090).
+      AI_HOST: kgs
+      AI_PORT: "9090"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # ── MCP Atlassian ────────────────────────────────────────────
+  # mcp-atlassian:
+  #   image: ghcr.io/sooperset/mcp-atlassian:latest
+  #   # Default transport is 'stdio', which reads stdin and exits immediately
+  #   # under docker compose. Run as a persistent streamable-http server on the
+  #   # mapped port (7010) so it is network-reachable.
+  #   command: --transport streamable-http --host 0.0.0.0 --port 7010
+  #   ports:
+  #     - "7010:7010"
+
+  # ── KSS — Flower (Celery Monitor) ────────────────────────────
+  # kss-flower:
+  #   build:
+  #     context: src/kss
+  #     dockerfile: Dockerfile
+  #   command: celery -A tasks.worker flower --port=5555
+  #   ports:
+  #     - "5555:5555"
+  #   environment:
+  #     CELERY_BROKER_URL: redis://redis:6379/0
+  #     CELERY_RESULT_BACKEND: redis://redis:6379/0
+  #   depends_on:
+  #     redis:
+  #       condition: service_healthy
+
+volumes:
+  postgres-data:
+  redis-data:

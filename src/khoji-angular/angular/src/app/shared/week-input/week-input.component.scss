@@ -1,0 +1,58 @@
+:host ::ng-deep {
+    .p-calendar {
+        top: 1px;
+        .p-inputtext {
+            display: none;
+        }
+
+        .p-button {
+            background: transparent;
+            color: red;
+            padding: 0 !important;
+            width: unset !important;
+            border-radius: 0 !important;
+            border: 0;
+            margin-left: 0;
+
+            .p-icon-wrapper {
+                zoom: 1.2;
+            }
+        }
+
+        .p-datepicker {
+            min-width: 100%;
+            top: 28px !important;
+            left: -173px !important;
+        }
+    }
+
+    .p-calendar-disabled {
+        .p-button {
+            color: #b8b8b8;
+        }
+    }
+}
+
+.calendar {
+    width: fit-content;
+    background-color: #eff3f8;
+
+    .week-button {
+        color: #007ad9;
+        cursor: pointer;
+    }
+
+    .date {
+        font-weight: 600;
+        cursor: pointer;
+        width: 90px;
+        height: 18px;
+        text-align: center;
+        margin: 0;
+    }
+}
+
+.disabled {
+    color: #b8b8b8 !important;
+    pointer-events: none;
+}

@@ -1,0 +1,19 @@
+<!-- /*
+Copyright 2026 UWorx Services.
+Licensed under the Apache License, Version 2.0.
+See LICENSE for the full license text.
+*/ -->
+
+<p-tabView [(activeIndex)]="activeTabIndex">
+  <p-tabPanel [header]="translation?.team.tabs.timlogAnalysisDashboard">
+    <ng-template pTemplate="content">
+      <khoji-team-worklog-statistics class="w-full" (navigateToDetailsTab)="activeTabIndex = 1"></khoji-team-worklog-statistics>
+      <khoji-team-worklog-summary></khoji-team-worklog-summary>
+    </ng-template>
+  </p-tabPanel>
+  <p-tabPanel [header]="translation?.team.tabs.timlogAnalysisDetails">
+    <ng-template pTemplate="content">
+      <khoji-team-worklog-details></khoji-team-worklog-details>
+    </ng-template>
+  </p-tabPanel>
+</p-tabView>

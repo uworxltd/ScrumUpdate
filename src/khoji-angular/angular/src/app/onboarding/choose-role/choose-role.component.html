@@ -1,0 +1,30 @@
+<!-- scrum-assistant.component.html -->
+<div class="mx-4 my-8">
+    <div class="text-center">
+        <h1 class="mb-2 font-bold">Welcome to Scrum Assistant</h1>
+        <p class="text-gray-600">Choose your role and customize your experience</p>
+    </div>
+
+    <div class="flex gap-5 justify-content-center mt-4 text-center">
+        <div class="p-lg-6 p-md-6 p-sm-12 mb-4" *ngFor="let role of roles">
+            <p-card [style]="{'cursor': 'pointer'}" [ngClass]="{'selected':isRoleSelected(role)}"
+                (click)="selectRole(role)">
+                <div>
+                    <i [class]="role.icon" style="font-size: 3rem; color: #6366f1;"></i>
+                    <h4 class="mt-2">{{ role.name }}</h4>
+                    <p class="mt-2 text-gray-500">{{ role.description }}</p>
+                </div>
+            </p-card>
+        </div>
+    </div>
+
+    <div class="fixed bottom-0 left-0 right-0 p-3" style="background-color: #ffffff; border-top: 1px solid #dee2e6;">
+        <div class="flex align-items-center justify-content-between">
+            <span class="text-gray-600">Selected role: <p-tag *ngIf="selectedRole?.name" [value]="selectedRole.name" /></span>
+            <p-button label="Continue to Connect" icon="pi pi-arrow-right" iconPos="right" [disabled]="!selectedRole"
+                (onClick)="continueToConnect()">
+            </p-button>
+        </div>
+    </div>
+
+</div>

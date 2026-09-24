@@ -1,0 +1,38 @@
+<div class="flex align-items-center justify-content-around">
+  <div
+    echarts
+    [options]="chartOption"
+    style="min-height: 250px; min-width: 170px"
+  ></div>
+
+  <div class="flex flex-column gap-3" style="min-width: 188px;">
+    <div
+      *ngIf="totalTeams > 1"
+      class="flex justify-content-between border-bottom-1 surface-border"
+    >
+      <span class="text-md">{{(translation$|async).timelog.workLogStatistics.totalTeams}}:</span>
+      <span class="text-base font-bold">{{ this.totalTeams }}</span>
+    </div>
+    <div class="flex justify-content-between border-bottom-1 surface-border">
+      <span class="text-md">{{(translation$|async).timelog.workLogStatistics.totalMembers}}:</span>
+      <span class="text-base font-bold">{{ this.totalMembers }}</span>
+    </div>
+    <div class="flex justify-content-between border-bottom-1 surface-border">
+      <span class="text-md">
+        {{(translation$|async).timelog.workLogStatistics.availableCapacity}}
+        <span
+          class="pi pi-info-circle text-sm text-600"
+          [pTooltip]="tooltipForAvailableCapacity"
+          tooltipPosition="top"
+        >
+        </span>
+        :
+      </span>
+      <span class="text-base font-bold">{{ this.summaryData.availableCapacity }} days</span>
+    </div>
+    <div class="flex justify-content-between border-bottom-1 surface-border">
+      <span class="text-md">{{(translation$|async).timelog.workLogStatistics.loggedTime}}:</span>
+      <span class="text-base font-bold">{{ this.summaryData.loggedTime }} days</span>
+    </div>
+  </div>
+</div>

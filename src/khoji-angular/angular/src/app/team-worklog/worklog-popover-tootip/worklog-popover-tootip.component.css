@@ -1,0 +1,36 @@
+/*
+  Copyright 2026 UWorx Services.
+  Licensed under the Apache License, Version 2.0.
+  See LICENSE for the full license text.
+*/
+
+
+
+.tooltiptext .tooltipBody {
+  color: white !important;
+}
+
+.tooltipBody {
+  display: flex;
+  align-items: center;
+  
+  .circle {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+}
+
+.tooltipSubTitle {
+  margin: 6px 0 3px;
+  color: #ededed;
+}
+
+.left-align {
+  padding: 5px !important;
+  color: white !important;
+}
+
+.small {
+  font-size: inherit;
+}

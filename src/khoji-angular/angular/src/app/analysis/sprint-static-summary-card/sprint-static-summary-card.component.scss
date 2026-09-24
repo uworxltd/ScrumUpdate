@@ -1,0 +1,39 @@
+/*
+  Copyright 2026 UWorx Services.
+  Licensed under the Apache License, Version 2.0.
+  See LICENSE for the full license text.
+*/
+
+
+// Summary list styling
+.summary-list {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+// Status changes section
+.status-changes-container {
+  min-height: 0;
+  margin-top: 0.5rem;
+}
+
+.no-changes-italic {
+  font-style: italic;
+}
+
+//Status column sizing
+.status-column {
+  max-height: 100px;
+  min-height: 80px;
+}
+
+// Custom colors for stale tickets and blockers
+.clickable-metric {
+    color: #007bff;
+  cursor: pointer;
+  
+  &.active {
+    color: var(--blue-700) !important;
+  }
+}
+

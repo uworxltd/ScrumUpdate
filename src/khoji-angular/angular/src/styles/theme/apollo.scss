@@ -1,0 +1,19 @@
+/*
+  Copyright 2026 UWorx Services.
+  Licensed under the Apache License, Version 2.0.
+  See LICENSE for the full license text.
+*/
+
+/* You can add global styles to this file, and also import other style files */
+$gutter: 1rem; //for primeflex grid system
+
+/* Layout */
+@import "../../assets/layout/styles/layout/layout.scss";
+
+/* Temporary custom stylesheet */
+@import "./custom.scss";
+
+/* PrimeNG */
+@import "primeng/resources/primeng.min.css";
+@import "primeflex/primeflex.scss";
+@import "primeicons/primeicons.css";

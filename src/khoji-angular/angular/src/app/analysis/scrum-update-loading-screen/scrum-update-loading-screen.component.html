@@ -1,0 +1,51 @@
+<div class="frame" role="region" aria-label="ScrumUpdate loading experience">
+
+  <p class="headline">
+    We’re piecing together how this sprint really unfolded.
+    <button *ngIf="showCloseButton" class="close-btn" (click)="handleClose()" aria-label="Close">×</button>
+  </p>
+
+  <div class="stepper" aria-label="Loading steps">
+    <div class="rail">
+      <div class="railFill" [style.width]="railWidth"></div>
+    </div>
+
+    <div class="steps">
+      <div *ngFor="let step of steps; let i = index" class="step" [class.done]="i < completedStages"
+        [class.active]="i === currentStepIndex && completedStages < steps.length">
+        <div class="dot">{{ i + 1 }}</div>
+        <div class="label">{{ step.title }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card fadeIn">
+    <h3>{{ steps[currentStepIndex].title }}</h3>
+    <p class="sub">{{ steps[currentStepIndex].sub }}</p>
+    <ul class="bullets">
+      <li>
+        <span class="tick" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M7 12.5l3 3 7-8" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
+        </span>
+        <span>{{ steps[currentStepIndex].b1 }}</span>
+      </li>
+      <li>
+        <span class="tick" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M7 12.5l3 3 7-8" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
+        </span>
+        <span>{{ steps[currentStepIndex].b2 }}</span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="footer">
+    <span>{{ steps[currentStepIndex].footer }}</span><span class="dots" aria-hidden="true"></span>
+  </div>
+
+</div>

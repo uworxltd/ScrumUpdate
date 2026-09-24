@@ -1,0 +1,226 @@
+<!-- /*
+Copyright 2026 UWorx Services.
+Licensed under the Apache License, Version 2.0.
+See LICENSE for the full license text.
+*/ -->
+
+
+<div class="flex flex-column">
+  <h5
+    class="font-semibold"
+    data-test="highlight-card-heading"
+  >
+    {{ translation?.timelog?.cardLabels?.worklogDistribution }}
+  </h5>
+  <!--Table to show worklog comparison between selected range and this month-->
+  <p-table
+    [value]="tableData"
+    class="mb-4"
+    data-test="highlight-card-table"
+    @fadeInOut
+  >
+    <ng-template pTemplate="header">
+      <tr class="border-bottom-1 border-gray-400 gray-200">
+        <th
+          class="p-2 text-sm border-none font-normal bg-white"
+          [ngClass]="{ 'w-2': currentMonthInSelectedRange }"
+        ></th>
+        <th
+          class="p-2 text-sm border-none font-normal bg-white text-center"
+          data-test="selected-date-range-column"
+        >
+          {{ dateFrom }} - {{ dateTo }}
+        </th>
+        <th
+          class="p-2 text-sm border-none font-normal bg-white text-center"
+          *ngIf="currentMonthInSelectedRange"
+          data-test="this-month-column"
+        >
+          {{ translation?.timelog?.cardLabels?.thisMonth }}
+        </th>
+      </tr>
+    </ng-template>
+
+    <ng-template
+      pTemplate="body"
+      let-data
+    >
+      <tr
+        class="border-bottom-1 border-gray-400"
+        [ngClass]="{ 'surface-100': data.categoryName !== commulativeWorklogHeading }"
+      >
+        <td
+          class="p-2 text-sm border-none font-normal"
+          [ngClass]="{ 'w-2': currentMonthInSelectedRange }"
+        >
+          <div class="flex">
+            <span>{{ data.categoryName }}</span>
+            <khoji-tooltip-icon
+              data-test="cummulative-worklog-tooltip"
+              *ngIf="anyMultiTeamMember && data.categoryName == commulativeWorklogHeading"
+              [tooltipText]="translation.timelog.cardLabels.teamMembersTooltip"
+              class="ml-1"
+            >
+            </khoji-tooltip-icon>
+          </div>
+        </td>
+        <!--Showing selected range worklog-->
+        <td
+          class="p-2 border-none text-center"
+          data-test="selected-date-range-worklog"
+        >
+          <ng-container
+            [ngTemplateOutlet]="worklogTemplate"
+            [ngTemplateOutletContext]="{
+              percentage: data?.worklogInPercentage,
+              severityColor: data?.worklogRagStatus,
+              worklogInDays: data?.worklogInDays,
+              isCommulativeWorklog: data.categoryName == commulativeWorklogHeading,
+              isOthersWorklog: data.categoryName == othersCategoryAlias
+            }"
+          >
+          </ng-container>
+        </td>
+        <!--Showing this month worklog-->
+        <td
+          class="p-2 border-none text-center"
+          *ngIf="currentMonthInSelectedRange"
+          data-test="this-month-worklog"
+        >
+          <span
+            *ngIf="loadingStateForThisMonthStats === 1"
+            class="pi pi-spin pi-spinner text-4xl"
+          ></span>
+          <span
+            *ngIf="loadingStateForThisMonthStats === 3"
+            class="pi pi-refresh text-4xl text-gray-500"
+            (click)="refreshWorklogForThisMonth()"
+            [pTooltip]="translation.timelog.cardLabels.refreshIconTooltip"
+          ></span>
+          <ng-container
+            *ngIf="loadingStateForThisMonthStats === 2"
+            [ngTemplateOutlet]="worklogTemplate"
+            [ngTemplateOutletContext]="{
+              percentage: data?.currentMonthWorklogInPercentage,
+              severityColor: data?.currentMonthWorklogRagStatus,
+              worklogInDays: data?.currentMonthWorklogInDays,
+              isCommulativeWorklog: data.categoryName == commulativeWorklogHeading,
+              isOthersWorklog: data.categoryName == othersCategoryAlias
+            }"
+          >
+          </ng-container>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+  <!--Showing members RAG statuses here-->
+  <div
+    *ngIf="this.membersWorklogRag.length > 0"
+    data-test="rag-status-section"
+  >
+    <span
+      data-test="rag-status-label"
+      class="font-semibold text-lg"
+      >{{ translation?.timelog?.cardLabels?.membersWorklogRagStatus }}
+      <khoji-tooltip-icon
+        data-test="rag-status-tooltip"
+        [tooltipText]="translation.timelog.cardLabels.teamMembersTooltip"
+        class="ml-1"
+      >
+      </khoji-tooltip-icon>
+    </span>
+    <br />
+
+    <!--Showing RAG status, count and message-->
+    <div class="flex flex-column my-2">
+      <div *ngFor="let item of membersWorklogRag | keyvalue">
+        <div class="flex flex-row">
+          <khoji-timelog-rag
+            [attr.data-test]="item.value.colorCode + '-status-text'"
+            type="member"
+            [value]="item.value.count"
+            [backgroundColor]="item.value.colorCode"
+            fontSize="large"
+          ></khoji-timelog-rag>
+          <span
+            class="text-sm text-500 mt-2 ml-2"
+            [attr.data-test]="item.value.colorCode + '-label'"
+            >{{ item.value.message }}</span
+          >
+        </div>
+      </div>
+    </div>
+
+    <!--To show revoked members names--->
+    <div
+      *ngIf="revokedMembersName.length > 0"
+      data-test="revoked-users-section"
+    >
+      <p-divider></p-divider>
+      <span class="font-semibold text-lg">{{ translation?.timelog?.cardLabels?.revokedUsers }}</span>
+
+      <!--Showing revoked members names and count-->
+      <div
+        class="flex flex-row mb-1"
+        @fadeInOut
+      >
+        <span
+          *ngFor="let memberName of revokedMembersName.slice(0, 2); let isFirst = first"
+          class="custom-font-size text-color border-round surface-300 p-1 mt-2"
+          [ngClass]="{ 'ml-1': !isFirst }"
+          [attr.data-test]="memberName + '-user-text'"
+        >
+          {{ memberName }}
+        </span>
+        <span
+          *ngIf="revokedMembersName.slice(2, revokedMembersName.length).length > 0"
+          data-test="truncated-name-text"
+          class="custom-font-size text-color border-round surface-300 py-1 px-2 mt-2 ml-1"
+          [pTooltip]="revokedMembersName.slice(2, revokedMembersName.length).toString().replace(constants.COMMA_WITH_SPACE_REGEX, ', ')"
+          tooltipPosition="top"
+        >
+          {{ constants.PLUS_SIGN + revokedMembersName.slice(2, revokedMembersName.length).length }}</span
+        >
+      </div>
+
+      <!--Naviation to manage teams page-->
+      <a
+        *ngIf="isUserAdmin"
+        class="text-sm no-underline text-primary cursor-pointer"
+        (click)="navigateToManageTeams()"
+        data-test="update-teams-link"
+      >
+        {{ translation?.timelog?.cardLabels?.updateTeams }}
+      </a>
+    </div>
+  </div>
+
+  <ng-template
+    #worklogTemplate
+    let-percentage="percentage"
+    let-severityColor="severityColor"
+    let-workInDays="worklogInDays"
+    let-isCommulative="isCommulativeWorklog"
+    let-isOthersWorklog="isOthersWorklog"
+  >
+    <span
+      data-test="worklog-percentage-text"
+      [ngClass]="{
+        danger: isOthersWorklog && percentage >= othersCategoryWorklogEmailSubscriptionThreshold ? true : severityColor === 'danger' && !isOthersWorklog,
+        warning: severityColor === 'warning' && !isOthersWorklog,
+        success: severityColor === 'success' && !isOthersWorklog,
+        'text-2xl': isCommulative,
+        'text-xl': !isCommulative
+      }"
+      class="text-2xl"
+      >{{ percentage }}%</span
+    >
+    <br />
+    <span
+      data-test="worklog-days-text"
+      class="text-base text-500"
+      >({{ workInDays + ' d' }})</span
+    >
+  </ng-template>
+</div>

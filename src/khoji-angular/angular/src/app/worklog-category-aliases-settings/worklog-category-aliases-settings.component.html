@@ -1,0 +1,46 @@
+<!-- /*
+Copyright 2026 UWorx Services.
+Licensed under the Apache License, Version 2.0.
+See LICENSE for the full license text.
+*/ -->
+
+<div class="flex flex-column align-items-start gap-2 justify-content-center">
+  <span class="khoji-headings">Aliases for work log distribution</span>
+  <div class="flex gap-4">
+    <div class="flex flex-column gap-2">
+      <span class="khoji-sub-headings">Provide an alias to identify categorized work log</span>
+      <input
+        type="text"
+        pInputText
+        [(ngModel)]="productiveAlias"
+        [maxLength]="16"
+        (ngModelChange)="checkForErrorInAlias($event, 'P')"
+        [ngClass]="{ 'ng-invalid': productiveAliasInError }"
+        (blur)="productiveAliasInError ? '' : (productiveAliasValidated = productiveAlias)"
+      />
+      <small
+        *ngIf="productiveAliasInError"
+        class="p-error"
+      >
+        {{ productiveErrorMessage }}
+      </small>
+    </div>
+    <div class="flex flex-column gap-2">
+      <span class="khoji-sub-headings">Provide an alias to identify uncategorized work log</span>
+      <input
+        type="text"
+        pInputText
+        [(ngModel)]="nonProductiveAlias"
+        [maxLength]="16"
+        (ngModelChange)="checkForErrorInAlias($event, 'NP')"
+        [ngClass]="{ 'ng-invalid': nonProductiveAliasInError }"
+      />
+      <small
+        *ngIf="nonProductiveAliasInError"
+        class="p-error"
+      >
+        {{ nonProductiveErrorMessage }}
+      </small>
+    </div>
+  </div>
+</div>

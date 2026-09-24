@@ -1,0 +1,52 @@
+.option-box {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 5px;
+    cursor: pointer;
+    text-align: center;
+    border-radius: 5px;
+    width: fit-content;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease-in-out;
+}
+
+.responsive-container-onboarding {
+  padding: 2% 2rem 0 2rem;
+}
+
+:host ::ng-deep {
+  .wrapper.adjustable-height .source,
+  .wrapper.adjustable-height .target {
+    height: 60vh !important;
+  }
+}
+
+.option-box.selected {
+    border: 1px solid #12576c;
+    background-color: transparent;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    transform: scale(1.001);
+}
+
+
+:host ::ng-deep .p-dialog-content {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+:host ::ng-deep .p-dialog-footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    position: relative;
+}
+
+:host ::ng-deep .next-button {
+    position: absolute;
+    right: 10px;
+    bottom: 15px;
+}

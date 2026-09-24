@@ -1,0 +1,33 @@
+.container-khoji {
+    border-radius: 10px;
+    background: white;
+    padding: 20px;
+    max-width: 100%;
+}
+
+.title {
+    display: flex;
+    justify-content: space-between;
+    font-size: 18px;
+    font-weight: bolder;
+  }
+  
+  .khoji-header {
+    margin-bottom: 1%;
+  }
+  
+  .khojiTableHeading
+  {
+    margin-top: 10px;
+    margin-right: 15px;
+    font-family: Poppins, sans-serif;
+    font-weight: bold;
+    font-size: 18px;
+  }
+
+  .text {
+    color: rgb(30, 41, 59);
+    font-family: Poppins, sans-serif;
+    font-size: 13.5px;
+
+  }

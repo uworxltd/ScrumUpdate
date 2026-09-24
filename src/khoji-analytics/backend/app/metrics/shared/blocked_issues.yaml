@@ -1,0 +1,60 @@
+name: blocked_issues
+description: Issues currently blocked by other issues
+version: 1.0
+
+inputs:
+  sprint_id: { type: int, required: true }
+
+steps:
+  - id: blocked_query
+    type: sql
+    service: main-db
+    query: |
+      -- 1) Raw blockers + join on done_at to filter DONE blockers
+      WITH active_blockers_raw AS (
+        SELECT 
+          b.issue_key,
+          b.other_key AS blocker_key,
+          d.done_at
+        FROM {{ schema }}.v_issue_blockers b
+        LEFT JOIN {{ schema }}.v_issue_done_at d 
+          ON d.issue_key = b.other_key
+        WHERE b.relation = 'BLOCKED BY'
+          AND (d.done_at IS NULL)   -- ❗ EXCLUDE blockers that are DONE
+      ),
+
+      -- 2) Keep ALL blockers, even if metadata is NULL
+      active_blockers AS (
+        SELECT 
+          issue_key,
+          ARRAY_AGG(blocker_key ORDER BY blocker_key) AS blocker_keys,
+          COUNT(*) AS blocker_count
+        FROM active_blockers_raw
+        GROUP BY issue_key
+      )
+
+      -- 3) Fetch issue details + attach blockers
+      SELECT 
+        ig.issue AS issue_key,
+        ig.summary AS title,
+        ig.assignee AS assignee,
+        ig.status AS current_status,
+        ig.priority,
+        ab.blocker_keys AS blockers_in,
+        ab.blocker_count
+      FROM {{ schema }}.v_issue_insights_grid ig
+      INNER JOIN {{ schema }}.sprint_issues si 
+        ON ig.issue = si.issue_key
+      LEFT JOIN active_blockers ab 
+        ON ab.issue_key = ig.issue
+      WHERE si.sprint_id = $1
+        AND ig.blocked = TRUE
+        AND ig.status_category NOT IN ('Done')
+        AND ab.blocker_count > 0
+      ORDER BY ab.blocker_count DESC;
+
+    params:
+      - "{{ inputs.sprint_id }}"
+    output: { name: blocked_issues }
+
+return: blocked_query.blocked_issues

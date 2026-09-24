@@ -1,0 +1,178 @@
+<!-- /*
+Copyright 2026 UWorx Services.
+Licensed under the Apache License, Version 2.0.
+See LICENSE for the full license text.
+*/ -->
+
+<ng-template #loginTemplate>
+  <form
+    (ngSubmit)="onSubmit()"
+    *ngIf="loginState !== 1 && loginState !== 2"
+  >
+    <div class="flex flex-column">
+      <span
+        class="p-input-icon-left w-full text-center text-4xl font-bold"
+        *ngIf="!isDirectAtlassianLogin"
+      >
+        <!-- Welcome back! -->
+      </span>
+      <div
+        class="mt-4"
+        *ngIf="!isDirectAtlassianLogin"
+      >
+        <span class="p-input-icon-left w-full text-center white-space-normal text-2xl"> Log in to experience automated Scrum updates, </span>
+        <div class="mb-4">
+          <span class="p-input-icon-left w-full white-space-normal text-center text-2xl"> keeping teams and stakeholders aligned. </span>
+        </div>
+      </div>
+      <div
+        *ngIf="!cloudFeatureEnabled"
+        class="mb-4 flex flex-wrap gap-3"
+      >
+        <a
+          data-test="forgot-password-link"
+          [routerLink]="'../' + constants.KHOJI_FORGOT_PASSWORD_PAGE"
+          class="text-600 cursor-pointer hover:text-primary no-underline ml-auto transition-colors transition-duration-300"
+          >{{ translation?.login?.forgotPassword }}</a
+        >
+      </div>
+      <re-captcha
+        *ngIf="!disableCaptcha"
+        (resolved)="handleCaptchaResolved($event)"
+        [siteKey]="siteKey"
+        [ngClass]="{ 'p-7': isDirectAtlassianLogin }"
+        class="flex justify-content-center"
+      ></re-captcha>
+      <p-button
+        *ngIf="!isDirectAtlassianLogin"
+        data-test="login-button"
+        pRipple
+        [loading]="false"
+        loadingIcon="pi pi-spin pi-spinner"
+        iconPos="left"
+        class="w-full flex justify-content-center mt-3"
+        [style]="{ width: '100%' }"
+        type="button"
+        [disabled]="disableCaptcha ? false : !isCaptchaResolved"
+        (click)="handleLoginWithAtlassian()"
+      >
+        <div class="flex align-items-center justify-content-center w-full">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 512 512"
+            style="width: 1em; height: 1em"
+          >
+            <path
+              fill="#ffffff"
+              d="M152.2 236.4c-7.7-8.2-19.7-7.7-24.8 2.8L1.6 490.2c-5 10 2.4 21.7 13.4 21.7h175c5.8 .1 11-3.2 13.4-8.4 37.9-77.8 15.1-196.3-51.2-267.1zM244.4 8.1c-122.3 193.4-8.5 348.6 65 495.5 2.5 5.1 7.7 8.4 13.4 8.4H497c11.2 0 18.4-11.8 13.4-21.7 0 0-234.5-470.6-240.4-482.3-5.3-10.6-18.8-10.8-25.6 .1z"
+            />
+          </svg>
+          <span class="p-button-label ml-2"> Log in with Atlassian </span>
+        </div>
+      </p-button>
+    </div>
+  </form>
+</ng-template>
+
+<ng-template #usersTemplate>
+  <div class="flex flex-column w-full gap-2">
+    <ng-container *ngFor="let item of usersList; let i = index">
+      <div
+        class="flex align-items-center border-round border-solid border-1 surface-border w-12 min-w-12 p-2 cursor-pointer"
+        (click)="calculateRefreshTokenAndSendLogin(i)"
+        style="height: 55px"
+      >
+        <!-- image and name -->
+        <div class="flex gap-3 align-items-center ml-2">
+          <img
+            [src]="item.imageUrl"
+            [alt]="item.fullName + 'image'"
+            class="square-2dot5rem border-circle"
+          />
+          <div class="flex flex-column">
+            <span>{{ item.fullName }}</span>
+            <span>{{ item.email }}</span>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+    <div
+      class="flex align-items-center border-round border-solid border-1 surface-border w-12 min-w-12 p-2 cursor-pointer"
+      (click)="jiraService.redirectToAtlassianAuth()"
+      style="height: 55px"
+    >
+      <div class="flex gap-3 align-items-center ml-2">
+        <div
+          class="flex align-items-center justify-content-center"
+          style="width: 2.5rem; height: 2.5rem"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 512 512"
+            style="width: 1.5rem; height: 1.5rem"
+          >
+            <path
+              fill="#2684ff"
+              d="M152.2 236.4c-7.7-8.2-19.7-7.7-24.8 2.8L1.6 490.2c-5 10 2.4 21.7 13.4 21.7h175c5.8 .1 11-3.2 13.4-8.4 37.9-77.8 15.1-196.3-51.2-267.1zM244.4 8.1c-122.3 193.4-8.5 348.6 65 495.5 2.5 5.1 7.7 8.4 13.4 8.4H497c11.2 0 18.4-11.8 13.4-21.7 0 0-234.5-470.6-240.4-482.3-5.3-10.6-18.8-10.8-25.6 .1z"
+            />
+          </svg>
+        </div>
+        <span>Add another Atlassian account</span>
+      </div>
+    </div>
+    <div
+      class="flex align-items-center border-round border-solid border-1 surface-border w-12 min-w-12 p-2 cursor-pointer mb-3"
+      (click)="removeAccountsFromLocalStorage()"
+      style="height: 55px"
+    >
+      <div class="flex gap-3 align-items-center ml-2">
+        <div
+          class="flex align-items-center justify-content-center"
+          style="width: 2.5rem; height: 2.5rem"
+        >
+          <span class="pi pi-sign-out text-2xl align-self-center"></span>
+        </div>
+        <span>Remove saved accounts from this browser</span>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<div class="px-5 min-h-screen flex justify-content-center align-items-center flex-column">
+  <div class="border-1 surface-border surface-card border-round py-2 px-4 md:px-7 z-1">
+    <div class="flex justify-content-center align-items-center">
+      <img
+        class="mt-4"
+        src="assets/images/scrumupdate-logo-v1.svg"
+        alt="Khoji Logo"
+        width="160"
+        height="140"
+      />
+    </div>
+    <div
+      class="flex align-items-center justify-content-center w-12 h-10rem"
+      *ngIf="loginState === 1 || loginState === 2"
+    >
+      <i class="pi pi-spin pi-spinner text-4xl text-black-alpha-90"></i>
+    </div>
+
+    <ng-container *ngTemplateOutlet="showUsersTemplate ? usersTemplate : loginTemplate"></ng-container>
+
+    <!------------------------ Support Email Text ------------------------>
+    <div class="mt-2">
+      <p class="text-900">
+        {{ isDirectAtlassianLogin ? translation.login.supportEmailTextFirstPartForSignup : translation.login.supportEmailTextFirstPartForLogin }}
+        <strong class="font-bold">
+          {{ environment.SUPPORT_EMAIL + '.' }}
+        </strong>
+      </p>
+    </div>
+
+    <footer
+      class="flex justify-content-center align-items-center m-4 text-900"
+      data-test="copyright-text"
+    >
+      <!-- &copy; {{ translation?.forgotPassword.copyRight.replace('YEAR', currentYear) }} -->
+    </footer>
+  </div>
+</div>

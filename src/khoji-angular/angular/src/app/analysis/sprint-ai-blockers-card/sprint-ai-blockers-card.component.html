@@ -1,0 +1,268 @@
+<!-- Sprint AI Blockers Card -->
+<div
+  class="sprint-signals-container"
+  style="margin-left: 12px; margin-right: 12px; margin-top: -14px; width: 100%; height: 100%"
+>
+  <p-card class="surface-card border-round h-full">
+    <!-- Card Header -->
+    <ng-template pTemplate="header">
+      <div class="flex justify-content-between align-items-center pt-2">
+        <div class="flex align-items-center gap-2">
+          <h3 class="text-xl font-bold text-color m-0">Sprint Signals</h3>
+        </div>
+
+        <div
+          class="flex align-items-center gap-2 tab-buttons"
+          style="margin-right: 12px"
+        >
+          <button
+            [class.active]="activeTab === 'jira-insights'"
+            (click)="switchTab('jira-insights')"
+            class="jira-insights-btn"
+          >
+            <i class="pi pi-chart-line mr-1"></i>JIRA Insights
+          </button>
+          <button
+            [class.active]="activeTab === 'human-sensed'"
+            (click)="switchTab('human-sensed')"
+            class="human-insights-btn"
+          >
+            <i class="pi pi-lightbulb mr-1"></i>Human Intuition
+          </button>
+        </div>
+      </div>
+    </ng-template>
+
+    <!-- Card Content -->
+    <div class="flex flex-column h-full sprint-signals-card pt-2 pb-0 overflow-hidden mt-4">
+      <!-- Loading State -->
+      <div
+        *ngIf="isLoading"
+        class="flex flex-column align-items-center justify-content-center h-full text-color-secondary"
+      >
+        <i class="pi pi-spin pi-spinner text-4xl mb-2"></i>
+        <p class="m-0">Generating signals...</p>
+      </div>
+
+      <!-- Error State -->
+      <div
+        *ngIf="!isLoading && hasError"
+        class="flex flex-column align-items-center justify-content-center h-full text-center"
+      >
+        <i class="pi pi-exclamation-triangle text-6xl text-orange-500 mb-3"></i>
+        <p class="text-color-secondary text-lg m-0">Network error. Please retry.</p>
+      </div>
+
+      <!-- Signals List -->
+      <div
+        *ngIf="!isLoading && !hasError"
+        class="signals-list"
+      >
+        <!-- Signals -->
+        <div
+          *ngFor="let signal of signals"
+          [class.summary-card]="signal.isSummary"
+          [class.signal-item]="!signal.isSummary"
+        >
+          <div class="mb-0">
+            <div class="flex justify-content-between align-items-center mb-1">
+              <div class="flex align-items-center gap-2">
+                <h4 class="text-base font-semibold m-0">{{ signal.title }}</h4>
+                <p-tag
+                  *ngIf="signal.isSummary || signal.hasAiInsights"
+                  value="AI"
+                  severity="warning"
+                  [style]="{ 'font-size': '0.65rem', padding: '0.25rem 0.5rem' }"
+                ></p-tag>
+              </div>
+              <button
+                (click)="showDetails(signal)"
+                class="details-btn"
+              >
+                Details
+              </button>
+            </div>
+            <p class="text-sm text-color-secondary m-0">{{ signal.description }}</p>
+
+            <!-- Stacked Avatars for Workload Imbalance (shown in main card, not details) -->
+            <div
+              *ngIf="signal.overloadedAssignees && signal.overloadedAssignees.length > 0"
+              class="flex align-items-center gap-2 mt-2"
+            >
+              <span class="text-sm font-semibold text-color-secondary">Overloaded Assignees:</span>
+              <div
+                class="flex align-items-center"
+                style="margin-left: 0.5rem"
+              >
+                <div
+                  *ngFor="let assignee of signal.overloadedAssignees; let i = index"
+                  class="user-avatar-stacked"
+                  [style.z-index]="signal.overloadedAssignees.length - i"
+                  [style.margin-left]="i > 0 ? '-8px' : '0'"
+                  [pTooltip]="getAvatarTooltip(assignee)"
+                  [escape]="false"
+                  tooltipPosition="bottom"
+                >
+                  {{ getInitials(assignee.name) }}
+                </div>
+                <span
+                  *ngIf="signal.overloadedAssignees.length > 4"
+                  class="text-sm font-semibold"
+                  style="margin-left: 0.5rem; color: #64b5f6"
+                >
+                  +{{ signal.overloadedAssignees.length - 4 }}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="signal-body mt-2 mb-2"
+            *ngIf="((signal.tickets && signal.tickets.length > 0) || (signal.dependencies && signal.dependencies.length > 0)) && signal.isExpanded"
+          >
+            <div class="flex align-items-center gap-2">
+              <span class="text-sm font-semibold text-color-secondary">Tickets:</span>
+              <div class="flex flex-wrap">
+                <span *ngFor="let item of formatDependencies(signal); let last = last">
+                  <ng-container *ngIf="getTicketsFromDependency(item) as tickets">
+                    <khoji-jira-issue-tooltip [ticketId]="tickets[0]" [blockedByTicketId]="tickets[1]">
+                      <a
+                      [href]="getJiraUrl(tickets[0])"
+                      target="_blank"
+                      class="ticket-link"
+                      >{{ item }}</a>
+                    </khoji-jira-issue-tooltip>
+                  </ng-container>
+                  <span
+                    *ngIf="!last"
+                    class="text-color"
+                    >,&nbsp;
+                  </span>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Velocity Metrics Section -->
+          <div
+            *ngIf="signal.velocityMetrics && signal.isExpanded"
+            class="velocity-metrics mt-3 p-3"
+            style="background-color: rgba(100, 181, 246, 0.05); border-left: 4px solid #64b5f6"
+          >
+            <h5 class="text-sm font-semibold m-0 mb-2">Velocity Breakdown</h5>
+            <div class="metric-row">
+              <span class="text-xs text-color-secondary">Average Points/Day:</span>
+              <strong class="text-sm">{{ calculateVelocityMetrics(signal).avgPointsPerDay }} pts/day</strong>
+            </div>
+            <div class="metric-row">
+              <span class="text-xs text-color-secondary">Required Points/Day:</span>
+              <strong class="text-sm">{{ calculateVelocityMetrics(signal).requiredPointsPerDay }} pts/day</strong>
+            </div>
+            <div class="metric-row">
+              <span class="text-xs text-color-secondary">Points Remaining:</span>
+              <strong class="text-sm">{{ calculateVelocityMetrics(signal).pointsRemaining }}</strong>
+            </div>
+            <div class="metric-row">
+              <span class="text-xs text-color-secondary">Days Remaining:</span>
+              <strong class="text-sm">{{ calculateVelocityMetrics(signal).daysRemaining }} days</strong>
+            </div>
+          </div>
+
+          <div
+            class="signal-footer flex justify-content-between align-items-center pt-2 mt-2 border-top-1 surface-border"
+            *ngIf="signal.isExpanded"
+          >
+            <div class="flex-1 text-xs text-color-secondary">
+              <strong class="text-color text-sm">Recommended Action:</strong>
+              {{ signal.recommendedAction }}
+            </div>
+            <button
+              (click)="explainSignal(signal)"
+              class="explain-btn"
+            >
+              Explain
+            </button>
+          </div>
+        </div>
+
+        <!-- Empty State -->
+        <div
+          *ngIf="signals.length === 0"
+          class="flex flex-column align-items-center justify-content-center h-full text-center"
+        >
+          <i class="pi pi-check-circle text-4xl text-green-500 mb-2 mt-3"></i>
+          <p class="text-color-secondary text-lg m-0">No signals detected! Sprint is on track</p>
+        </div>
+      </div>
+    </div>
+  </p-card>
+</div>
+
+<!-- Explanation Modal -->
+<p-dialog
+  [(visible)]="displayExplanation"
+  [modal]="true"
+  [style]="{ width: '600px' }"
+  [draggable]="false"
+  [resizable]="false"
+  [appendTo]="'body'"
+>
+  <ng-template pTemplate="header">
+    <h3 class="text-xl font-semibold m-0">{{ selectedSignal?.title }}</h3>
+  </ng-template>
+
+  <div class="flex flex-column gap-3">
+    <div class="flex align-items-center gap-3 pb-3 border-bottom-1 surface-border">
+      <p-tag
+        [value]="selectedSignal?.type || 'info'"
+        [severity]="selectedSignal?.type === 'danger' ? 'danger' : selectedSignal?.type === 'warning' ? 'warning' : 'info'"
+      ></p-tag>
+      <span class="text-sm text-color-secondary font-medium">
+        {{ selectedSignal?.source === 'human-sensed' ? 'Source' : 'Age' }}: {{ selectedSignal?.age }}
+        <i
+          *ngIf="selectedSignal?.source === 'human-sensed'"
+          class="pi pi-sparkles ml-1"
+          style="color: #9c27b0"
+        ></i>
+      </span>
+    </div>
+
+    <div class="explanation-content">
+      <div [innerHTML]="makeTicketsClickable(selectedSignal?.explanation || 'No explanation available')"></div>
+    </div>
+
+    <div
+      *ngIf="selectedSignal?.tickets && selectedSignal.tickets.length > 0"
+      class="mt-3"
+    >
+      <h4 class="text-base font-semibold mb-2">Affected Tickets:</h4>
+      <div class="flex gap-2 flex-wrap">
+        <ng-container *ngFor="let ticket of selectedSignal.tickets">
+          <a
+            *ngIf="getTicketsFromDependency(ticket) as tickets"
+            [href]="getJiraUrl(tickets[0])"
+            target="_blank"
+            class="ticket-link-tag"
+          >
+            <khoji-jira-issue-tooltip [ticketId]="tickets[0]" [blockedByTicketId]="tickets[1]">
+              <p-tag
+              [value]="ticket"
+              severity="info"
+              [style]="{ cursor: 'pointer' }"
+              ></p-tag>
+            </khoji-jira-issue-tooltip>
+          </a>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <p-button
+      label="Close"
+      icon="pi pi-times"
+      [text]="true"
+      (onClick)="displayExplanation = false"
+    ></p-button>
+  </ng-template>
+</p-dialog>

@@ -1,0 +1,157 @@
+<p-card class="surface-card border-round">
+  <p-carousel
+    [value]="carouselItems"
+    [page]="page"
+    [numVisible]="1"
+    [numScroll]="1"
+    [circular]="circular"
+    [responsiveOptions]="responsiveOptions"
+    (onPage)="page = $event.page"
+  >
+    <ng-template
+      let-item
+      pTemplate="item"
+    >
+      <div
+        *ngIf="item.type === 'static'"
+        class="static-card-wrapper"
+      >
+        <khoji-sprint-static-summary-card
+          [statusChanges]="item.statusChanges || null"
+          [tableId]="tableId"
+          [sprintId]="sprintId"
+        ></khoji-sprint-static-summary-card>
+        <div
+          *ngIf="item.loading"
+          class="overlay-spinner"
+        >
+          <p-progressSpinner
+            styleClass="spinner-size"
+            strokeWidth="4"
+            animationDuration="1s"
+          ></p-progressSpinner>
+        </div>
+      </div>
+      <div
+        *ngIf="item.type === 'teamPulse'"
+        class="team-pulse-card-wrapper"
+      >
+        <khoji-sprint-team-pulse-card [teamPulseData]="item.data"></khoji-sprint-team-pulse-card>
+        <div
+          *ngIf="item.loading"
+          class="overlay-spinner"
+        >
+          <p-progressSpinner
+            styleClass="spinner-size"
+            strokeWidth="4"
+            animationDuration="1s"
+          ></p-progressSpinner>
+        </div>
+      </div>
+      <div
+        *ngIf="item.type === 'velocityBurndown'"
+        class="velocity-burndown-card-wrapper"
+      >
+        <khoji-sprint-velocity-burndown-card [velocityData]="item.data"></khoji-sprint-velocity-burndown-card>
+        <div
+          *ngIf="item.loading"
+          class="overlay-spinner"
+        >
+          <p-progressSpinner
+            styleClass="spinner-size"
+            strokeWidth="4"
+            animationDuration="1s"
+          ></p-progressSpinner>
+        </div>
+      </div>
+      <div
+        *ngIf="item.type === 'ai-blockers'"
+        class="ai-blockers-card-wrapper"
+      >
+        <khoji-sprint-ai-blockers-card
+          [carouselId]="carouselId"
+          [sprintId]="sprintId"
+        ></khoji-sprint-ai-blockers-card>
+
+        <div
+          *ngIf="item.loading"
+          class="overlay-spinner"
+        >
+          <p-progressSpinner
+            styleClass="spinner-size"
+            strokeWidth="4"
+            animationDuration="1s"
+          ></p-progressSpinner>
+        </div>
+      </div>
+      <div
+        *ngIf="item.type === 'epic-progress'"
+        class="epic-progress-card-wrapper"
+      >
+        <khoji-sprint-epic-progress-card
+          [carouselId]="carouselId"
+          [sprintId]="sprintId"
+        ></khoji-sprint-epic-progress-card>
+
+        <div
+          *ngIf="item.loading"
+          class="overlay-spinner"
+        >
+          <p-progressSpinner
+            styleClass="spinner-size"
+            strokeWidth="4"
+            animationDuration="1s"
+          ></p-progressSpinner>
+        </div>
+      </div>
+      <div
+        *ngIf="item.type === 'insight'"
+        class="insight-card-wrapper"
+      >
+
+        <div
+          class="insight-body"
+          [innerHTML]="item.data.body | safeHtml"
+        ></div>
+                <div class="insight-title-bar">
+          <div class="insight-title">
+            <span class="ai-badge">AI</span>
+            Insights
+          </div>
+          <div class="insight-actions">
+            <span
+              class="export-action-icon"
+              role="button"
+              tabindex="0"
+              (click)="downloadSprintInsightPNG(item.data)"
+              (keydown.enter)="downloadSprintInsightPNG(item.data)"
+              (keydown.space)="downloadSprintInsightPNG(item.data)"
+              pTooltip="Download as PNG"
+              tooltipPosition="left"
+            >
+              <i
+                class="fa fa-file-image-o"
+                aria-hidden="true"
+              ></i>
+            </span>
+            <span
+              class="export-action-icon"
+              role="button"
+              tabindex="0"
+              (click)="downloadSprintInsightPDF(item.data)"
+              (keydown.enter)="downloadSprintInsightPDF(item.data)"
+              (keydown.space)="downloadSprintInsightPDF(item.data)"
+              pTooltip="Download as PDF"
+              tooltipPosition="left"
+            >
+              <i
+                class="fa fa-file-pdf-o"
+                aria-hidden="true"
+              ></i>
+            </span>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </p-carousel>
+</p-card>

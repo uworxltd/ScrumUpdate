@@ -1,0 +1,53 @@
+:host ::ng-deep {
+    .p-autocomplete {
+      width: 100 !important;
+
+      ul {
+        width: 100% !important;
+        max-height: 250px;
+        overflow-y: auto;
+      }
+
+      .p-autocomplete-multiple-container .p-autocomplete-token {
+        padding: 2px 10px 2px 0;
+        background: #eaf0f2;
+        color: #000000;
+        border-radius: 2rem;
+      }
+
+        button.p-button {
+          background-color: transparent;
+          border: 1px solid #cbd5e1;
+          border-top-left-radius: 0;
+          border-bottom-left-radius: 0;
+          color: #64748b;
+        }
+
+        button.p-button:hover {
+          border-color: #256477;
+          border-left-width: 1px;
+        }
+    }
+
+    .p-autocomplete-multiple-container .p-autocomplete-token .flex {
+      margin-left: 0 !important;
+      gap: 0.5rem !important;
+    }
+  }
+
+  :host ::ng-deep ::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  :host ::ng-deep ::-webkit-scrollbar-track {
+    border-radius: 5px;
+  }
+
+  :host ::ng-deep ::-webkit-scrollbar-thumb {
+    background: var(--gray-300);
+    border-radius: 5px;
+  }
+
+  :host ::ng-deep ::-webkit-scrollbar-thumb:hover {
+    background: var(--gray-400);
+  }

@@ -1,0 +1,47 @@
+<div class="flex align-items-center gap-2 request-panel-bar"
+        [ngClass]="{'request-panel-shadow':requestPanelShadow,'kh:1570:flex-column':worklogTeamDrp.visible&&memberDrp.visible}">
+        <div style="font-size: 1.3rem; font-weight: 600">{{translation?.dashboardTilesTitle.workLogAnalysis}}</div>
+        <khoji-request-panel *ngIf="translation" [pinnable]="constants.WORKLOG_REQUEST_PANNEL_PINNABLE"
+          [pinned]="constants.WORKLOG_REQUEST_PANNEL_PINNED">
+          <khoji-multiselect *ngIf="worklogTeamDrp.visible" [isDisabled]="worklogTeamDrp.disabled"
+            (selectionChange)="selectWorklogTeams($event.selected)" [autoSelectSingle]="true" [items]="worklogTeamItems"
+            [dataTestName]="dropdownName.WorklogTeam" [attr.data-rpa]="constants.RPA_TEAMS_SELECT"
+            [text]="translation.dropDown.teamsSelect" [applyStatusStyle]="true">
+          </khoji-multiselect>
+
+          <khoji-daterange [isDisabled]="dateRange.disabled" [minDate]="'Last Month'" [maxDate]="'Today'"></khoji-daterange>
+
+          <button (click)="onSubmit()" class="p-button" [disabled]="submitBtn.disabled"
+            data-test="submit-button" [attr.data-rpa]="constants.RPA_REQUEST_PANEL_SUBMIT_BUTTON">
+            <ng-container *ngIf="!(teamWorklogStatisticsLoadingState === 1); else btnLoadingTpl">
+              {{ requestChanged || !firstResponseReceived ? translation.filter.submit : translation.filter.refresh }}
+            </ng-container>
+          </button>
+
+          {{ noMemberSelected }}
+          <khoji-multiselect [classNames]="memberFilterClassNames" *ngIf="memberDrp.visible"
+            [isDisabled]="memberDrp.disabled" (selectionChange)="selectMembers($event.selected)" [items]="memberItems"
+            [dataTestName]="dropdownName.Member" [text]="translation.dropDown.membersSelect" [applyStatusStyle]="true"
+            [emptyAndNotAvailableCheck]="true" [popupRightAlign]="worklogTeamDrp.visible">
+          </khoji-multiselect>
+        </khoji-request-panel>
+      </div>
+      <ng-container *ngIf="reinitializeComponent">
+        <ng-container *ngIf="teamWorklogStatisticsLoadingState === 2">
+          <khoji-team-worklog-stats *ngIf="dataRecieved; else NoDataAvailable"
+            [isConfigOnSourceUpdated]="isConfigOnSourceUpdated">
+          </khoji-team-worklog-stats>
+        </ng-container>
+        <div *ngIf="teamWorklogStatisticsLoadingState === 1" class="center-spinner">
+          <p-progressSpinner [style]="{ width: '70px', height: '70px' }" strokeWidth="4"
+            animationDuration="1s"></p-progressSpinner>
+        </div>
+      </ng-container>
+
+      <ng-template #btnLoadingTpl>
+        Loading <i class="fa fa-circle-o-notch fa-spin ml-2" style="font-size: 15px"></i>
+      </ng-template>
+
+      <ng-template #NoDataAvailable>
+        <khoji-error *ngIf="translation" [message]="translation.error.noDataAvailable"></khoji-error>
+      </ng-template>

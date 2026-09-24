@@ -1,0 +1,160 @@
+name: sprint_signals_human
+description: Sprint signals with AI-enhanced human insights (includes LLM processing)
+version: 1.0
+
+inputs:
+  sprint_id: { type: int, required: true }
+
+steps:
+  - id: stagnant_tasks
+    type: pipeline
+    metric: shared/stagnant_tasks
+    inputs:
+      sprint_id: "{{ inputs.sprint_id }}"
+    output: { name: stagnant_issues }
+
+  - id: blocked_issues
+    type: pipeline
+    metric: shared/blocked_issues
+    inputs:
+      sprint_id: "{{ inputs.sprint_id }}"
+    output: { name: blocked_issues }
+
+  - id: scope_creep
+    type: pipeline
+    metric: shared/scope_creep
+    inputs:
+      sprint_id: "{{ inputs.sprint_id }}"
+    output: { name: scope_creep_issues }
+
+  - id: unassigned_issues
+    type: pipeline
+    metric: shared/unassigned_issues
+    inputs:
+      sprint_id: "{{ inputs.sprint_id }}"
+    output: { name: unassigned_issues }
+
+  - id: sprint_velocity
+    type: pipeline
+    metric: shared/sprint_velocity
+    inputs:
+      sprint_id: "{{ inputs.sprint_id }}"
+    output: { name: velocity_data }
+
+  - id: unclear_ownership
+    type: pipeline
+    metric: shared/unclear_ownership
+    inputs:
+      sprint_id: "{{ inputs.sprint_id }}"
+    output: { name: unclear_ownership_issues }
+
+  - id: backward_transitions
+    type: pipeline
+    metric: shared/backward_transitions
+    inputs:
+      sprint_id: "{{ inputs.sprint_id }}"
+    output: { name: backward_transitions }
+
+  - id: workload_imbalance
+    type: pipeline
+    metric: shared/workload_imbalance
+    inputs:
+      sprint_id: "{{ inputs.sprint_id }}"
+    output: { name: workload_imbalance_data }
+
+  - id: effort_without_movement
+    type: pipeline
+    metric: shared/effort_without_movement
+    inputs:
+      sprint_id: "{{ inputs.sprint_id }}"
+    output: { name: effort_without_movement_data }
+
+  - id: testing_bottleneck_transitions
+    type: pipeline
+    metric: shared/testing_bottleneck_transitions
+    inputs:
+      sprint_id: "{{ inputs.sprint_id }}"
+    output: { name: testing_bottleneck_data }
+
+  - id: transform_to_signals
+    type: function
+    function: app.processors.sprint_cards.transform_signals_human_sensed
+    inputs:
+      stagnant_issues: "{{ steps.stagnant_tasks.outputs.stagnant_issues }}"
+      blocked_issues: "{{ steps.blocked_issues.outputs.blocked_issues }}"
+      scope_creep_issues: "{{ steps.scope_creep.outputs.scope_creep_issues }}"
+      unassigned_issues: "{{ steps.unassigned_issues.outputs.unassigned_issues }}"
+      velocity_data: "{{ steps.sprint_velocity.outputs.velocity_data }}"
+      unclear_ownership_issues: "{{ steps.unclear_ownership.outputs.unclear_ownership_issues }}"
+      backward_transitions: "{{ steps.backward_transitions.outputs.backward_transitions }}"
+      workload_imbalance_data: "{{ steps.workload_imbalance.outputs.workload_imbalance_data }}"
+      effort_without_movement_data: "{{ steps.effort_without_movement.outputs.effort_without_movement_data }}"
+      testing_bottleneck_data: "{{ steps.testing_bottleneck_transitions.outputs.testing_bottleneck_data }}"
+    output: { name: base_signals }
+
+  - id: llm_human_insights
+    type: http_ai
+    service: llm
+    headers:
+      Content-Type: "application/json"
+    body:
+      instance: "{{ tenant_id }}"
+      llm: "claude-haiku"
+      prompt: "SprintHumanInsights"
+      data: "{{ steps.transform_to_signals.outputs.base_signals }}"
+    cache: 8640000
+    output: { name: llm_response }
+
+  - id: parse_human_insights
+    type: function
+    function: app.processors.llm.extract_reply_json
+    inputs:
+      response: "{{ steps.llm_human_insights.outputs.llm_response }}"
+    cache: 8640000
+    output: { name: parsed_insights }
+
+  - id: merge_with_ai
+    type: function
+    function: app.processors.sprint_cards.merge_signals_with_ai_summary
+    inputs:
+      signals_data: "{{ steps.transform_to_signals.outputs.base_signals }}"
+      ai_insights: "{{ steps.parse_human_insights.outputs.parsed_insights }}"
+    output: { name: signals_with_ai }
+
+  - id: format_testing_data
+    type: function
+    function: app.processors.sprint_cards.format_testing_bottleneck_for_llm
+    inputs:
+      transition_data: "{{ steps.testing_bottleneck_transitions.outputs.testing_bottleneck_data }}"
+    output: { name: formatted_testing_data }
+
+  - id: llm_testing_bottleneck
+    type: http_ai
+    service: llm
+    headers:
+      Content-Type: "application/json"
+    body:
+      instance: "{{ tenant_id }}"
+      llm: "claude-haiku"
+      prompt: "TestingBottleneckInsights"
+      data: "{{ steps.format_testing_data.outputs.formatted_testing_data }}"
+    cache: 8640000
+    output: { name: llm_testing_response }
+
+  - id: parse_testing_insights
+    type: function
+    function: app.processors.llm.extract_reply_json
+    inputs:
+      response: "{{ steps.llm_testing_bottleneck.outputs.llm_testing_response }}"
+    cache: 8640000
+    output: { name: parsed_testing_insights }
+
+  - id: merge_testing_with_signals
+    type: function
+    function: app.processors.sprint_cards.merge_testing_bottleneck_with_signals
+    inputs:
+      signals_data: "{{ steps.merge_with_ai.outputs.signals_with_ai }}"
+      testing_insights: "{{ steps.parse_testing_insights.outputs.parsed_testing_insights }}"
+    output: { name: final_signals }
+
+return: merge_testing_with_signals.final_signals

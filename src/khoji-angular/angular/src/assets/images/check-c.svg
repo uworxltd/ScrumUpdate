@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="6.3 4.59 15 15">
+  <defs>
+    <filter id="check" x="0" y="0" width="27.373" height="25.278" filterUnits="userSpaceOnUse">
+      <feOffset input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feFlood flood-opacity="0.161"/>
+      <feComposite operator="in" in2="blur"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+  </defs>
+  <g id="Group_229" data-name="Group 229" transform="translate(-584.7 -517.41)">
+    <circle id="Ellipse_96" data-name="Ellipse 96" cx="7.5" cy="7.5" r="7.5" transform="translate(591 522)" fill="#89c540"/>
+    <g transform="matrix(1, 0, 0, 1, 584.7, 517.41)" filter="url(#check)">
+      <path id="check-2" data-name="check" d="M3.589,7.544a.478.478,0,0,1-.677,0l-2.7-2.7a.718.718,0,0,1,0-1.015l.338-.338a.718.718,0,0,1,1.015,0L3.251,5.175,7.809.616a.718.718,0,0,1,1.015,0l.338.338a.718.718,0,0,1,0,1.015Zm0,0" transform="translate(9 8.59)" fill="#fff"/>
+    </g>
+  </g>
+</svg>

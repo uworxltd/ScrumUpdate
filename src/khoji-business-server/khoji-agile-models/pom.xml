@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>uk.co.uworx</groupId>
+    <artifactId>khoji-baseservice-boot</artifactId>
+    <version>${revision}</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+  <artifactId>khoji-agile-models</artifactId>
+  <packaging>jar</packaging>
+  <name>Business Server Models</name>
+  <properties>
+    <commons-collections4.version>4.5.0-M2</commons-collections4.version>
+    <liqp.version>0.9.1.0</liqp.version>
+  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>uk.co.uworx</groupId>
+      <artifactId>khoji-agile-config</artifactId>
+      <version>${project.version}</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>nl.big-o</groupId>
+      <artifactId>liqp</artifactId>
+      <version>${liqp.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-collections4</artifactId>
+      <version>${commons-collections4.version}</version>
+    </dependency>
+  </dependencies>
+</project>

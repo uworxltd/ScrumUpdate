@@ -1,0 +1,22 @@
+[
+  {
+    "operation": "shift",
+    "spec": {
+      "*": {
+        "id": "[&1].id",
+        "name": "[&1].name",
+        "description": "[&1].description",
+        "subtask": "[&1].subtask",
+        "hierarchyLevel": "[&1].hierarchyLevel"
+      }
+    }
+  },
+  {
+    "operation": "modify-overwrite-beta",
+    "spec": {
+      "*": {
+        "status": "@(1,status[1])"
+      }
+    }
+  }
+]

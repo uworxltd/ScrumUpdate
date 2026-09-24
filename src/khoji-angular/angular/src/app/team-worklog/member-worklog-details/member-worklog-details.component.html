@@ -1,0 +1,162 @@
+<!-- /*
+Copyright 2026 UWorx Services.
+Licensed under the Apache License, Version 2.0.
+See LICENSE for the full license text.
+*/ -->
+
+
+<div class="date-range" data-test="date-range-text" >{{dateFrom}} - {{dateTo}}</div>
+<p-table #dt
+  data-test="worklog-details-table"
+  [attr.data-rpa]="constants.RPA_TEAM_WORKLOG_DETAILS_TABLE"
+  *ngIf="teamWorklogStats"
+  #memberWorklogDetailsTable
+  [value]="teamWorklogStats.memberWorklogs"
+  [scrollable]="scrollable"
+  scrollHeight="calc(100vh - 220px)"
+  [style]="{width:'100%'}"
+  [globalFilterFields]="columnNamesForFilters"
+  [rowsPerPageOptions]="[10,25,50,100]"
+  [rows]="25"
+  [totalRecords]="teamWorklogStats.memberWorklogs.length"
+  [showCurrentPageReport]="false"
+  currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+  [paginator]="true"
+  (onFilter)="onSearch(dt)"
+  data-test="member-worklog-details-table"
+  sortField="totalMainPercents.Worklog"
+>
+
+  <ng-template pTemplate="caption">
+    <div style="text-align: right;" class="flex align-items-center justify-content-end">
+      <label title="{{constants.DATA_TABLE_SEARCH_INPUT_TOOLTIP}}" class="search-container">
+        <input type="search" pInputText size="50" placeholder="Search"
+          (input)="memberWorklogDetailsTable.filterGlobal($event.target.value, 'contains')" class="search-input">
+      </label>
+      <button pButton label="Export" [disabled]="!memberWorklogs.length" icon="pi pi-upload" class="export-button p-button-outlined ml-3" [title]="'export as CSV'"
+        (click)="exportCsv()"></button>
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="colgroup">
+    <colgroup>
+      <col style="min-width:192px">
+      <ng-container *ngFor="let col of teamWorklogStats.memberWorklogColumns.main">
+        <col style="min-width:110px">
+        <col style="min-width:110px">
+      </ng-container>
+      <ng-container *ngFor="let col of teamWorklogStats.memberWorklogColumns.other">
+        <col style="min-width:110px">
+        <col style="min-width:110px">
+      </ng-container>
+    </colgroup>
+  </ng-template>
+
+  <ng-template pTemplate="header">
+    <tr>
+      <th style="text-align: center;" rowspan="3" class="sticky-left" pSortableColumn="memberName">Members <p-sortIcon
+          field="memberName"></p-sortIcon>
+      </th>
+      <th style="text-align: center;" colspan="2" rowspan="2" class="colum-teamworklog sticky-left-worklog">
+        <span class="worklog-align" >
+          {{translation.timelog.table.columns.worklog}}
+        </span>
+        <span>
+          <khoji-worklog-popover-tootip class="tooltip-align"  [attr.data-rpa]="constants.RPA_TEAM_WORKLOG_MODAL_TOOLTIP" [tooltipTitle]="translation.ragStatusTimelog.table.columns.worklogRag"
+          [tooltipSubTitle]="translation.timelog.tooTips.worklog" [tooltipPosition]="'right'"></khoji-worklog-popover-tootip>
+        </span>
+      </th>
+      <th *ngIf="teamWorklogStats.memberWorklogColumns.main.length-1" [attr.colspan]="(teamWorklogStats.memberWorklogColumns.main.length-1)*2" [attr.data-rpa]="constants.RPA_TEAM_WORKLOG_DETAILS_TABLE_CATEGORY_COLUMNS" style="text-align:center">{{mainCategoryAlias}}</th>
+      <th *ngIf="teamWorklogStats.memberWorklogColumns.other.length" [attr.colspan]="teamWorklogStats.memberWorklogColumns.other.length*2" style="text-align:center">{{otherCategoryAlias}}</th>
+    </tr>
+    <tr>
+      <ng-container *ngFor="let col of teamWorklogStats.memberWorklogColumns.main">
+        <th *ngIf="col !== 'Worklog'" style="text-align: center;" colspan="2">{{col}}</th>
+      </ng-container>
+      <th style="text-align: center;" colspan="2" *ngFor="let col of teamWorklogStats.memberWorklogColumns.other">
+        {{col}}</th>
+    </tr>
+    <tr>
+      <ng-container *ngFor="let col of teamWorklogStats.memberWorklogColumns.main">
+        <th [ngClass]="{'colum-teamworklog': col === 'Worklog', 'sticky-left-worklog': col === 'Worklog'}"
+          style="text-align: center;" pSortableColumn="totalMainPercents.{{col}}">%
+          <p-sortIcon
+            field="totalMainPercents.{{col}}">
+          </p-sortIcon>
+        </th>
+        <th style="text-align: center;" pSortableColumn="totalMainDays.{{col}}" [ngClass]="{'colum-teamworklog': col === 'Worklog', 'sticky-left-days': col === 'Worklog'}">Days <p-sortIcon field="totalMainDays.{{col}}">
+          </p-sortIcon>
+        </th>
+      </ng-container>
+      <ng-container *ngFor="let col of teamWorklogStats.memberWorklogColumns.other">
+        <th style="text-align: center;" pSortableColumn="totalOthersPercents.{{col}}">% <p-sortIcon
+            field="totalOthersPercents.{{col}}"></p-sortIcon>
+        </th>
+        <th style="text-align: center;" pSortableColumn="totalOthersDays.{{col}}">Days <p-sortIcon field="totalOthersDays.{{col}}">
+          </p-sortIcon>
+        </th>
+      </ng-container>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="body" let-memberWorklog>
+    <tr>
+      <td class="sticky-left flex align-items-center">
+        <div class="flex justify-content-start align-items-center">
+          <div class="max-w-11rem white-space-nowrap overflow-hidden text-overflow-ellipsis" title="{{ memberWorklog.memberName }}">{{ memberWorklog.memberName }}</div>
+        </div>
+          <span *ngIf="memberWorklog.inMultipleTeams" [attr.data-test]="memberWorklog.memberName + '-multiteam-member-icon'" class="pi pi-users ml-1 text-base" [pTooltip]="translation.timelog.tooTips.multipleTeamMember" [tooltipPosition]="'top'" [tooltipStyleClass]="'customTooltip'"></span>
+      </td>
+      <ng-container *ngFor="let col of teamWorklogStats.memberWorklogColumns.main">
+        <td [ngClass]="{'colum-teamworklog rpa-teamworklog-datatable-class': col === 'Worklog', 'sticky-left-worklog': col === 'Worklog'}">
+          <span [ngStyle]="{'background-color':  memberWorklog.thresholdColor}" *ngIf="col === 'Worklog'"
+            class="total-worklog-box"></span>
+          {{ memberWorklog.totalMainPercents[col] | number:'1.2-2' }}%
+        </td>
+        <td [ngClass]="{'colum-teamworklog rpa-teamworklog-datatable-class sticky-left-days': col === 'Worklog'}">
+          {{ memberWorklog.totalMainDays[col] | number:'1.2-2' }}
+        </td>
+      </ng-container>
+      <ng-container *ngFor="let col of teamWorklogStats.memberWorklogColumns.other">
+        <td>{{ memberWorklog.totalOthersPercents[col] | number:'1.2-2' }}%</td>
+        <td>{{ memberWorklog.totalOthersDays[col] | number:'1.2-2' }}</td>
+      </ng-container>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td class="no-data" style="text-align: center;" [attr.colspan]="(teamWorklogStats.memberWorklogColumns.main.length + teamWorklogStats.memberWorklogColumns.other.length)*2+1">
+        {{translation.error.noDataAvailable}}
+      </td>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="paginatorleft">
+    <span>
+      {{translation.members}}{{ memberWorklogs.length }}
+    </span>
+  </ng-template>
+
+  <ng-template pTemplate="footer" let-memberWorklog>
+    <tr>
+      <td class="sticky-left">{{translation.timelog.table.footer.avgTimeLog}}</td>
+      <ng-container *ngFor="let col of teamWorklogStats.memberWorklogColumns.main">
+        <td [ngClass]="{'sticky-left-worklog': col === 'Worklog'}">
+          <span [ngStyle]="{'background-color':  teamWorklogStats?.thresholdColor}" *ngIf="col == 'Worklog'"
+          class="total-worklog-box"></span>
+          {{getTotalAverageTimeLogPercentage(col,true)}}%</td>
+        <td [ngClass]="{'sticky-left-days': col === 'Worklog'}">{{getTotalTimeLogDays(col,true)}} d</td>
+      </ng-container>
+      <ng-container *ngFor="let col of teamWorklogStats.memberWorklogColumns.other">
+        <td >{{getTotalAverageTimeLogPercentage(col,false)}}%</td>
+        <td >{{getTotalTimeLogDays(col,false)}} d</td>
+      </ng-container>
+    </tr>
+  </ng-template>
+</p-table>
+<button [attr.data-rpa]="constants.RPA_TEAM_WORKLOG_DETAILS_HIDE_COLUMNS_BUTTON" style="display: none;" (click)="updateTableForRPA()"></button>
+
+
+
+

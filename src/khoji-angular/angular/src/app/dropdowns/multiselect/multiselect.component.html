@@ -1,0 +1,129 @@
+<div class="dropdown" [ngClass]="classNames" *ngIf="selectedItemsUnique as selected"
+  [attr.data-test]="dataTestName+'-dropdown'" [attr.data-disabled]="isDisabled" [hidden]="hideDropdown">
+  <!-- control-box: label -->
+  <label *ngIf="label" [attr.data-test]="dataTestName+'-label'" class="dd-label">{{label}}</label>
+  <!-- control-box -->
+  <div class="control dropdown-khoji" [ngClass]="{'disabled':isDisabled,'unset-max-width':maxChips>1, 'max-w-full':fullWidthDropdown}"
+    [attr.data-disabled]="isDisabled" (click)="toggleDropdown($event)" data-test="select-button">
+    <ng-container *ngIf="selected.length > 0; else textTpl">
+      <div>
+        <ng-container *ngFor="let item of selected; let i = index">
+          <div class="chip" *ngIf="i < maxChips && getItemText(item) as itemText">
+            <div [title]="itemText" [attr.data-test]="itemText.toLowerCase().replace(' ', '-')+'-text'">{{itemText}}
+            </div>
+            <!-- icon: unselect single -->
+            <i *ngIf="selected.length > 1" class="fa fa-remove inner" title="UnSelect"
+              (click)="selectSingle(item, false, true)" id="multiselect-remove-icon"></i>
+          </div>
+        </ng-container>
+      </div>
+      <!-- count: more -->
+      <div class="right-align">
+        <div *ngIf="selected.length > maxChips" class="more">+{{selected.length-maxChips}}</div>
+        <!-- icon: unselect all -->
+        <i *ngIf="!(singleSelection || selectionRequired)" class="fa fa-remove" title="UnSelect All"
+          (click)="selectAll(false, true)" data-test="reset-button" id="multiselect-remove-icon"></i>
+      </div>
+    </ng-container>
+    <ng-template #textTpl>
+      <div *ngIf="!(selectionRequired && selected.length === 0)" [attr.data-test]="dataTestName+'-text'"
+        class="placeholder">{{loading?'Loading ...':text}}</div>
+      <div *ngIf="selectionRequired && selected.length === 0" class="placeholder error">{{selectionRequiredMessage}}
+      </div>
+    </ng-template>
+    <i *ngIf="!singleSelection" data-test="select-button" class="fa fa-caret-down"
+      [attr.data-test]="'arrow-icon'" [attr.data-rpa]="constants.RPA_TEAM_DROP_DOWN_ICON"></i>
+  </div>
+  <ng-container *ngIf="items.length > 0; else noDataTpl" >
+    <!-- popup -->
+    <div class="popup" [ngStyle]="filterDataBasedOnDate ? {'width.px': 350} : {}" [ngClass]="{'popup-right':popupRightAlign, 'fixed-width': fixedWidth, 'max-w-full w-full': fullWidthDropdown }" [hidden]="closed"
+      *ngIf="filteredItems as filtered" [attr.data-test]="dataTestName+'-dropdown-popup'">
+      <!-- checkbox: select-all -->
+      <label *ngIf="!(singleSelect || !isSelectionLimitNotApplied())">
+        <input type="checkbox" [(ngModel)]="allSelected" (change)="selectAll($event.target.checked)"
+          data-test="selectall-checkbox">
+        <div data-test="selectall-label">{{_selectAllText}}</div>
+      </label>
+      <!-- input: search -->
+      <div class="search" [ngClass]="{'search-top':singleSelect}">
+        <i class="fa fa-search"></i>
+        <input #searchTxt class="searchTxt" type="search" placeholder="Search" title="Search" [(ngModel)]="filter"
+          (search)="updateGroups();updateSelectionText()" (keyup)="updateGroups();updateSelectionText()"
+          data-test="search-text">
+      </div>
+      <!-- checkbox: select-all-filtered -->
+      <label *ngIf="!(singleSelect || !isSelectionLimitNotApplied()) && filter.length > 0 && filtered.length > 0 && getItemsNotHidden(filtered).length > 0">
+        <input type="checkbox" [(ngModel)]="allFilteredSelected" (change)="selectAllFiltered($event.target.checked)"
+          data-test="unselectall-checkbox">
+        <div data-test="selectFilter-label">{{_selectAllFilteredText}}</div>
+      </label>
+      <ng-container
+        *ngIf="items.length > 0 && getItemsNotHidden(filtered).length > 0 && filtered.length > 0; else noRecordsTpl">
+        <!-- scroll-box -->
+        <div class="list">
+          <!-- list: items -->
+          <div>
+            <!-- checkbox: item -->
+            <ng-container *ngFor="let item of filtered; let isLast = last">
+              <div
+                [pTooltip]="getTooltipText(item)"
+                tooltipPosition="bottom"
+                tooltipStyleClass="create-teams-tooltip"
+                class="w-full"
+              >
+
+                <label class="w-full" *ngIf="getItemText(item) as itemText" [ngClass]="getItemStyle(item)" [title]="itemText"
+                  [attr.data-test]="itemText+'-label'" [attr.data-rpa]="'rpa-' + itemText" [pTooltip]="tooltip" tooltipPosition="bottom" tooltipPosition="bottom">
+                  <i *ngIf="item.is_group" (click)="toggleExpand(item); $event.preventDefault()" class="fa"
+                    [ngClass]="item.expand?'fa-chevron-up':'fa-chevron-down'" [attr.data-test]="itemText+'-arrow'">
+                  </i>
+                  <input *ngIf="!((singleSelect || !isSelectionLimitNotApplied()) && item.is_group)" type="checkbox" [(ngModel)]="item.item_selected" [attr.data-test]="itemText+'-category'"
+                    (change)="selectSingle(item, item.item_selected, false)" (ngModelChange)="updateGroupingLimits(item, $event)">
+                  <div>
+                    <div>{{itemText}}</div>
+                    <div class="subText">{{item.item_subtext}}</div>
+                  </div>
+                  <div *ngIf="item.item_status_label" [class]="item.item_status_class" data-test="status-chip">{{item.item_status_label}}</div>
+                  <div *ngIf="item.children_count != undefined" class="chip-count" [attr.data-test]="itemText+'-count'">
+                    {{item.children_count}}</div>
+                </label>
+              </div>
+              <!--Pagination load more button-->
+              <div class="justify-content-center" *ngIf="enablePagination && isLast && !filterDataBasedOnDate && filter == '' && !checkIfAllItemsAreDisplayed()">
+                <p class="w-auto text-teal-900 underline cursor-pointer text-base" id="{{btnIds[0]}}" (click)="showMoreEntries()">{{translation.multiSelectDropdown.loadMoreButtonText}}</p>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+        <!-- buttons: apply-cancel -->
+        <div class="bottom" *ngIf="useApplyButton">
+          <div class="info" data-test="selectItemCount-text">{{selected.length}}{{translation.multiSelectDropdown.itemSelectedMessage}}</div>
+          <div>
+            <button [disabled]="!hasChanged(selected)" class="cancelBtn p-button p-button-sm"
+              (click)="reset()" data-test="cancel-button">{{translation.multiSelectDropdown.cancelButtonText}}</button>
+            <button [disabled]="!(hasChanged(selected) && (selectionRequired ? selected.length > 0 : true))"
+              class="p-button p-button-sm" (click)="triggerChange()" data-test="apply-button">{{translation.multiSelectDropdown.applyButtonText}}</button>
+          </div>
+        </div>
+        <!-- filtered data based on months -->
+        <div class="bottom flex mx-1 p-0" *ngIf="filterDataBasedOnDate">
+          <p class="text-xs text-900" [attr.data-test]="dataTestName+'-dropdown-footer'">{{this.filterDataBasedOnDateNote}}</p>
+          <p class="text-teal-900 underline cursor-pointer text-xs" id="{{btnIds[1]}}" (click)="showAllData()" [attr.data-test]="dataTestName+'-show-all-button'">{{translation.multiSelectDropdown.showAllButtonText}}</p>
+        </div>
+      </ng-container>
+      <ng-template #noRecordsTpl>
+        <p data-test="search-dropdown-message">{{noMatchingRecordsLabel}}</p>
+      </ng-template>
+    </div>
+  </ng-container>
+  <ng-template #noDataTpl>
+    <div class="popup" [ngClass]="{'fixed-width': fixedWidth}" [hidden]="closed">
+      <p *ngIf="!loading" data-test="dropdown-message">{{noDataLabel}}</p>
+      <ng-container *ngIf="loading">
+        <div class="loading loading-box">
+          <div class="loading-circle"></div>
+        </div>
+      </ng-container>
+    </div>
+  </ng-template>
+</div>

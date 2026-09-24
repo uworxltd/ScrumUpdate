@@ -1,0 +1,18 @@
+<!-- /*
+Copyright 2026 UWorx Services.
+Licensed under the Apache License, Version 2.0.
+See LICENSE for the full license text.
+*/ -->
+
+<ul class="layout-menu justify-content-end gap-2 mr-2" data-test="top-navigation-menu-link">
+    <li>
+        <p-menu #menuHelp [model]="helpMenuItems" [popup]="true" styleClass="force-show" />
+        <p-button styleClass="p-button-sm p-button-text no-focus" label="Help" (onClick)="menuHelp.toggle($event)" icon="pi pi-help"/>
+    </li>
+    <li class="topbar-profile profile-toggle-menubar">
+        <button type="button" class="p-link" (click)="onProfileButtonClick()" data-test="profile-menu-button">
+            <div *ngIf="!base64ImageUrl"  id="initials">{{initials}}</div>
+            <img *ngIf="base64ImageUrl" height="28" width="28" class="border-circle" src="{{base64ImageUrl}}" alt="{{firstName}}" />
+        </button>
+    </li>
+</ul>

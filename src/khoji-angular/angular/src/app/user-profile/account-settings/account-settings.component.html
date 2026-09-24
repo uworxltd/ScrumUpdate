@@ -1,0 +1,24 @@
+<div class="container-khoji round-3 shadow">
+    <div class="title">
+        <h4 class="khoji-headings-title">
+            {{translation?.userProfile.accountSettings.heading}}
+        </h4>
+    </div>
+    
+    <p-divider align="left">
+        <b>{{translation?.userProfile.accountSettings.sectionDeleteAccount}}</b>
+    </p-divider>
+    <p class="text" style="margin-left: 25px">Please note:</p>
+    <ul>
+        <li class="khoji-sub-headings">{{translation?.userProfile.accountSettings.deteteAccountWarning1}}</li>
+        <li class="khoji-sub-headings">{{translation?.userProfile.accountSettings.deteteAccountWarning2}}</li>
+    </ul>
+
+    <div class="mt-3 mb-8" style="padding-left:22px; margin-top: 25px !important;">
+        <button class="p-button p-button-danger"
+        (click)="onDeleteAccountClick()">{{translation?.userProfile.accountSettings.deleteButton}}</button>
+    </div>
+
+    <khoji-delete-account (closeDialog)="openDeleteAccountDialog=false"
+        [openDialog]="openDeleteAccountDialog"></khoji-delete-account>
+</div>

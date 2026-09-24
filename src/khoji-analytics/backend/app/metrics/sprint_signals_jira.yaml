@@ -1,0 +1,87 @@
+name: sprint_signals_jira
+description: Sprint signals with JIRA data only (optimized, no AI processing)
+version: 1.0
+
+inputs:
+  sprint_id: { type: int, required: true }
+
+steps:
+  - id: stagnant_tasks
+    type: pipeline
+    metric: shared/stagnant_tasks
+    inputs:
+      sprint_id: "{{ inputs.sprint_id }}"
+    output: { name: stagnant_issues }
+
+  - id: blocked_issues
+    type: pipeline
+    metric: shared/blocked_issues
+    inputs:
+      sprint_id: "{{ inputs.sprint_id }}"
+    output: { name: blocked_issues }
+
+  - id: scope_creep
+    type: pipeline
+    metric: shared/scope_creep
+    inputs:
+      sprint_id: "{{ inputs.sprint_id }}"
+    output: { name: scope_creep_issues }
+
+  - id: unassigned_issues
+    type: pipeline
+    metric: shared/unassigned_issues
+    inputs:
+      sprint_id: "{{ inputs.sprint_id }}"
+    output: { name: unassigned_issues }
+
+  - id: sprint_velocity
+    type: pipeline
+    metric: shared/sprint_velocity
+    inputs:
+      sprint_id: "{{ inputs.sprint_id }}"
+    output: { name: velocity_data }
+
+  - id: unclear_ownership
+    type: pipeline
+    metric: shared/unclear_ownership
+    inputs:
+      sprint_id: "{{ inputs.sprint_id }}"
+    output: { name: unclear_ownership_issues }
+
+  - id: backward_transitions
+    type: pipeline
+    metric: shared/backward_transitions
+    inputs:
+      sprint_id: "{{ inputs.sprint_id }}"
+    output: { name: backward_transitions }
+
+  - id: workload_imbalance
+    type: pipeline
+    metric: shared/workload_imbalance
+    inputs:
+      sprint_id: "{{ inputs.sprint_id }}"
+    output: { name: workload_imbalance_data }
+
+  - id: effort_without_movement
+    type: pipeline
+    metric: shared/effort_without_movement
+    inputs:
+      sprint_id: "{{ inputs.sprint_id }}"
+    output: { name: effort_without_movement_data }
+
+  - id: transform_to_signals
+    type: function
+    function: app.processors.sprint_cards.transform_signals_jira_only
+    inputs:
+      stagnant_issues: "{{ steps.stagnant_tasks.outputs.stagnant_issues }}"
+      blocked_issues: "{{ steps.blocked_issues.outputs.blocked_issues }}"
+      scope_creep_issues: "{{ steps.scope_creep.outputs.scope_creep_issues }}"
+      unassigned_issues: "{{ steps.unassigned_issues.outputs.unassigned_issues }}"
+      velocity_data: "{{ steps.sprint_velocity.outputs.velocity_data }}"
+      unclear_ownership_issues: "{{ steps.unclear_ownership.outputs.unclear_ownership_issues }}"
+      backward_transitions: "{{ steps.backward_transitions.outputs.backward_transitions }}"
+      workload_imbalance_data: "{{ steps.workload_imbalance.outputs.workload_imbalance_data }}"
+      effort_without_movement_data: "{{ steps.effort_without_movement.outputs.effort_without_movement_data }}"
+    output: { name: final_signals }
+
+return: transform_to_signals.final_signals

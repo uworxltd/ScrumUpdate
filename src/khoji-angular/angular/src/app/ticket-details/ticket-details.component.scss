@@ -1,0 +1,28 @@
+:host ::ng-deep .p-inputnumber {
+    width: 100%;
+}
+
+:host ::ng-deep .p-tabview-panels {
+    padding: 1rem !important;
+    background: #eff2f7;
+}
+
+:host ::ng-deep .p-tabview-nav-link {
+    box-shadow: none !important;
+    padding: 10px !important;
+}
+
+:host ::ng-deep .p-tabview .p-tabview-nav-btn.p-link{
+    width: 2rem;
+    border: 1px solid #d3d3d3;
+    position: absolute;
+}
+
+:host ::ng-deep .p-button {
+    padding: 0;
+    height: fit-content;
+}
+
+:host ::ng-deep .hours-input .p-inputnumber-input {
+    width: 100px;
+}

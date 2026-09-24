@@ -1,0 +1,40 @@
+<!-- /*
+Copyright 2026 UWorx Services.
+Licensed under the Apache License, Version 2.0.
+See LICENSE for the full license text.
+*/ -->
+
+
+<div class="ml-3">
+
+  <div class="instance-detail mt-5 ">
+    <app-details></app-details>
+  </div>
+
+  <div class="mt-5">
+    <p-tabView (onChange)="tabIndexChange($event.index)" [activeIndex]="activeIndex">
+      <ng-container *ngFor="let tab of tabs; let i = index; trackBy: trackTab">
+        <p-tabPanel [header]="tab.header" [disabled]="!tab.enabled" [tooltip]="tab.enabled ? '' : translation?.error.adminAccessRequired">
+          <ng-container [ngTemplateOutlet]="tab.template"></ng-container>
+        </p-tabPanel>
+      </ng-container>
+    </p-tabView>
+  </div>
+  <p-blockUI [target]="this" [blocked]="blockUI">
+    <i class="pi pi-spin pi-spinner" style="font-size: 3rem"></i>
+  </p-blockUI>
+</div>
+
+<ng-template #manageUsers>
+  <app-khoji-user-list *ngIf="activeTabsMap['manage-users']">
+  </app-khoji-user-list>
+</ng-template>
+
+<ng-template #manageTeams>
+  <app-khoji-teams-list *ngIf="activeTabsMap['manage-teams']">
+  </app-khoji-teams-list>
+</ng-template>
+
+<ng-template #manageSettings>
+  <khoji-manage-settings *ngIf="activeTabsMap['manage-settings']"></khoji-manage-settings>
+</ng-template>

@@ -1,0 +1,71 @@
+<p-card class="border-round w-8" @fadeInOut>
+  <ng-template pTemplate="header">
+    <div class="flex justify-content-between align-items-center flex-wrap w-full pr-8 pl-8 pt-6 pb-4">
+      <div class="flex">
+        <img src="assets/images/scrumupdate-logo-v1.svg" alt="Khoii-Logo" width="42" height="35" />
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="content">
+    <ng-container *ngIf="features?.length" [ngTemplateOutlet]="cardsSelectorTemplate">
+    </ng-container>
+
+    <div class="flex justify-content-center mt-1">
+      <p-button data-test="submit-button" label="Submit" [disabled]="!(myWorkFeaturesEnabled.length > 0 || teamViewFeaturesEnabled.length > 0)" (click)="onSubmit()"
+        [loading]="instanceLoadingState === 1"></p-button>
+    </div>
+  </ng-template>
+</p-card>
+
+<ng-template #cardsSelectorTemplate>
+  <div class="flex justify-content-center align-items-center flex-column">
+    <h3>What can we take care of first?</h3>
+    <span class="text-600">{{ getDisplayDescription() }}</span>
+    <div class="flex flex-wrap mt-2 layout-width justify-content-center gap-3">
+      <div class="col-12 col-md-4 pr-1 pl-1" *ngFor="let option of features">
+        <div class="card custom-card flex flex-column align-items-center"
+          (click)="selectOption(option)"
+          [ngClass]="{ 'selected-card': option.id === selectedFeatureId, 'disabled-card': instanceLoadingState === 1, 'p-disabled': option.id === 1 ? !(myWorkFeaturesEnabled.length > 0) : !(teamViewFeaturesEnabled.length > 0) }">
+          <div *ngIf="option.id === 1" class="recommended-label">
+            <span *ngIf="myWorkFeaturesEnabled.length > 0">
+              RECOMMENDED
+            </span>
+            <span *ngIf="!(myWorkFeaturesEnabled.length > 0)">
+              COMING SOON
+            </span>
+          </div>
+          <div *ngIf="option.id !== 1 && ((teamViewFeaturesEnabled.length > 0 && !(myWorkFeaturesEnabled.length > 0)) || !(teamViewFeaturesEnabled.length > 0))" class="recommended-label">
+            <span *ngIf="teamViewFeaturesEnabled.length > 0 && !(myWorkFeaturesEnabled.length > 0)">
+              RECOMMENDED
+            </span>
+            <span *ngIf="!(teamViewFeaturesEnabled.length > 0)">
+              COMING SOON
+            </span>
+          </div>
+          <div class="card-content">
+            <img *ngIf="option.image" [ngSrc]="option.image"
+              [attr.data-test]="option.image ? 'option-image-' + option.id : ''" [alt]="option.title"
+              class="card-image mt-2" [width]="1" [height]="1"
+              style="width:100%;height:18vh;margin-top:2rem !important" />
+          </div>
+          <div class="card-content flex align-items-center flex-column mt-1">
+            <h6 class="mt-2 title">{{ option.name }}</h6>
+            <p class="mb-2 mt-1 text-600">{{ option.title }}</p>
+            <ul style="padding:0;">
+              <li style="list-style-type:none;display: block;" class="text-left"
+                *ngFor="let ls of getFilteredList(option.details || [])">
+                <i class="pi pi-check text-purple-600 font-bold" style="font-size:medium"></i>
+                {{ls}}
+              </li>
+            </ul>
+            <div class="icon-container">
+              <i *ngIf="option.id === selectedFeatureId" class="pi pi-check custom-check-rounded-icon"></i>
+              <i *ngIf="option.id !== selectedFeatureId" class="custom-rounded-icon"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

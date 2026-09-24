@@ -1,0 +1,126 @@
+:host {
+  display: block;
+  height: 100vh;
+}
+.overflow-above-5-users {
+  overflow-y: scroll;
+  height: 350px;
+
+  &::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 5px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f2f2f2;
+  }
+}
+
+.over-flow-height {
+  height: 350px !important;
+}
+
+@media only screen and (max-height: 900px) {
+  .over-flow-height {
+    height: 320px !important;
+  }
+
+  div.gap-4{
+    gap: 0.25rem !important;
+  }
+}
+
+@media only screen and (max-height: 700px) {
+  .over-flow-height {
+    height: 215px !important;
+  }
+  div.gap-4{
+    gap: 0.25rem !important;
+  }
+}
+
+@media only screen and (max-height: 600px) {
+  .over-flow-height {
+    height: 115px !important;
+  }
+  div.gap-4{
+    gap: 0.25rem !important;
+  }
+}
+
+.limit-has-reached-and-showing-info-message {
+  height: 265px !important;
+}
+
+.increase-width-in-case-of-scroller {
+  width: calc(91.6667% + 9px);
+  min-width: calc(91.6667% + 9px);
+}
+
+:host ::ng-deep ::-webkit-scrollbar {
+  width: 10px;
+}
+
+:host ::ng-deep ::-webkit-scrollbar-track {
+  border-radius: 10px;
+}
+
+:host ::ng-deep ::-webkit-scrollbar-thumb {
+  background: var(--gray-300);
+  border-radius: 10px;
+}
+
+:host ::ng-deep ::-webkit-scrollbar-thumb:hover {
+  background: var(--gray-400);
+}
+
+// removes cross on chip in multi select
+:host ::ng-deep {
+  .p-multiselect-token-icon {
+    display: none !important;
+  }
+
+  .p-multiselect-panel {
+    max-height: 400px;
+  }
+
+  .p-multiselect-items-wrapper {
+    max-height: 250px !important;
+  }
+}
+
+.bottom-20px {
+  bottom: 20px;
+}
+
+:host ::ng-deep .custom-tooltip {
+  .p-tooltip-text{
+    max-width: 18rem;
+    width: max-content;
+  }
+}
+
+:host ::ng-deep .p-message-wrapper {
+  padding: 4px;
+}
+
+:host ::ng-deep .p-message-info {
+  border: none;
+  margin: 0 0 10px;
+}
+
+.pointer-events-all {
+  pointer-events: all !important;
+}
+
+:host ::ng-deep li.p-multiselect-item:has(div.user-disabled) {
+    color: #124E60  !important;
+    background: #EAF0F2 !important;
+    cursor: default !important;
+    pointer-events: none !important;
+    opacity: 0.6 !important;
+}

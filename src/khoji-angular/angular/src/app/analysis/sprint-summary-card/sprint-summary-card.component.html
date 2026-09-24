@@ -1,0 +1,145 @@
+<p-card class="surface-card border-round">
+  <div class="static-card-wrapper">
+    <div class="flex flex-column gap-3 summary-body overflow-auto">
+
+    <!-- Header -->
+    <div class="flex justify-content-between align-items-center">
+      <div class="flex align-items-center gap-2">
+        <span class="text-xl font-bold" *ngIf="cardHeaderText">
+          {{ cardHeaderText }}
+        </span>
+        <p-skeleton *ngIf="!cardHeaderText" width="20rem" height="1.5rem"></p-skeleton>
+        <!-- <span [innerHTML]="meta?.teamIcon" *ngIf="!isLoading && staticSummaryData"></span> -->
+      </div>
+      <div class="flex align-items-center gap-2">
+        <span class="text-sm text-color-secondary" *ngIf="sprintDayInfo">{{ sprintDayInfo }}</span>
+        <p-skeleton *ngIf="!sprintDayInfo" width="5rem" height="1rem"></p-skeleton>
+      </div>
+    </div>
+    <div class="flex justify-content-start mt-1">
+      <span
+        *ngIf="!isLoading && meta?.deliveryConfidence"
+        [style.backgroundColor]="meta?.deliveryConfidence.color"
+        class="p-1 border-round text-800 font-bold inline-block"
+        pTooltip="The probability that the sprint will be delivered on time and within scope."
+        tooltipPosition="top"
+        tooltipZIndex="1101"
+        appendTo="body"
+      >
+        <span [innerHTML]="meta?.deliveryConfidence.icon"></span>
+        {{ meta?.deliveryConfidence.label }}
+      </span>
+      <p-skeleton *ngIf="isLoading || !meta?.deliveryConfidence" width="12rem" height="2rem" borderRadius="0.25rem"></p-skeleton>
+    </div>
+
+    <!-- Overall Summary -->
+    <div class="bg-blue-50 p-1 border-round">
+      <ng-container *ngIf="!isLoading && meta?.overallSummary">
+        <span [innerHTML]="meta?.overallSummary.html|safeHtml" (click)="tableActionListener($event.target)"></span>
+        <a class="p-link-button cursor-pointer ml-2" (click)="carouselAction(meta?.overallSummary.expandCardId)">Read more</a>
+      </ng-container>
+      <div *ngIf="isLoading || !meta?.overallSummary" class="flex flex-column gap-2">
+        <p-skeleton width="100%" height="0.875rem"></p-skeleton>
+        <p-skeleton width="90%" height="0.875rem"></p-skeleton>
+        <p-skeleton width="100%" height="0.875rem"></p-skeleton>
+        <p-skeleton width="80%" height="0.875rem"></p-skeleton>
+      </div>
+    </div>
+
+    <!-- Priority Card -->
+    <div class="p-0 border-round-lg shadow-1 cursor-pointer" 
+      *ngIf="!isLoading && meta?.priorityCardId && getInsight(meta?.priorityCardId) as card" 
+      [style.backgroundColor]="card?.header.color"
+      (click)="carouselAction(meta?.priorityCardId)">
+      <div class="flex justify-content-between align-items-center px-3 py-2">
+        <div>
+          <div class="flex align-items-center gap-2 text-lg font-bold">
+            <span [innerHTML]="card?.header.icon"></span>
+            {{card?.header.title}}
+          </div>
+          <div class="text-sm text-gray-700">
+            {{card?.header.summary}}
+          </div>
+        </div>
+        <i class="pi pi-caret-right"></i>
+      </div>
+    </div>
+    <div *ngIf="isLoading || !meta?.priorityCardId || !getInsight(meta?.priorityCardId)" class="p-3 border-round-lg shadow-1">
+      <div class="flex justify-content-between align-items-center">
+        <div class="flex-1">
+          <p-skeleton width="12rem" height="1.5rem" class="mb-2"></p-skeleton>
+          <p-skeleton width="18rem" height="1rem"></p-skeleton>
+        </div>
+        <p-skeleton shape="circle" size="2rem"></p-skeleton>
+      </div>
+    </div>
+
+    <!-- Metrics -->
+    <div class="flex justify-content-between h-6rem">
+      <div
+  *ngIf="staticSummaryData"
+  class="flex flex-column justify-content-around bg-red-100 p-1 border-round text-center cursor-pointer"
+  style="min-width: 100px;"
+  [ngClass]="{'border-2 border-primary': isFilterActive('story_points')}"
+  (click)="filterStoryPoints()"
+  [pTooltip]="'Click to filter by story points'"
+  tooltipPosition="top"
+  appendTo="body"
+>
+  <span class="text-2xl font-bold text-red-600">{{ staticSummaryData?.completedPoints || 0 }} / {{ staticSummaryData?.totalPoints || 0 }}</span>
+  <span class="text-sm text-color-secondary">Story Points</span>
+</div>
+      <div *ngIf="!staticSummaryData" class="flex flex-column justify-content-around bg-red-100 p-2 border-round text-center" style="min-width: 100px;">
+        <p-skeleton width="4rem" height="2rem" class="mx-auto mb-2"></p-skeleton>
+        <p-skeleton width="6rem" height="0.875rem" class="mx-auto"></p-skeleton>
+      </div>
+      <div
+  *ngIf="staticSummaryData"
+  class="flex flex-column justify-content-around bg-yellow-100 p-1 border-round text-center cursor-pointer"
+  style="min-width: 100px;"
+  [ngClass]="{'border-2 border-primary': isFilterActive('scope_change')}"
+  (click)="filterScopeChange()"
+  [pTooltip]="'Click to filter tickets added after sprint start'"
+  tooltipPosition="top"
+  appendTo="body"
+>
+  <span class="text-2xl font-bold text-yellow-700">{{ staticSummaryData.scopeChangePercentage || 0 }}%</span>
+  <span class="text-sm text-color-secondary">Scope Change</span>
+</div>
+      <div *ngIf="!staticSummaryData" class="flex flex-column justify-content-around bg-yellow-100 p-2 border-round text-center" style="min-width: 100px;">
+        <p-skeleton width="4rem" height="2rem" class="mx-auto mb-2"></p-skeleton>
+        <p-skeleton width="6rem" height="0.875rem" class="mx-auto"></p-skeleton>
+      </div>
+
+      <div
+  *ngIf="staticSummaryData"
+  class="flex flex-column justify-content-around bg-green-100 p-1 border-round text-center cursor-pointer"
+  style="min-width: 100px;"
+  [ngClass]="{'border-2 border-primary': isFilterActive('hygiene_all')}"
+  (click)="filterAllHygieneIssues()"
+  [pTooltip]="'Click to filter all tickets with hygiene issues (missing description, story points, priority, or assignee).'"
+  tooltipPosition="top"
+  tooltipZIndex="1101"
+  appendTo="body"
+>
+  <span class="text-2xl font-bold text-green-700">{{ staticSummaryData?.ticketHygienePercentage || 100 }}%</span>
+  <span class="text-sm text-color-secondary">Ticket Hygiene</span>
+</div>
+      <div *ngIf="!staticSummaryData" class="flex flex-column justify-content-around bg-green-100 p-2 border-round text-center" style="min-width: 100px;">
+        <p-skeleton width="4rem" height="2rem" class="mx-auto mb-2"></p-skeleton>
+        <p-skeleton width="6rem" height="0.875rem" class="mx-auto"></p-skeleton>
+      </div>
+
+    </div>
+
+    <!-- Sprint Progress -->
+    <div class="flex align-items-center gap-2">
+      <span class="font-medium text-600">Sprint Progress</span>
+      <p-progressBar class="flex-grow-1" [value]="staticSummaryData?.progressPercentage || 0"></p-progressBar>
+      <small class="text-color-secondary" *ngIf="staticSummaryData">Sprint ends on: {{ staticSummaryData.endDate | date:'MMM d, y' }}</small>
+      <p-skeleton *ngIf="!staticSummaryData" width="10rem" height="0.875rem"></p-skeleton>
+    </div>
+
+  </div>
+  </div>
+</p-card>

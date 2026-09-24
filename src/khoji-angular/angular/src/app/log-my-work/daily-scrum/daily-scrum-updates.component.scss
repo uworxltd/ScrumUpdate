@@ -1,0 +1,497 @@
+.scrum-update-content {
+  max-width: 939px;
+  margin: 0 auto;
+}
+
+.summary {
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: #374151;
+  white-space: pre-line;
+  overflow: auto;
+
+  ::ng-deep ul {
+    margin: 0.5rem 0;
+    padding-left: 1.5rem;
+  }
+
+  ::ng-deep li {
+    margin-bottom: 0.5rem;
+  }
+
+  ::ng-deep p {
+    margin: 0.5rem 0;
+  }
+}
+
+// Header Styles
+.scrum-header {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.scrum-header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.scrum-title-section {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.scrum-icon {
+  flex-shrink: 0;
+}
+
+.scrum-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 0;
+}
+
+.scrum-actions {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+// Meta Section (Timestamp & Confidence)
+.scrum-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1.5rem;
+  background-color: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 0.875rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 1.5rem;
+  margin-bottom: 0;
+  border-radius: 0.75rem;
+}
+
+.timestamp {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #6b7280;
+
+  i {
+    font-size: 0.875rem;
+  }
+}
+
+.confidence-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+
+  i {
+    font-size: 0.875rem;
+    margin-left: auto;
+  }
+
+  &.confidence-high {
+    background-color: var(--green-100);
+    color: var(--green-700);
+  }
+
+  &.confidence-medium {
+    background-color: var(--yellow-100);
+    color: var(--yellow-700);
+  }
+}
+
+// Content Area
+.content {
+  padding: 1.5rem;
+}
+
+// Scrum Section with Title Row
+.scrum-section {
+  margin-bottom: 1.5rem;
+}
+
+.section-title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.section-emoji {
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.section-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 0;
+}
+
+// Scrum Cards
+.scrum-card {
+  background-color: #f9fafb;
+  border-radius: 0.5rem;
+  padding: 1.25rem;
+  border-left: 4px solid;
+}
+
+.completed-card {
+  border-left-color: #10b981;
+}
+
+.working-card {
+  border-left-color: #3b82f6;
+}
+
+.blockers-card {
+  border-left-color: #f59e0b;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.card-icon {
+  font-size: 1.25rem;
+}
+
+.completed-icon {
+  color: #10b981;
+}
+
+.working-icon {
+  color: #3b82f6;
+}
+
+.blockers-icon {
+  color: #f59e0b;
+}
+
+.card-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 0;
+}
+
+.card-content {
+  padding-left: 1.75rem;
+}
+
+// Loading Skeleton
+.skeleton {
+  .header {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 2rem 1.5rem;
+    align-items: center;
+    text-align: center;
+
+    img {
+      align-self: center;
+    }
+
+    div {
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    .header-text {
+      font-size: 0.875rem;
+      font-weight: 400;
+      color: #6b7280;
+    }
+  }
+}
+
+// Error State
+.error-icon {
+  color: #ef4444;
+  margin: 1rem 0;
+}
+
+.error-text {
+  font-size: 0.875rem;
+  color: #6b7280;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.timestamp-text {
+  font-size: 0.875rem;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+// No Activity Section
+.no-activity-section {
+  padding: 3rem 1.5rem;
+  text-align: center;
+}
+
+.no-activity-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.no-activity-icon {
+  width: 120px;
+  height: 120px;
+  margin-bottom: 0.5rem;
+}
+
+.no-activity-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 0;
+}
+
+.no-activity-text {
+  font-size: 0.9375rem;
+  color: #6b7280;
+  max-width: 500px;
+  line-height: 1.6;
+  margin: 0.5rem 0 1.5rem 0;
+}
+
+.no-activity-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+// Feedback Section
+.feedback-section {
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  border-top: 1px solid #e5e7eb;
+  text-align: center;
+}
+
+.feedback-text {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+.feedback-buttons {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+// Button Animations
+.feedback-buttons {
+  ::ng-deep .p-button {
+    transition: all 0.3s ease;
+
+    &.active {
+      transform: scale(1.1);
+    }
+
+    &.animating {
+      animation: pulse 0.6s ease;
+    }
+
+    &.submitted {
+      opacity: 0.6;
+    }
+  }
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.15);
+  }
+}
+
+// PrimeNG Button Customization
+::ng-deep {
+  .edit-button {
+    color: #6b7280 !important;
+
+    &:hover {
+      background-color: #f3f4f6 !important;
+      color: #374151 !important;
+    }
+  }
+
+  .p-button-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+  }
+}
+
+// Responsive Design
+@media (max-width: 640px) {
+  .scrum-header-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .scrum-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .scrum-meta {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .no-activity-actions {
+    flex-direction: column;
+    width: 100%;
+
+    ::ng-deep .p-button {
+      width: 100%;
+    }
+  }
+
+  .card-content {
+    padding-left: 0;
+  }
+}
+
+// Edit Modal Styles
+::ng-deep .edit-update-dialog {
+  .p-dialog-header {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .p-dialog-content {
+    padding: 1.5rem;
+  }
+
+  .p-dialog-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #e5e7eb;
+  }
+}
+
+.edit-modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.edit-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.section-icon {
+  font-size: 1rem;
+}
+
+.section-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #374151;
+  margin: 0;
+}
+
+.edit-textarea {
+  width: 100%;
+  min-height: 80px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  resize: vertical;
+  transition: border-color 0.2s ease;
+
+  &:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+
+  &::placeholder {
+    color: #9ca3af;
+  }
+}
+
+.dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+
+// PrimeNG Editor Styles
+::ng-deep .edit-update-dialog {
+  .p-editor-container {
+    border-radius: 0.375rem;
+
+    .p-editor-toolbar {
+      background-color: #f9fafb;
+      border-bottom: 1px solid #d1d5db;
+      border-radius: 0.375rem 0.375rem 0 0;
+      padding: 0.5rem;
+    }
+
+    .p-editor-content {
+      border-radius: 0 0 0.375rem 0.375rem;
+
+      .ql-editor {
+        font-family: 'Poppins', sans-serif;
+        font-size: 0.875rem;
+        line-height: 1.6;
+
+        &.ql-blank::before {
+          color: #9ca3af;
+          font-style: normal;
+        }
+      }
+    }
+  }
+}

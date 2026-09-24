@@ -1,0 +1,63 @@
+@baseUrl = http://localhost:9090
+#@baseUrl = http://localhost:5200
+@userId = 3451
+@instanceId = 4103
+@sprintId = 364
+### Starting a conversation
+PUT {{baseUrl}}/public/api/chat/{{instanceId}}/user/{{userId}}/sprint/{{sprintId}}
+### Store the result
+@conversationId = f72d0205-beea-46cb-88c5-cfcabc30bcdb
+### Sending Hello
+POST {{baseUrl}}/public/api/chat/{{instanceId}}/user/{{userId}}/conversation/{{conversationId}}
+Content-Type: application/json
+
+
+{
+  "type": "text",
+  "text": "Hello"
+}
+### Scrum action
+POST {{baseUrl}}/public/api/chat/{{instanceId}}/user/{{userId}}/conversation/{{conversationId}}
+Content-Type: application/json
+
+
+{
+  "type": "text",
+  "text": "x-khojicloud-scrumupdate"
+}
+### Weekly retro
+POST {{baseUrl}}/public/api/chat/{{instanceId}}/user/{{userId}}/conversation/{{conversationId}}
+Content-Type: application/json
+
+
+{
+  "type": "text",
+  "text": "x-khojicloud-weeklyretro"
+}
+### Natural language message
+POST {{baseUrl}}/public/api/chat/{{instanceId}}/user/{{userId}}/conversation/c8953800-4473-4319-b446-71f54b5e3a2f
+Content-Type: application/json
+
+
+{
+  "type": "text",
+  "text": "Why sky is blue ?"
+}
+### Natural language message
+POST {{baseUrl}}/public/api/chat/{{instanceId}}/user/{{userId}}/conversation/c8953800-4473-4319-b446-71f54b5e3a2f
+Content-Type: application/json
+
+
+{
+  "type": "text",
+  "text": "What's the size of the sprint ?"
+}
+### Natural language message
+POST {{baseUrl}}/public/api/chat/{{instanceId}}/user/{{userId}}/conversation/9f6bef0a-71cb-42ae-81cb-404549b2a272
+Content-Type: application/json
+
+
+{
+  "type": "text",
+  "text": "What QA is working on ?"
+}

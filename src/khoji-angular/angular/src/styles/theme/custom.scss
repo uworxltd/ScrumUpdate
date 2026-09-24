@@ -1,0 +1,256 @@
+/*
+  Copyright 2026 UWorx Services.
+  Licensed under the Apache License, Version 2.0.
+  See LICENSE for the full license text.
+*/
+
+
+/*
+  This is a temporary style sheet to adjust any apollo styles clashes with Khoji styles.
+  With some exceptions, this file can be deleted once apollo styles are made global.
+*/
+
+a:hover {
+  text-decoration: none;
+}
+
+// Initials styles
+#initials {
+  width: 28px;
+  height: 28px;
+  line-height: 28px;
+  border-radius: 50%;
+  background: #512DA8;
+  font-size: 11px;
+  color: #fff;
+  text-align: center;
+}
+
+// Hide profile icon toggle from top bar
+.profile-toggle-topbar {
+  display: none;
+}
+
+.help-link-container-topbar {
+  display: none;
+}
+
+.layout-topbar {
+  margin-bottom: 0 !important;
+}
+
+// Background color for login button
+.khoji-color {
+  background-color: #F05323 !important;
+}
+
+.layout-menuitem-text {
+  white-space: nowrap;
+}
+
+// Increasing menu bar z index so dropdowns appear under it
+.layout-sidebar {
+  z-index: 1001 !important;
+}
+
+.layout-profile-sidebar {
+  .p-sidebar-content {
+      height: 100%;
+  }
+}
+
+.p-submenu-header {
+  display: none;
+}
+
+// Media query to adjust profile icon toggle for different screen sizes
+// When screen size is 991px or smaller
+@media only screen and (max-width: 991px) {
+  .profile-toggle-menubar {
+    display: none;
+  }
+
+  .topbarFilterButton {
+    display: none;
+  }
+
+  .profile-toggle-topbar {
+    display: flex;
+  }
+
+  .layout-topbar {
+    padding-top: 0;
+  }
+
+  .help-link-container-menubar {
+    display: none;
+  }
+
+  .help-link-container-topbar {
+    display: flex;
+  }
+
+  .layout-menuitem-text {
+    white-space: pre-wrap;
+  }
+
+
+
+  // Menu fix for worklog and admin menus on smaller screens
+  .timelog {
+    display: inline !important;
+    margin-left: 13%;
+
+    span {
+      margin-left: 3%;
+      color: var(--menuitem-text-color);
+    }
+
+    i {
+      color: var(--menuitem-icon-color);
+    }
+  }
+
+  .admin-panel {
+    display: inline !important;
+    margin-left: 13%;
+
+    span {
+      margin-left: 3%;
+      color: var(--menuitem-text-color);
+    }
+
+    i {
+      color: var(--menuitem-icon-color);
+    }
+  }
+}
+
+
+.p-error {
+  font-size: 12px !important;
+}
+
+
+.layout-content {
+  transition: margin-left 0.2s ease;
+}
+
+.sidebar-indicator {
+  position: fixed;
+  left: 0;
+  top: -35px;
+  width: 20px;
+  height: calc(100% + 35px);
+  background-color: transparent;
+  transition: opacity 0.3s ease;
+  z-index: 1000;
+}
+
+.arrow-icon {
+  position: fixed;
+  top: 70px;
+  left: 270px;
+  background-color: #e2e4e6;
+  border-radius: 50%;
+  padding: 3px;
+  cursor: pointer;
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.3);
+  font-size: 1rem;
+  color: white;
+  transition: left 0.15s;
+  z-index: 10000;
+}
+
+.sidebar-indicator.p-collapsed {
+  position: relative;
+  background-color: var(--surface-ground);
+  .arrow-icon {
+    left: 10px;
+    &::before{
+      content: "\e932";
+    }
+  }
+}
+
+.arrow-icon:hover {
+  transform: scale(1.1);
+  background-color: #005bb5;
+}
+
+.p-sidebar-close-icon {
+  display: none;
+}
+
+.sidebar-indicator-right {
+  position: fixed;
+  right: 0;
+  top: -35px;
+  width: 20px;
+  height: calc(100% + 35px);
+  background-color: transparent;
+  transition: opacity 0.3s ease;
+  z-index: 1000;
+}
+
+.arrow-icon-right {
+  position: fixed;
+  top: 70px;
+  right: 305px; /* ~right column (300px) + spacing */
+  background-color: #e2e4e6;
+  border-radius: 50%;
+  padding: 3px;
+  cursor: pointer;
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.3);
+  font-size: 1rem;
+  color: white;
+  transition: right 0.15s;
+  z-index: 10000;
+}
+
+.sidebar-indicator-right.p-collapsed-right {
+  position: relative;
+  background-color: var(--surface-ground);
+  .arrow-icon-right {
+    right: 10px; 
+  }
+}
+
+.arrow-icon-right:hover {
+  transform: scale(1.1);
+  background-color: #005bb5;
+}
+
+.p-sidebar {
+  background-color: var(--surface-ground) !important;
+  position: relative !important;
+}
+
+.app-leftbar.p-collapsed .p-sidebar {
+  position: fixed !important;
+  box-shadow: 0 0 10px 10px #7e7f7f85;
+  z-index: 1000;
+  top: 35px;
+}
+
+.app-leftbar .p-sidebar .p-sidebar-header{
+  padding: 0px !important;
+}
+
+.sidebar-tree .p-tree{
+  background-color: transparent !important;
+  border: none;
+  padding: 0px !important;
+}
+
+.sidebar-tree .p-treenode-content {
+  padding-left: 0px !important;
+}
+
+.p-sidebar .search-input-area {
+  height: 32px !important;
+}
+
+.selected-menu-item {
+  font-weight: bold;
+}

@@ -1,0 +1,28 @@
+<p-tabView *ngIf="featuresChecked" (activeIndexChange)="tabChanged($event)" [activeIndex]="tabIndex">
+  <p-tabPanel *ngIf="getTab('ScrumUpdates/Tab')?.enabled">
+    <ng-template pTemplate="header">
+      <span>Scrum Updates</span>
+    </ng-template>
+    <ng-template pTemplate="content">
+      <khoji-scrum-update *ngIf="selectedTab==='ScrumUpdates/Tab'"></khoji-scrum-update>
+    </ng-template>
+  </p-tabPanel>
+  <p-tabPanel *ngIf="getTab('MyWorklogs/Tab')?.enabled">
+    <ng-template pTemplate="header">
+      <span>My Worklogs</span>
+      <i *ngIf="!getTab('MyWorklogs/Tab')?.unlocked" class="pi pi-lock" style="margin-left: 0.5rem;"></i>
+    </ng-template>
+    <ng-template pTemplate="content">
+      <khoji-my-worklog *ngIf="selectedTab==='MyWorklogs/Tab' && getTab('MyWorklogs/Tab')?.unlocked"></khoji-my-worklog>
+      <div *ngIf="selectedTab==='MyWorklogs/Tab' && !getTab('MyWorklogs/Tab')?.unlocked">
+        <img src="../../../assets/images/my-worklogs-feature.png" width="979px" height="auto" class="blur-2px" />
+        <khoji-feature-unlock [featureId]="4" [showDialog]="true"></khoji-feature-unlock>
+      </div>
+    </ng-template>
+  </p-tabPanel>
+</p-tabView>
+
+<div *ngIf="!featuresChecked" class="w-full h-screen flex align-items-center justify-content-center">
+  <p-progressSpinner [style]="{ width: '70px', height: '70px' }" strokeWidth="4"
+    animationDuration="1s"></p-progressSpinner>
+</div>

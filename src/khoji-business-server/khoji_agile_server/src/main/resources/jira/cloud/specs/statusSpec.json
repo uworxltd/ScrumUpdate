@@ -1,0 +1,16 @@
+[
+  {
+    "operation": "shift",
+    "spec": {
+      "*": {
+        "id": "[&1].id",
+        "name": "[&1].name",
+        "statusCategory": {
+          "id": "[&2].category.id",
+          "name": "[&2].category.name",
+          "colorName": "[&2].category.color"
+        }
+      }
+    }
+  }
+]

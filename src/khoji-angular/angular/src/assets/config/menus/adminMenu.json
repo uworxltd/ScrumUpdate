@@ -1,0 +1,7 @@
+{
+  "label": "Admin",
+  "icon": "pi pi-user",
+  "id": "admin-panel",
+  "routerLink": "/admin-panel/tenant-dashboard/manage-teams",
+  "command": "present"
+}

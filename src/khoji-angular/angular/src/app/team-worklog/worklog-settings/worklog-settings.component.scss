@@ -1,0 +1,130 @@
+/*
+  Copyright 2026 UWorx Services.
+  Licensed under the Apache License, Version 2.0.
+  See LICENSE for the full license text.
+*/
+
+
+.modal-content {
+  width: 80%;
+  float: left;
+  text-align: left;
+}
+
+.modal-container {
+  max-width: 100%;
+  min-width: 875px;
+  padding: 50px 50px 27px;
+}
+
+.modal-side-bar {
+  width: 20%;
+  text-align: right;
+  padding-top: 85px;
+  color: #000000;
+  text-align: center;
+  background-color: #f4f4f4;
+  border-radius: 16px 0 0 16px;
+}
+
+.khoji-modal-close-icon {
+  color: gray;
+  top: 5px;
+  position: relative;
+  right: 5px;
+}
+
+.khoji-modal-close-icon:hover {
+  cursor: pointer !important;
+}
+
+.khoji-success-button-modal {
+  border: none;
+  background-color: white;
+  color: #f75f31;
+}
+
+.khoji-success-button-modal:hover {
+  border: none;
+  background-color: white;
+  color: #db6541;
+}
+
+.sidebar-heading {
+  font-size: 20px;
+  font-weight: 900;
+  text-align: left;
+}
+
+:host ::ng-deep {
+
+  .modal-content {
+    border: none;
+  }
+
+  .p-confirm-dialog-message {
+    margin: 0px !important;
+  }
+
+
+  .nav-tabs {
+    border: none;
+  }
+
+  .nav-link {
+    border: none;
+  }
+
+  .nav-link.active {
+    color: var(--primary-color);
+    background-color: #f4f4f4;
+    border-color: none;
+  }
+
+  .nav-link:hover {
+    background-color: #DCDCDC;
+    // color: #8D43AC;
+  }
+
+  .p-dialog .p-dialog-header-icons {
+    display: none;
+    &.p-dialog-header-icons-custom {
+      display: flex;
+    }
+  } 
+}
+
+.square-container-icon {
+  width: 25px !important;
+  height: 25px !important;
+}
+
+.container-khoji {
+  border-radius: 10px;
+  background: white;
+  padding: 40px;
+  max-width: 100%;
+}
+
+khoji-worklog-categories.disabled {
+  opacity: 0.5;
+}
+
+:host ::ng-deep {
+  .worklog-settings .p-menu {
+    width: 100% !important;
+    border: none !important;
+
+    .selectedItem {
+      background-color: var(--surface-ground) !important;
+    }
+
+  }
+}
+
+.center-spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: calc(100vh - 145px);
+}

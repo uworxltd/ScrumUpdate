@@ -1,0 +1,31 @@
+<div class="flex flex-column align-items-center gap-3 p-3">
+  <div class="tasks-overview cursor-pointer flex align-items-center gap-2" (click)="showTasks = !showTasks" title="{{ showTasks ? 'Click to hide details' : 'Click to show details' }}">
+    <p class="m-0 text-lg transition-duration-200 transition-ease-in-out task-text" [ngClass]="{ 'pulsate': pulsate }" style="min-height: 1.75rem;">{{ inprocessTask$ | async }}</p>
+    <i class="pi text-gray-500" [ngClass]="{ 'pi-chevron-down': showTasks, 'pi-chevron-right': !showTasks, 'pulsate': pulsate }"></i>
+  </div>
+
+  <div class="task-list w-full" [hidden]="!showTasks">
+    <ng-container *ngFor="let task of tasks">
+      <div
+        *ngIf="(task.status$ | async) as status"
+        class="task flex justify-content-between align-items-center p-2 mb-2 max-w-25rem mx-auto border-round surface-100 border-1 surface-border"
+        [ngClass]="status"
+      >
+        <div class="task-name flex align-items-center gap-2">
+          <img [src]="task.image" width="20" height="20" [alt]="task.name" />
+          <span class="text-sm">{{ task.name }}</span>
+        </div>
+        <div class="task-progress">
+          <ng-container [ngSwitch]="status">
+            <i *ngSwitchCase="'Pending'" class="pi pi-circle text-gray-400"></i>
+            <i *ngSwitchCase="'Processing'" class="pi pi-spin pi-spinner text-primary"></i>
+            <i *ngSwitchCase="'Completed'" class="pi pi-check text-green-500"></i>
+            <i *ngSwitchCase="'Failed'" class="pi pi-times-circle text-red-500"></i>
+            <i *ngSwitchCase="'Disabled'" class="pi pi-ban text-gray-400"></i>
+            <i *ngSwitchCase="'Cancelled'" class="pi pi-times-circle text-yellow-500"></i>
+          </ng-container>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>

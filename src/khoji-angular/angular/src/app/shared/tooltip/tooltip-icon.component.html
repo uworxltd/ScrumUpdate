@@ -1,0 +1,25 @@
+<!-- /*
+Copyright 2026 UWorx Services.
+Licensed under the Apache License, Version 2.0.
+See LICENSE for the full license text.
+*/ -->
+
+
+<!-- z-index is set to 1051 because of bootstrap modal z-index value is 1050 -->
+
+<span *ngIf="toolTipType == 'default'" [pTooltip]="tooltipText" [tooltipZIndex]="'1051'"
+    [tooltipPosition]="toolTipPosition" class="fa fa-question-circle text-primary small"
+    [ngClass]="{'tool-tip-color' : !inheritColor}" data-test="tooltip-questionmark-icon"></span>
+
+<span *ngIf="toolTipType == 'custom'" class='small' style="margin-left: 5px;">
+    <div class="custom-tooltip tooltip-font-family glyphicon-question-sign">
+        <i class="fa fa-question-circle" aria-hidden="true" style="font-size:medium;"></i>
+        <div>
+            <span class="customTooltiptext">
+                <div data-test="tooltip-text">
+                    {{tooltipText}}
+                </div>
+            </span>
+        </div>
+    </div>
+</span>

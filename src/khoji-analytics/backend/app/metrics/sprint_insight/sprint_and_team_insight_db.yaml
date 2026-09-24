@@ -1,0 +1,39 @@
+name: sprint_and_team_insight_db
+version: 1.0
+
+inputs:
+  sprint_id: { type: int, default: 1 }
+  team_name: { type: string, default: "" }
+
+steps:
+  - id: team_members
+    type: sql
+    service: main-db
+    # NOTE: uses raw tenant ID (strip 'tenant_' prefix in engine)
+    query: |
+      SELECT khoji.fn_team_members_json($1::int, $2::text) AS team_members
+    params:
+      - "{{ tenant_id }}"
+      - "{{ inputs.team_name }}"
+    output: { name: team_members }
+
+  - id: sprint_facts
+    type: sql
+    service: main-db
+    # uses schema prefix, like tenant_1009
+    query: |
+      SELECT {{ schema }}.fn_sprint_ai_payload($1::int) AS sprint_facts
+    params:
+      - "{{ inputs.sprint_id }}"
+    output: { name: sprint_facts }
+
+  - id: combine
+    type: function
+    function: app.processors.sprint_insight.merge_team_and_sprint
+    inputs:
+      team_rows: "{{ steps.team_members.outputs.team_members }}"
+      sprint_rows: "{{ steps.sprint_facts.outputs.sprint_facts }}"
+    cache: 8640000
+    output: { name: merged  }
+
+return: "combine.merged"

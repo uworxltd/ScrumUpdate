@@ -1,0 +1,53 @@
+/*
+  Copyright 2026 UWorx Services.
+  Licensed under the Apache License, Version 2.0.
+  See LICENSE for the full license text.
+*/
+
+
+.span {
+    margin-left: 3px
+}
+
+.tool-tip-color {
+  color: var(--khoji-color-primary) !important;
+}
+
+.small{
+  font-size: inherit;
+}
+
+.custom-tooltip {
+    display: inline-block;
+    margin-left: 0px;
+    font-size: 12px;
+    color: #666;
+}
+
+.custom-tooltip:hover .customTooltiptext {
+    cursor: pointer !important;
+    width: 300px;
+    transform: translate(5%, -100%);
+    visibility: visible;
+    display: block;
+}
+
+.custom-tooltip .customTooltiptext {
+    opacity: 1;
+    cursor: pointer !important;
+    display: inline-block;
+    margin-left: 0px;
+    font-size: 12px;
+    color: #666;
+    visibility: hidden;
+    padding: 5px 10px 10px 10px;
+    background-color: black;
+    color: #fff;
+    text-align: left;
+    border-radius: 6px;
+    line-height: inherit;
+    font-family: sans-serif;
+    position: absolute;
+    z-index: 2;
+    font-weight: 500;
+}

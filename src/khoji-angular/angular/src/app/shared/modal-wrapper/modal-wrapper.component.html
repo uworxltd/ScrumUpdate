@@ -1,0 +1,26 @@
+<div class="modal-header-custom">
+  <h4 class="modal-title" data-test="modal-title" style="text-align:center;text-decoration:none ;">
+    <b>
+      <div class="d-flex justify-content-center">
+          <div>
+            <span *ngIf="issueType" class="issueTypeLabel">{{issueType}}</span>
+          </div>
+          <div style="margin-top: 1px;">
+            <a *ngIf="titleUrl" [attr.data-rpa]="constants.RPA_IN_PROGRESS_STORIES_MODAL_TITLE" target="_blank"
+            style="font-size:18px;" href="{{titleUrl}}{{title}}" id="modal_title">{{title}}</a>
+          </div>
+      </div>
+      <span *ngIf="!titleUrl">{{title}}</span>
+
+      <button [attr.data-rpa]="constants.RPA_IN_PROGRESS_STORIES_CLOSE_BUTTON" type="button"
+        data-test="close-button" id="modal-close-button" class="close"  [ngStyle]="{'top': issueType ? '3%' : '1%'}" style="font-weight: 200;position: absolute; right: 1%; top: 1%;" [ngStyle]="" data-dismiss="modal"
+        (click)="close()">&times;</button>
+    </b>
+  </h4>
+  <h4 *ngIf="subTitle" class="modal-title" style="font-size:17px;text-align:center;color: #020202d6; margin-bottom:3px; margin-top: 8px;">
+    <b [attr.data-rpa]="constants.RPA_IN_PROGRESS_STORIES_MODAL_DESC">{{subTitle}}</b>
+  </h4>
+  <div class="modal-body" style="padding: 0px 15px 15px 15px !important; border-top: 1px solid #e5e5e5;">
+    <ng-content></ng-content>
+  </div>
+</div>

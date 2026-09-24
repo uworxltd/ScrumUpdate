@@ -1,0 +1,30 @@
+<div class="flex">
+  <div class="flex flex-row align-items-start gap-3 w-full">
+    <p-menu [model]="items"></p-menu>
+    <p-divider layout="vertical"></p-divider>
+
+    <!-- This container will take up full remaining width using PrimeFlex classes -->
+    <div class="flex-grow-1">
+      <ng-container *ngTemplateOutlet="renderTemplate()"></ng-container>
+    </div>
+  </div>
+</div>
+
+
+<ng-template #worklogGeneralSettings>
+  <khoji-worklog-general-settings></khoji-worklog-general-settings>
+</ng-template>
+
+<ng-template #ragStatus>
+	<khoji-rag-status-wrapper
+		[optimizeButtonsForAdminDashboard]="false"
+		[ragColors]="ragColorCodes"
+		[ragThresholds]="worklogPercentageThreshold"
+    [sliderConfigs]="worklogRagSliderConfig"
+    [heading]="'Manage RAG Values for Work Log'"
+    [subHeading]="'Set range for each RAG status'"
+    [isWorklogCategoryEnabled]="true"
+    [propKey]="worklogThresholdPropKey"
+	>
+	</khoji-rag-status-wrapper>
+</ng-template>

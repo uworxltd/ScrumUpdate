@@ -1,0 +1,205 @@
+name: sprint_velocity_burndown
+description: |
+  This metric retrieves sprint velocity and burndown data for a given sprint.
+  Returns velocity metrics, burndown chart data, and risk assessment for sprint planning.
+version: 1.0
+
+inputs:
+  sprint_id: { type: int, default: 1 }
+
+steps:
+  - id: sprint_velocity_data
+    type: sql
+    service: main-db
+    query: |
+      WITH sprint_info AS (
+          SELECT 
+              sprint_id,
+              name,
+              start_date::date as start_at,
+              COALESCE(complete_date, end_date)::date as end_at,
+              (COALESCE(complete_date, end_date)::date - start_date::date) + 1 as days_total,
+              GREATEST(0, COALESCE(complete_date, end_date)::date - CURRENT_DATE) as days_remaining,
+              CURRENT_DATE - start_date::date + 1 as days_elapsed,
+              -- Check if sprint is overrun (current date is past end_date)
+              CASE 
+                  WHEN CURRENT_DATE > end_date::date THEN true 
+                  ELSE false 
+              END as is_overrun
+          FROM {{ schema }}.sprints
+          WHERE sprint_id = $1::int
+      ),
+      days AS (
+          SELECT si.sprint_id, d::date AS day
+          FROM sprint_info si
+          CROSS JOIN LATERAL generate_series(si.start_at, si.end_at, '1 day') AS d
+      ),
+      mem AS (
+          SELECT si.sprint_id, si.issue_key
+          FROM {{ schema }}.sprint_issues si
+          WHERE si.sprint_id = $1::int
+      ),
+      issue_points AS (
+          SELECT i.issue_key, COALESCE(i.story_points, 0)::numeric AS sp
+          FROM {{ schema }}.issues i
+      ),
+      done AS (
+          SELECT d.issue_key, d.done_at
+          FROM {{ schema }}.v_issue_done_at d
+      ),
+      base AS (
+          SELECT
+              d.sprint_id,
+              d.day,
+              SUM(COALESCE(ip.sp, 0))::numeric AS scope_points,
+              SUM(CASE
+                  WHEN dn.done_at IS NOT NULL
+                      AND dn.done_at <= (d.day + INTERVAL '1 day' - INTERVAL '1 second')
+                  THEN COALESCE(ip.sp, 0) ELSE 0
+              END)::numeric AS done_points
+          FROM days d
+          JOIN mem m ON m.sprint_id = d.sprint_id
+          LEFT JOIN issue_points ip ON ip.issue_key = m.issue_key
+          LEFT JOIN done dn ON dn.issue_key = m.issue_key
+          GROUP BY d.sprint_id, d.day
+      ),
+      burndown_data AS (
+          SELECT
+              sprint_id,
+              day,
+              scope_points,
+              done_points,
+              GREATEST(scope_points - done_points, 0)::numeric AS remaining_points,
+              ROW_NUMBER() OVER (ORDER BY day) as day_number
+          FROM base
+          WHERE sprint_id = $1::int
+          ORDER BY day
+      ),
+      first_scope AS (
+          SELECT scope_points as committed_scope
+          FROM burndown_data
+          ORDER BY day_number
+          LIMIT 1
+      ),
+      current_progress AS (
+          SELECT 
+              done_points,
+              remaining_points,
+              day
+          FROM burndown_data
+          WHERE day <= CURRENT_DATE
+          ORDER BY day_number DESC
+          LIMIT 1
+      ),
+      velocity_calc AS (
+          SELECT 
+              si.days_elapsed,
+              si.days_remaining,
+              si.days_total,
+              si.is_overrun,
+              -- Current Velocity: For overrun sprints, use planned days; otherwise use days elapsed
+              CASE 
+                  WHEN si.is_overrun THEN 
+                      CASE 
+                          WHEN si.days_total > 0 THEN cp.done_points / si.days_total 
+                          ELSE 0 
+                      END
+                  ELSE 
+                      CASE 
+                          WHEN si.days_elapsed > 0 THEN cp.done_points / si.days_elapsed 
+                          ELSE 0 
+                      END
+              END as current_velocity,
+              -- Required Velocity: 
+              -- For overrun sprints: use committed scope / total sprint days
+              -- For active sprints: use remaining points / days remaining 
+              CASE 
+                  WHEN si.is_overrun THEN 
+                      CASE 
+                          WHEN si.days_total > 0 THEN fs.committed_scope / si.days_total 
+                          ELSE 0 
+                      END
+                  ELSE 
+                      CASE 
+                          WHEN si.days_remaining > 0 THEN cp.remaining_points / si.days_remaining 
+                          ELSE 0 
+                      END
+              END as required_velocity,
+              -- current_scope represents the latest (done + remaining) scope on the most recent day
+              (cp.done_points + cp.remaining_points) as current_scope,
+              fs.committed_scope,
+              cp.remaining_points,
+              cp.done_points
+          FROM sprint_info si
+          CROSS JOIN current_progress cp
+          CROSS JOIN first_scope fs
+      ),
+      historical_avg AS (
+          SELECT AVG(committed_scope)::numeric as avg_per_sprint
+          FROM (
+              SELECT 
+                  bd.sprint_id,
+                  (SELECT scope_points FROM {{ schema }}.mv_sprint_burndown_daily 
+                   WHERE sprint_id = bd.sprint_id ORDER BY day LIMIT 1) as committed_scope
+              FROM {{ schema }}.mv_sprint_burndown_daily bd
+              JOIN {{ schema }}.sprints s ON s.sprint_id = bd.sprint_id
+              WHERE (s.state = 'closed' OR s.complete_date IS NOT NULL)
+                AND bd.sprint_id != $1::int
+              GROUP BY bd.sprint_id
+          ) historical
+      ),
+      overrun_assessment AS (
+          SELECT 
+              vc.*,
+              ha.avg_per_sprint,
+              -- Risk level for active sprints
+              CASE 
+                  WHEN vc.required_velocity > vc.current_velocity * 2 THEN 'Critical'
+                  WHEN vc.required_velocity > vc.current_velocity * 1.5 THEN 'High'
+                  WHEN vc.required_velocity > vc.current_velocity THEN 'Medium'
+                  ELSE 'Low'
+              END as risk_level,
+              -- Sprint Overrun: How much work remains at the end of the sprint
+              vc.remaining_points as sprint_overrun,
+              -- Actual Shortfall: committed_scope - done_points (how much shortfall by end of sprint)
+              GREATEST(0, vc.committed_scope - vc.done_points) as actual_shortfall,
+              -- Projected Shortfall: how much work won't be completed based on current velocity
+              GREATEST(0, vc.remaining_points - (vc.current_velocity * vc.days_remaining)) as projected_shortfall
+          FROM velocity_calc vc
+          CROSS JOIN historical_avg ha
+      )
+      SELECT 
+           (oa.committed_scope  ) as scope_points,
+           (oa.current_scope  ) as current_scope,
+          oa.risk_level,
+           (oa.sprint_overrun  ) as sprint_overrun,
+           (oa.current_velocity  ) as current_velocity,
+           (oa.required_velocity  ) as required_velocity,
+           (oa.current_velocity - oa.required_velocity  ) as velocity_change,
+           (oa.actual_shortfall  ) as actual_shortfall,
+           (oa.projected_shortfall  ) as projected_shortfall,
+           (COALESCE(oa.avg_per_sprint, 0)  ) as avg_per_sprint,
+          oa.days_total,
+          oa.days_elapsed,
+          oa.is_overrun,
+          (SELECT jsonb_agg(
+              jsonb_build_object(
+                  'day', day_number,
+                  'date', day,
+                  'remaining', CASE WHEN bd.day <= CURRENT_DATE THEN  (remaining_points  ) ELSE NULL END,
+                  'ideal',  (committed_scope * (1 - day_number::numeric / oa.days_total)  )
+              ) ORDER BY day
+          ) FROM burndown_data bd CROSS JOIN first_scope fs) as burndown_chart_data
+      FROM overrun_assessment oa
+    params:
+      - "{{ inputs.sprint_id }}"
+    output: { name: raw_data }
+
+  - id: transform
+    type: function
+    function: app.processors.sprint_cards.extract_velocity_burndown
+    inputs:
+      velocity_data: "{{ steps.sprint_velocity_data.outputs.raw_data }}"
+    output: { name: velocity_burndown }
+
+return: "transform.velocity_burndown"

@@ -1,0 +1,6 @@
+{%- comment -%} Replacing spec with custom fields configured in Khoji {%- endcomment -%}
+{%- comment -%} Make sure there is no empty space before the start or end of the file {%- endcomment -%}
+
+{%- comment -%} Method Implementations {%- endcomment -%}
+
+{{ spec | replace: 'KhojiTeamBoard', teamBoardCfValue | replace: 'KhojiStoryPoints', storyPointsCfValue | replace : 'KhojiEpicId', epicIdCfValue | replace: 'KhojiSprintList', sprintListCfValue | replace: 'KhojiHighLevelEstimate', highLevelEstimateCfValue  }}

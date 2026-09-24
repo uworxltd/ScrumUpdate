@@ -1,0 +1,76 @@
+<div>
+	<span class="khoji-headings">{{heading}}</span>
+	<div class="pb-4 pr-0 pl-0 border-round-xl">
+		<khoji-rag-status
+			#ragStatus
+			[ragColors]="ragColors"
+			[ragThresholds]="ragThresholds"
+			[sliderConfigs]="sliderConfigs"
+			(sliderValueChanges)="handleChange($event)"
+			[showAboveText]="showAboveText"
+			[showSpinner]="showSpinner"
+			[showSkeletalLoading]="showSkeletalLoading"
+			(inError)="handleError($event)"
+		>
+		</khoji-rag-status>
+	</div>
+
+	<div [hidden]="true" class="border-dashed border-1 border-400 mt-3 mb-3 p-3 py-4 border-round-xl" *ngIf="false">
+		<khoji-rag-status
+			#ragStatus1
+			[ragColors]="ragColors"
+			[ragThresholds]="otherRagThresholds"
+			[sliderConfigs]="otherSliderConfigs"
+			(sliderValueChanges)="handleChangeForOther($event)"
+			[ragStatusHeading]="'Uncategorized issue types: '"
+			[showAboveText]="showAboveText"
+			[showSpinner]="showSpinner"
+			[showSkeletalLoading]="showSkeletalLoading"
+			(inError)="handleError($event)"
+		>
+		</khoji-rag-status>
+		<div class="p-field p-2 pt-4 mb-2 mt-2">
+			<h6 class="text-base mb-1 text-900">Email Alerts</h6>
+			<p class="text-base text-800">Receive notification when unproductive work is being logged in issue types and RAG value falls in:</p>
+			<div class="flex gap-8">
+				<div
+					*ngFor="let category of ragThresholdCategories"
+					class="flex align-items-center gap-1"
+				>
+					<p-checkbox
+						name="group"
+						[value]="category"
+						[(ngModel)]="selectedRagThreshold"
+						(onChange)="changeThresholdCategoryValue()"
+						[inputId]="category.key"
+					></p-checkbox>
+					<label [for]="category.key">{{ category.name }}</label>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- ------------- Details modal buttons ----------------- -->
+	<div
+		class="rag-footer mt-2 justify-content-start relative"
+		[ngClass]="{ 'gap-2 flex-row-reverse': optimizeButtonsForAdminDashboard, 'hidden': !showSaveAndResetButtons, 'flex': showSaveAndResetButtons }"
+	>
+		<button
+			pButton
+			class="p-button pl-4 pr-4"
+			[disabled]="saveButtonDisabledFunc()"
+			(click)="handleSave()"
+			data-test="rag-status-save-button"
+		>
+			{{ this.translation?.ragConfig.button.save }}
+		</button>
+		<button
+			*ngIf="resetButtonVisibleFunc()"
+			pButton
+			class="p-button-text pl-4 pr-4 ml-2"
+			(click)="handleClear()"
+		>
+			{{ this.translation?.ragConfig.button.clear }}
+		</button>
+	</div>
+</div>

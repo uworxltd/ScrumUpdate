@@ -1,0 +1,121 @@
+<!-- /*
+Copyright 2026 UWorx Services.
+Licensed under the Apache License, Version 2.0.
+See LICENSE for the full license text.
+*/ -->
+
+
+<div class="p-container max-w-full">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <a class="underline cursor-pointer"
+          (click)="navigateToSupervisorList()">{{translation?.adminPanel.dashboard.createTeams.manageSupervisors.breadcrumb}}</a>
+      </li>
+      <li class="breadcrumb-item active" aria-current="page">
+        {{translation?.adminPanel.dashboard.createTeams.manageSupervisors.teamsBreadcrumb}}
+      </li>
+    </ol>
+  </nav>
+
+  <h4 class="text-center">{{translation?.adminPanel.dashboard.createTeams.manageSupervisors.supervisorLabel +
+    ' ' +userDetail?.member?.fullName}}</h4>
+  <div class="mt-2 mb-2">
+    <p-multiSelect [options]="teamsList" [(ngModel)]="selectedTeams" optionLabel="teamName" class="block mb-2"
+    [disabled]="teamsList.length == 0 || cols.length == 0" [defaultLabel]="teamsList.length > 0 ? translation?.adminPanel.dashboard.createTeams.manageSupervisors.searchTooltip :
+  translation?.adminPanel.dashboard.createTeams.manageSupervisors.noTeamExist"
+    [title]="getMultiSelectTitle()">
+    <ng-template let-team pTemplate="item">
+      <div [ngClass]="{ 'greyed-out': team.disabled }">
+        {{ team.teamName }}
+      </div>
+    </ng-template>
+  </p-multiSelect>
+
+
+    <p-button [label]="translation?.adminPanel.dashboard.createTeams.manageSupervisors.allocateTeamToSupervisor"
+      class="block save-teams-button m-0 mt-3 mb-4" (click)="assignTeamsAccessToUser()"
+      [disabled]="disableAddToTeamButton()"></p-button>
+  </div>
+
+  <p-toolbar class="mt-4">
+    <div class="p-toolbar-group-left">
+      <span class="rows-per-page-left-tag">{{translation?.adminPanel.dashboard.createTeams.manageSupervisors.show}}</span>
+      <span class="rows-per-page-right-tag"> of {{tableData.length}}</span>
+    </div>
+    <div class="p-toolbar-group-right">
+      <label *ngIf="enableSearch" title="{{constants.DATA_TABLE_SEARCH_INPUT_TOOLTIP}}" class="p-input-icon-left">
+        <input type="search" pInputText size="50" placeholder="Search"
+          (input)="customFilter(dt, $event.target.value, 'contains')" class="search-input">
+
+      </label>
+    </div>
+  </p-toolbar>
+  <p-table [id]="tableId" [value]="tableData" #dt [rowsPerPageOptions]="[10,25,50,100,tableData.length]"
+    [rows]="constants.INITIAL_ROWS_PER_PAGE" [totalRecords]="tableData.length" [showCurrentPageReport]="true"
+    [currentPageReportTemplate]="checkPaginationText()" [paginator]="enablePaging" [columns]="cols"
+    (onPage)="resetDisplayedStories()" (onSort)="resetDisplayedStories()" sortField="teamName" [sortOrder]="1"
+    (onFilter)="onSearch()" (sortFunction)="customSort($event)" [customSort]="true">
+
+    <ng-template pTemplate="header">
+      <tr *ngIf="cols.length>0">
+        <th *ngFor="let col of cols" class="header_font border-none"
+          [ngStyle]="{'width':col.width, 'max-width':col.width,'min-width':col.width}" [pSortableColumn]="col.field">
+          <div class="vertical_header">
+            <span>
+              {{col.header}}
+            </span>
+            <div>
+              <p-sortIcon [field]="col.field"></p-sortIcon>
+            </div>
+          </div>
+        </th>
+        <th class="border-none btn-colmn-width">
+        </th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-rowData let-columns="cols" let-rowIndex="rowIndex">
+      <tr>
+        {{addToDisplayedStories(rowData,rowIndex)}}
+        <td *ngFor="let col of cols" class="body_data_ellipsis border-none" [title]="rowData[col.field]"
+          [ngStyle]="{'width':col.width, 'max-width':col.width,'min-width':col.width}">
+          {{rowData[col.field]}}
+        </td>
+        <td class="body_data_ellipsis border-none">
+          <button pButton pRipple class="danger-button"
+            (click)="removeUserAccess(rowData['id'], true)">{{translation?.adminPanel.dashboard.createTeams.manageSupervisors.deleteTeamButtonLabel}}</button>
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage" let-columns>
+      <tr>
+        <td [attr.colspan]="columns.length+1" class="border-none text-center text-base">
+          {{showEmptyMessage()}}
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+  <p-confirmDialog #cd [style]="{width: '450px'}" key="removeUserAccessToTeam" data-test="confirm-delete-dialog">
+    <ng-template pTemplate="header">
+      <span
+        class="p-dialog-title">{{translation?.adminPanel.dashboard.createTeams.manageSupervisors.removeUserTeamAccessModalTitle}}</span>
+      <div class="p-dialog-header-icons">
+        <button type="button" class="p-dialog-header-icon p-dialog-header-close p-link"
+          (click)="closeRemoveAccessToTeamModal()">
+          <span class="pi pi-times"></span>
+        </button>
+      </div>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+      <button type="button" pRipple pButton [label]="cd.acceptButtonLabel" class="p-button-height"
+        (click)="removeUserAccess(removeTeamId, false)"></button>
+      <button type="button" pButton pRipple
+        class="p-element p-ripple p-button-text p-button p-component p-button-height" [label]="cd.rejectButtonLabel"
+        (click)="closeRemoveAccessToTeamModal()"></button>
+    </ng-template>
+  </p-confirmDialog>
+</div>

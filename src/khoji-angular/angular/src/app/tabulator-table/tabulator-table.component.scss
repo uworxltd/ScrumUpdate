@@ -1,0 +1,118 @@
+:host {
+    ::ng-deep {
+        .tabulator-col-title {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #2c7a92;
+        }
+
+        .tabulator-data-tree-control {
+            zoom: 1.6;
+        }
+
+        .list-formatter {
+            margin: 0;
+            padding: 0;
+            
+            li {
+                margin-bottom: 5px;
+            }
+        }
+
+        .initials-formatter {
+            margin: 3px 5px 3px 0px;
+            font-weight: 100;
+        }
+
+        .trail-formatter,
+        .chip-formatter {
+            &.inline-flex {
+                align-items: flex-start !important;
+            }
+            
+            &.align-items-center {
+                align-items: flex-start !important;
+            }
+        }
+
+        .tabulator-cell {
+            vertical-align: top;
+            
+            .trail-formatter,
+            .chip-formatter {
+                display: inline-flex !important;
+                align-items: flex-start !important;
+            }
+        }
+
+        .filter-operator {
+            color: red;
+            font-family: monospace;
+            font-weight: bold;
+        }
+
+        .tabulator-group {
+            background: #e2e8f0;
+            border-bottom: 1px solid #9faddf;
+            border-top: 1px solid #9faddf;
+            color: var(--primary-500);
+            font-weight: 500;
+
+            span {
+                margin-left: 10px;
+                color: var(--red-400);
+            }
+        }
+
+        .tabulator-header-filter input {
+            border: 1px solid var(--gray-300);
+            outline: none;
+
+            &:focus-visible {
+                border: 1px solid var(--gray-500);
+                outline: none;
+            }
+        }
+
+        .tabulator-footer .tabulator-footer-contents {
+            padding: 15px 0 5px 0;
+        }
+    }
+
+    .table-container {
+        padding: 1rem;
+        box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 1px 3px 1px rgba(0, 0, 0, 0.12);
+        border-radius: 6px;
+
+        .tabulator {
+            font-size: 1rem;
+        }
+        
+        .hidden {
+            display: none;
+        }
+    }
+
+    .full-screen {
+        .tabulator {
+            height: calc(100vh - 75px) !important;
+        }
+    }
+
+    .collapsed-title {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 10;
+        white-space: nowrap;
+    }
+
+    .table-search-input {
+        width: 200px;
+    }
+
+    .full-screen-icon {
+        font-size: 1.3rem;
+    }
+}

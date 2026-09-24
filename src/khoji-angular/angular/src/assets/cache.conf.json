@@ -1,0 +1,70 @@
+{
+    "enabled": false,
+    "duration": 300,
+    "requests": [
+        {
+            "enabled": true,
+            "duration": 60,
+            "url": "/getUserWorklogSummary",
+            "method": "POST",
+            "pages": [
+                "/account-setup",
+                "/my-work"
+            ]
+        },
+        {
+            "enabled": true,
+            "duration": 60,
+            "url": "/user/me",
+            "method": "GET",
+            "pages": [
+                "/account-setup",
+                "/my-work"
+            ]
+        },
+        {
+            "enabled": true,
+            "url": "/source/users",
+            "method": "POST"
+        },
+        {
+            "enabled": true,
+            "duration": 60,
+            "url": "/getWorkLog",
+            "method": "POST"
+        },
+        {
+            "enabled": true,
+            "duration": 60,
+            "url": "/teams/members",
+            "method": "POST"
+        },
+        {
+            "enabled": true,
+            "duration": 60,
+            "url": "/generate/current-summary",
+            "method": "POST",
+            "pages": [
+                "/my-work"
+            ]
+        },
+        {
+            "enabled": true,
+            "duration": 60,
+            "url": "/generate/scrum-updates",
+            "method": "POST",
+            "pages": [
+                "/my-work"
+            ]
+        },
+        {
+            "enabled": true,
+            "duration": 300,
+            "url": "sync/submit",
+            "method": "POST",
+            "filters": {
+                "body": {"job_type":"sprints_list_sync"}
+            }
+        }
+    ]
+}

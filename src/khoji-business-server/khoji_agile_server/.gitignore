@@ -1,0 +1,39 @@
+/target/
+!.mvn/wrapper/maven-wrapper.jar
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+set-khoji-env.bat 
+build/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+log4j-application.log
+velocity.log
+*.html
+*.log.*
+log-file.log
+*.log
+*.db
+### http client ###
+*.http
+.env
+
+### remove this from here if you change in it ###
+src/test/resources/baseFieldMappings.json

@@ -1,0 +1,21 @@
+<!-- /*
+Copyright 2026 UWorx Services.
+Licensed under the Apache License, Version 2.0.
+See LICENSE for the full license text.
+*/ -->
+
+<div class="layout-container" style="background-color:white" [ngClass]="containerClass">
+    <app-sidebar></app-sidebar>
+    <div class="layout-content-wrapper flex flex-column">
+        <app-topbar></app-topbar>
+        <div class="layout-content flex gap-3">
+            <div class="flex-1 mini-scrollbars main-content-area" style="height:calc(100vh - 35px);overflow-y:auto;">
+                <router-outlet style="display:none"></router-outlet>
+            </div>
+            <div><!--for spaceing --></div>
+        </div>
+    </div>
+    <app-profilemenu class="absolute top-0 right-0 h-full"></app-profilemenu>
+    <app-config [hidden]="!showAppConfigPanel"></app-config>
+    <div class="layout-mask"></div>
+</div>

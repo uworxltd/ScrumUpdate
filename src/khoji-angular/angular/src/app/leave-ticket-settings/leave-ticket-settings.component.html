@@ -1,0 +1,45 @@
+<!-- /*
+Copyright 2026 UWorx Services.
+Licensed under the Apache License, Version 2.0.
+See LICENSE for the full license text.
+*/ -->
+
+<div class="flex flex-column align-items-start gap-2 justify-content-center">
+  <span class="khoji-headings">{{ (translation$ | async)?.userProfile.userPreference.title }}</span>
+  <div class="flex flex-column gap-2 w-full">
+    <span class="khoji-sub-headings">{{ (translation$ | async)?.userProfile.userPreference.subTitle }}</span>
+    <div *ngIf="isLoading as loading">
+      <div *ngIf="loading.loading">
+        <input pInputText value="loading ..." class="w-5" />
+      </div>
+      <div *ngIf="!loading.loading">
+        <p-autoComplete
+          id="leavesTicket"
+          [suggestions]="searchSuggestions"
+          placeholder="Jira ticket id or description"
+          [dropdown]="false"
+          (completeMethod)="searchIssues($event)"
+          [showEmptyMessage]="true"
+          emptyMessage="No matching records found"
+          (onSelect)="onTicketSelected($event.value)"
+          (onBlur)="handleFocusOut()"
+          (ngModelChange)="onLeavesTicketModelChange($event)"
+          styleClass="w-5"
+          field="key"
+          appendTo="body"
+          class="generate-worklog"
+          [(ngModel)]="leavesTicket"
+        >
+          <ng-template
+            let-suggestion
+            pTemplate="item"
+          >
+            <div class="w-20rem white-space-nowrap overflow-hidden text-overflow-ellipsis">
+              <span>{{ suggestion.key }} - {{ suggestion.summary }}</span>
+            </div>
+          </ng-template>
+        </p-autoComplete>
+      </div>
+    </div>
+  </div>
+</div>

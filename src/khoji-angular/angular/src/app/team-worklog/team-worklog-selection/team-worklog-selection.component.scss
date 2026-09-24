@@ -1,0 +1,55 @@
+:host {
+  display: flex;
+}
+
+:host ::ng-deep {
+  .selected-chip-background .p-chip {
+    color: #fff;
+    background-color: var(--khoji-color-primary);
+  }
+}
+
+.text-primary {
+  text-decoration: underline;
+  font-weight: normal;
+}
+
+
+
+.chips-container {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  position: relative;
+}
+
+.chips-wrapper {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+  position: relative;
+}
+
+.chips-scroll-container {
+  display: flex;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+}
+
+:host ::ng-deep {
+  &::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+    display: none;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 5px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f2f2f2;
+  }
+}

@@ -1,0 +1,23 @@
+[
+  {
+    "operation": "shift",
+    "spec": {
+      "baseUrl": "baseUrl",
+      "deploymentType": "deploymentType",
+      "buildDate": "buildDate",
+      "serverTime": "serverTime",
+      "serverTitle": "serverTitle",
+      "defaultLocale": {
+        "locale": {
+          "@": "defaultLocale"
+        }
+      }
+    }
+  },
+  {
+    "operation": "uk.co.uworx.khoji.agile.transform.CustomModifier$Overwritr",
+    "spec": {
+      "serverTimeZone": "=serverTimeToTimeZone(@(1,serverTime), 'yyyy-MM-dd'T'HH:mm:ss.SSSX')"
+    }
+  }
+]

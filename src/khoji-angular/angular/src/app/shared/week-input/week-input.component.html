@@ -1,0 +1,43 @@
+<div
+  #container
+  class="calendar flex gap-3 align-items-center p-2 border-round-3xl"
+>
+  <div
+    class="flex gap-1 align-items-center week-button text-sm"
+    data-test="last-week-button"
+    (click)="handleWeekClick(-1)"
+    [ngClass]="{ disabled: loading }"
+  >
+    <i class="pi pi-angle-left"></i>
+    Last week
+  </div>
+
+  <div class="flex align-items-center gap-2" style="margin-bottom:2px">
+    <div
+      class="date"
+      (click)="handleDateClick()"
+      [ngClass]="{ disabled: loading }"
+    >
+      {{ selectedDate | date : 'MMM dd, yyyy' }}
+    </div>
+    <p-calendar
+      #calendar
+      [(ngModel)]="value"
+      [showIcon]="true"
+      [selectionMode]="'range'"
+      (onSelect)="handleOnSelect()"
+      [firstDayOfWeek]="1"
+      [maxDate]="maxDate"
+      [disabled]="loading"
+    ></p-calendar>
+  </div>
+
+  <div
+    class="flex gap-1 align-items-center week-button text-sm"
+    (click)="handleWeekClick(+1)"
+    [ngClass]="{ disabled: loading || !isNextWeekAvailable }"
+  >
+    Next week
+    <i class="pi pi-angle-right"></i>
+  </div>
+</div>

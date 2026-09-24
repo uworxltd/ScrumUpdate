@@ -1,0 +1,39 @@
+name: stale_tickets_list
+description: |
+  Shared metric: Retrieves list of stale issues for the current sprint.
+  Uses v_issue_hygiene_flags view to get all issues where stale=true, 
+  joined with sprint_issues to filter by sprint_id.
+  
+  Returns detailed stale ticket information including issue key, summary, assignee, 
+  status, age in days, and priority. Excludes resolved/closed issues and 
+  orders by age (stalest first).
+  This is a base/shared metric to reduce duplication across sprint cards.
+version: 1.0
+
+inputs:
+  sprint_id: { type: int, default: 1 }
+
+steps:
+  - id: get_stale_tickets
+    type: sql
+    service: main-db
+    query: |
+      SELECT 
+        h.issue_key,
+        h.summary AS title,
+        h.assignee_display_name AS assignee,
+        h.status AS current_status,
+        COALESCE(h.last_status_change_days, h.current_status_days, 0) AS age_days,
+        h.priority
+      FROM {{ schema }}.v_issue_hygiene_flags h
+      INNER JOIN {{ schema }}.sprint_issues si ON h.issue_key = si.issue_key
+      INNER JOIN {{ schema }}.issues i ON h.issue_key = i.issue_key
+      WHERE si.sprint_id = $1
+        AND h.stale = true
+        AND i.status_category != 'Done'
+      ORDER BY COALESCE(h.last_status_change_days, h.current_status_days, 0) DESC
+    params:
+      - "{{ inputs.sprint_id }}"
+    output: { name: stale_tickets }
+
+return: "get_stale_tickets.stale_tickets"

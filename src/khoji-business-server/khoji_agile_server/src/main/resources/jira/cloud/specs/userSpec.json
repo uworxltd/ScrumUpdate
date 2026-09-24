@@ -1,0 +1,29 @@
+[
+  {
+    "operation": "shift",
+    "spec": {
+      "*": {
+        "accountType": {
+          "atlassian": {
+            "@2": "filteredUsers[]"
+          }
+        }
+      }
+    }
+  },
+  {
+    "operation": "shift",
+    "spec": {
+      "filteredUsers": {
+        "*": {
+          "accountId": "[&1].sourceId",
+          "displayName": "[&1].fullName",
+          "active": "[&1].activeInSource",
+          "avatarUrls": {
+            "48x48": "[&2].avatarURL"
+          }
+        }
+      }
+    }
+  }
+]

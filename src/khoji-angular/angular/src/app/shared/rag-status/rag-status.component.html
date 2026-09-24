@@ -1,0 +1,117 @@
+<div class="d-flex justify-bw">
+  <span class="text-lg">
+    {{ ragStatusHeading }}
+  </span>
+</div>
+<div tooltipPosition="top" [pTooltip]="accessLevelsStatus.hasAdminAccess ? '' : translation?.error.adminAccessRequired">
+  <ngx-slider
+    *ngIf="showSlider && !showSpinner"
+    [(value)]="value"
+    [(highValue)]="highValue"
+    [options]="options"
+    (userChange)="handleChange()"
+    [ngClass]="{ 'p-disabled': !accessLevelsStatus.hasAdminAccess }"
+  >
+  </ngx-slider>
+</div>
+
+<div
+  *ngIf="(!showSlider || showSpinner) && !showSkeletalLoading"
+  [ngClass]="{ 'rag-loading-container': showSpinner && showRangeContainer, 'rag-slider-loading-container': !showSlider || (!showRangeContainer && showSpinner) }"
+>
+  <i class="pi pi-spinner pi-spin text-4xl"></i>
+</div>
+
+<p-skeleton
+  width="100%"
+  [height]="getSkeletalLoadingHeight()"
+  *ngIf="showSkeletalLoading && (!showSlider || showSpinner)"
+></p-skeleton>
+
+<div
+  class="range-container"
+  data-test="rag-status-slider"
+  *ngIf="showRangeContainer && !showSpinner"
+>
+  <table class="mt-1">
+    <tr class="red-range">
+      <td>
+        <h6 class="text-base m-0">
+          {{ sliderConfigs?.isRedStartingColor ? this.translation?.ragConfig.red : this.translation?.ragConfig.green }}
+        </h6>
+      </td>
+      <td>{{ options?.floor }}%</td>
+      <td>-</td>
+      <td>
+        <div class="flex align-items-center flex-wrap gap-2" tooltipPosition="top" [pTooltip]="accessLevelsStatus.hasAdminAccess ? '' : translation?.error.adminAccessRequired">
+          <p-inputNumber
+            mode="decimal"
+            [(ngModel)]="inputFieldLowValue"
+            (ngModelChange)="handleLowValueField(toFixedDecimal($event)); handleHighValueField(inputFieldHighValue)"
+            [step]="0.01"
+            [minFractionDigits]="0"
+            [maxFractionDigits]="2"
+            [class]="fieldStateRed.class"
+            [ngClass]="{ 'p-disabled': !accessLevelsStatus.hasAdminAccess }"
+            size="2"
+          ></p-inputNumber> %
+          <span
+            *ngIf="fieldStateRed.message"
+            class="p-error pi pi-exclamation-circle text-xl"
+            [pTooltip]="parseParameterizedString(fieldStateRed.message, highValue - rangeDiff)"
+            tooltipStyleClass="error-tooltip"
+            tooltipPosition="bottom"
+          ></span>
+        </div>
+      </td>
+    </tr>
+    <tr class="amber-range">
+      <td>
+        <h6 class="text-base m-0">
+          {{ this.translation?.ragConfig.amber }}
+        </h6>
+      </td>
+      <td>{{ toFixedDecimal(value + rangeDiff) }}%</td>
+      <td>-</td>
+      <td>
+        <div class="flex align-items-center flex-wrap gap-2" tooltipPosition="top" [pTooltip]="accessLevelsStatus.hasAdminAccess ? '' : translation?.error.adminAccessRequired">
+          <p-inputNumber
+            mode="decimal"
+            [(ngModel)]="inputFieldHighValue"
+            (ngModelChange)="handleHighValueField(toFixedDecimal($event)); handleLowValueField(inputFieldLowValue)"
+            [step]="0.01"
+            [minFractionDigits]="0"
+            [maxFractionDigits]="2"
+            [class]="fieldStateAmber.class"
+            [ngClass]="{ 'p-disabled': !accessLevelsStatus.hasAdminAccess }"
+            size="2"
+          ></p-inputNumber> %
+          <span
+            *ngIf="fieldStateAmber.message"
+            class="p-error pi pi-exclamation-circle text-xl"
+            [pTooltip]="parseParameterizedString(fieldStateAmber.message, value + rangeDiff)"
+            tooltipStyleClass="error-tooltip"
+            tooltipPosition="bottom"
+          ></span>
+        </div>
+      </td>
+    </tr>
+    <tr class="green-range">
+      <td class="green-range-label">
+        <h6 class="text-base m-0">
+          {{ sliderConfigs?.isRedStartingColor ? this.translation?.ragConfig.green : this.translation?.ragConfig.red }}
+        </h6>
+      </td>
+      <td class="green-range-label">{{ toFixedDecimal(highValue + rangeDiff) }}%</td>
+      <td class="green-range-label">-</td>
+      <td class="green-range-label">
+        <div
+          class="flex align-items-center justify-content-start"
+          style="padding: 7px 0 8px 0"
+        >
+          {{ options?.ceil }}% {{ showAboveText ? this.translation?.ragConfig.andAboveText : '' }}
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>

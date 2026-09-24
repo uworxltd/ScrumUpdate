@@ -1,0 +1,166 @@
+[
+  {
+    "operation": "shift",
+    "spec": {
+      "issues": {
+        "*": {
+          "id": "[&1].sourceId",
+          "key": "[&1].id",
+          "changelog": {
+            "histories": {
+              "*": {
+                "created": "[&4].historyList[&1].dateCreated",
+                "items": "[&4].historyList[&1].historyItems"
+              }
+            }
+          },
+          "fields": {
+            "priority": {
+              "name": "[&3].priority"
+            },
+            "created": "[&2].dateCreated",
+            "summary": "[&2].name",
+            "updated": "[&2].sourceUpdatedTime",
+            "status": {
+              "name": "[&3].sourceStatus.name",
+              "id": "[&3].sourceStatus.id",
+              "statusCategory": {
+                "name": "[&4].sourceCategory.name",
+                "id": "[&4].sourceCategory.id",
+                "colorName": "[&4].sourceCategory.color"
+              }
+            },
+            "customfield_KhojiTeamBoard": {
+              "value": "[&3].teamBoard"
+            },
+            "customfield_KhojiEpicId": "[&2].epicId",
+            "customfield_KhojiStoryPoints": "[&2].storyPoints",
+            "customfield_KhojiSprintList": "[&2].sprintList",
+            "customfield_KhojiHighLevelEstimate": "[&2].estimates.highLevelEstimate",
+            "fixVersions": "[&2].fixVersions.releases",
+            "aggregatetimeoriginalestimate": [
+              "[&2].estimates.originalEstimates",
+              "[&2].issueMetaData.aggregateOriginalEstimate"
+            ],
+            "issuetype": {
+              "id": "[&3].issueType.id",
+              "name": "[&3].issueType.name",
+              "subtask": "[&3].issueType.subtask"
+            },
+            "resolution": {
+              "name": "[&3].resolution"
+            },
+            "resolutiondate": "[&2].dateResolved",
+            "comment": {
+              "comments": {
+                "*": {
+                  "id": "[&5].commentsList.[&1].id",
+                  "author": {
+                    "name": "[&6].commentsList.[&2].author.name",
+                    "key": "[&6].commentsList.[&2].author.key",
+                    "emailAddress": "[&6].commentsList.[&2].author.emailAddress",
+                    "avatarUrls": "[&6].commentsList.[&2].author.avatarUrls",
+                    "displayName": "[&6].commentsList.[&2].author.displayName",
+                    "active": "[&6].commentsList.[&2].author.active",
+                    "timeZone": "[&6].commentsList.[&2].author.timeZone"
+                  },
+                  "body": "[&5].commentsList.[&1].body",
+                  "updateAuthor": {
+                    "name": "[&6].commentsList.[&2].updateAuthor.name",
+                    "key": "[&6].commentsList.[&2].updateAuthor.key",
+                    "emailAddress": "[&6].commentsList.[&2].updateAuthor.emailAddress",
+                    "avatarUrls": "[&6].commentsList.[&2].updateAuthor.avatarUrls",
+                    "displayName": "[&6].commentsList.[&2].updateAuthor.displayName",
+                    "active": "[&6].commentsList.[&2].updateAuthor.active",
+                    "timeZone": "[&6].commentsList.[&2].updateAuthor.timeZone"
+                  },
+                  "created": "[&5].commentsList.[&1].created",
+                  "updated": "[&5].commentsList.[&1].updated"
+                }
+              }
+            },
+            "worklog": {
+              "total": "[&3].worklog.total",
+              "maxResults": "[&3].worklog.maxResults",
+              "worklogs": {
+                "*": {
+                  "id": "[&5].worklog.worklogs[&1].workLogId",
+                  "issueId": "[&5].worklog.worklogs[&1].issueId",
+                  "started": "[&5].worklog.worklogs[&1].started",
+                  "created": "[&5].worklog.worklogs[&1].created",
+                  "updated": "[&5].worklog.worklogs[&1].updated",
+                  "timeSpentSeconds": "[&5].worklog.worklogs[&1].timeSpentSeconds",
+                  "comment": "[&5].worklog.worklogs[&1].comment",
+                  "author": {
+                    "accountId": "[&6].worklog.worklogs[&2].author.accountId"
+                  }
+                }
+              }
+            },
+            "timespent": [
+              "[&2].originalTimeSpent",
+              "[&2].issueMetaData.timeSpent"
+            ],
+            "subtasks": {
+              "*": {
+                "key": "[&4].subTaskList[&1].taskNumber",
+                "id": "[&4].subTaskList[&1].id",
+                "fields": {
+                  "status": {
+                    "name": "[&6].subTaskList[&3].status.name",
+                    "id": "[&6].subTaskList[&3].status.id",
+                    "statusCategory": {
+                      "id": "[&7].subTaskList[&4].category.id",
+                      "colorName": "[&7].subTaskList[&4].category.color",
+                      "name": "[&7].subTaskList[&4].category.name"
+                    }
+                  },
+                  "issuetype": {
+                    "name": "[&6].subTaskList[&3].taskType.name",
+                    "id": "[&6].subTaskList[&3].taskType.id"
+                  }
+                }
+              }
+            },
+            "aggregatetimespent": [
+              "[&2].timeSpent.time",
+              "[&2].issueMetaData.aggregateTimeSpent"
+            ],
+            "aggregatetimeestimate": [
+              "[&2].timeRemaining.time",
+              "[&2].issueMetaData.aggregateTimeEstimate"
+            ],
+            "timeestimate": "[&2].issueMetaData.timeEstimate",
+            "timeoriginalestimate": "[&2].issueMetaData.originalEstimates",
+            "project": {
+              "id": "[&3].issueMetaData.projectId",
+              "name": "[&3].issueMetaData.projectName"
+            },
+            "parent": {
+              "key": "[&3].parent",
+              "fields": {
+                "issuetype": {
+                  "name": "[&5].parentType"
+                }
+              }
+            }
+          },
+          "dateStarted": "[&1].dateStarted"
+        }
+      }
+    }
+  },
+  {
+    "operation": "uk.co.uworx.khoji.agile.transform.UpdatedDateTimeTransform"
+  },
+  {
+    "operation": "modify-default-beta",
+    "spec": {
+      "*": {
+        "fixVersions": {
+          "releases": []
+        }
+      }
+    }
+  }
+]

@@ -1,0 +1,29 @@
+name: ticket_hygiene
+description: |
+  Returns ticket hygiene counts for a sprint using the issues table.
+  Counts: total_issues, no_assignee, missing_story_points, missing_description, missing_priority
+version: 1.0
+
+inputs:
+  sprint_id: { type: int, default: 1 }
+
+steps:
+  - id: hygiene_query
+    type: sql
+    service: main-db
+    query: |
+      SELECT
+        COUNT(*)::int AS total_issues_now,
+        COALESCE(SUM(CASE WHEN (i.assignee_display_name IS NULL OR i.assignee_display_name = '') THEN 1 ELSE 0 END), 0)::int AS no_assignee,
+        COALESCE(SUM(CASE WHEN (i.story_points IS NULL) THEN 1 ELSE 0 END), 0)::int AS missing_story_points,
+        COALESCE(SUM(CASE WHEN (i.description IS NULL OR i.description = '') THEN 1 ELSE 0 END), 0)::int AS missing_description,
+        COALESCE(SUM(CASE WHEN (i.priority IS NULL OR i.priority = '') THEN 1 ELSE 0 END), 0)::int AS missing_priority
+      FROM {{ schema }}.sprint_issues si
+      INNER JOIN {{ schema }}.issues i ON si.issue_key = i.issue_key
+      WHERE si.sprint_id = $1::int
+        AND i.issue_type != 'Subtask'
+    params:
+      - "{{ inputs.sprint_id }}"
+    output: { name: hygiene_counts }
+
+return: "hygiene_query.hygiene_counts"

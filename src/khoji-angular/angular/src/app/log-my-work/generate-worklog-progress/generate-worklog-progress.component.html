@@ -1,0 +1,25 @@
+<div class="task-container">
+    <div class="tasks-overview" (click)="showTasks=!showTasks" title="Click to show/hide details">
+        <p [ngClass]="{'pulsate': pulsate}">{{inprocessTask|async}}</p>
+        <i class="pi pi-chevron-right" [ngClass]="{'pi-chevron-down':showTasks,'pulsate': pulsate}"></i>
+    </div>
+    <ng-container *ngFor="let task of tasks">
+        <div class="task" *ngIf="(task.status$|async) as status" [ngClass]="status" [hidden]="!showTasks">
+            <div class="task-name">
+                <img [src]="task.image" width="20" />
+                <div>{{task.name}}</div>
+            </div>
+            <div class="task-progress">
+                <!-- run the task progress here -->
+                <ng-container [ngSwitch]="status">
+                    <i *ngSwitchCase="'Pending'" class="pi pi-circle" style="color:gray"></i>
+                    <i *ngSwitchCase="'Processing'" class="pi pi-spin pi-spinner" style="color:#585858"></i>
+                    <i *ngSwitchCase="'Completed'" class="pi pi-check" style="color:green"></i>
+                    <i *ngSwitchCase="'Failed'" class="pi pi-times-circle" style="color:red"></i>
+                    <i *ngSwitchCase="'Disabled'" class="pi pi-ban" style="color:gray"></i>
+                    <i *ngSwitchCase="'Cancelled'" class="pi pi-times-circle" style="color:yellow"></i>
+                </ng-container>
+            </div>
+        </div>
+    </ng-container>
+</div>

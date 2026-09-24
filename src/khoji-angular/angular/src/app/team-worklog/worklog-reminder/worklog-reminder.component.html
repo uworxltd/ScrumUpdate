@@ -1,0 +1,219 @@
+<!-- /*
+Copyright 2026 UWorx Services.
+Licensed under the Apache License, Version 2.0.
+See LICENSE for the full license text.
+*/ -->
+
+
+<p-dialog
+  [(visible)]="showRemindTeamModal"
+  [header]="translation.timelog.emailReminder.title"
+  [style]="{ width: '55vw', height: dynamicModalHeight }"
+  [modal]="true"
+  [draggable]="false"
+  [closeOnEscape]="true"
+  [resizable]="false"
+  (onHide)="onCancelRemindTeamModal()"
+  [breakpoints]="{'1920px': '70vw', '1600px': '80vw', '1400px': '95vw', '960px': '95vw', '640px': '100vw'}"
+>
+  <ng-template pTemplate="content">
+    <div class="flex-container">
+      <div class="flex-item flex-40 ml-3">
+        <div>
+          <div class="custom-table">
+            <p-treeTable
+              [value]="parentChildStructure"
+              [scrollable]="true"
+              [scrollHeight]="dynamicScrollHeight"
+              [(selection)]="selectedMembersNodes"
+              selectionMode="checkbox"
+              class="h-full overflow-hidden"
+            >
+              <ng-template
+                pTemplate="body"
+                let-rowNode
+              >
+                <tr>
+                  <td *ngIf="fetchUserData === loadingStates.Loading">
+                    <p-skeleton height="380px"></p-skeleton>
+                  </td>
+                  <td
+                    class="flex align-items-center h-3rem"
+                    *ngIf="fetchUserData === loadingStates.Done"
+                  >
+                    <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+                    <p-checkbox
+                      class="mr-1"
+                      [binary]="true"
+                      [(ngModel)]="rowNode.node.selected"
+                      (onChange)="onNodeSelectionChange(rowNode.node)"
+                    ></p-checkbox>
+                    <img
+                      *ngIf="rowNode.node.data.obj && rowNode.node.data.obj != null"
+                      [src]="rowNode.node.data.obj.avatarURL ? rowNode.node.data.obj.avatarURL : 'assets/images/bullet.svg'"
+                      class="w-2rem h-2rem border-circle ml-1 mr-2"
+                      alt="profile image"
+                    />
+                    {{ rowNode.node.data.name }}
+                    <khoji-timelog-rag
+                      style="width: 30px; margin-left: 0.25rem"
+                      *ngIf="rowNode.node.children && rowNode.node.children.length > 0"
+                      type="member"
+                      [value]="rowNode.node.children?.length || 0"
+                      [backgroundColor]="rowNode.node.data.name === 'Members with missing worklog' ? missingWorklogRagColor : incompleteWorklogRagColor"
+                    >
+                    </khoji-timelog-rag>
+
+                    <span *ngIf="rowNode.node.data.obj && rowNode.node.data.obj != null && (rowNode.node.data.obj.email == null || rowNode.node.data.obj.email.trim() == '')">
+                      <i class="pi pi-exclamation-circle exclamation-color font-medium pl-1"></i>
+                    </span>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-treeTable>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex-60 mr-3">
+        <div
+          *ngIf="missingEmailsMemberCount >= 1"
+          class="align-items-center flex-item mb-3"
+        >
+          <div class="flex justify-content-between text-sm font-semibold">
+            <div class="flex align-items-center">
+              <i class="pi pi-exclamation-circle exclamation-color font-medium pr-2"></i>
+              <span>{{ emailMessage }}</span>
+            </div>
+
+            <div>
+              <span
+                class="text-primary"
+                style="cursor: pointer"
+                (click)="openDialog()"
+              >
+                {{ translation.timelog.emailReminder.addEmail }}
+              </span>
+            </div>
+          </div>
+          <div class="mt-1">
+            <p>{{ translation.timelog.emailReminder.emailReminderNotice }}</p>
+          </div>
+        </div>
+        <div>
+          <p class="text-base main-text font-semibold mb-2">Add a custom message</p>
+          <div class="textarea-wrapper">
+            <textarea
+              [rows]="5"
+              [cols]="50"
+              pInputTextarea
+              [autoResize]="true"
+              [(ngModel)]="customText"
+              [placeholder]="'Add a custom message for the email notification...'"
+              maxlength="150"
+            ></textarea>
+            <span class="char-count"> {{ customText.length }}/150 </span>
+          </div>
+        </div>
+        <div class="button-container mr-3">
+          <button
+            pButton
+            class="p-button-text"
+            (click)="onCancelRemindTeamModal()"
+          >
+            Cancel
+          </button>
+          <button
+            pButton
+            [disabled]="!isEmailEnabled || selectedMembers.length === 0"
+            [pTooltip]="
+              selectedMembers.length === 0
+                ? translation.timelog.emailReminder.noMemberSelected
+                : isEmailEnabled
+                ? ''
+                : selectedMembers.length === 1
+                ? translation.timelog.emailReminder.sendEmailTooltipForSingleMember
+                : translation.timelog.emailReminder.sendEmailTooltipForMultipleMembers
+            "
+            [tooltipPosition]="'bottom'"
+            (click)="onSendEmail()"
+          >
+            Send email
+          </button>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</p-dialog>
+
+<p-dialog
+  [(visible)]="showAddEmailDialog"
+  [header]="translation.timelog.emailReminder.missingEmailAddress.title"
+  [style]="{ width: '40vw', height: '40vh' }"
+  [modal]="true"
+  [draggable]="false"
+  [closeOnEscape]="true"
+  [resizable]="false"
+  (onHide)="onCancelAddEmail()"
+>
+  <ng-template pTemplate="content">
+    <div class="add-email-dialog">
+      <div class="email-input-wrapper">
+        <div
+          *ngFor="let member of membersWithMissingEmails"
+          class="email-input-container"
+        >
+          <div class="flex justify-content-between align-items-center w-full">
+            <div class="flex align-items-center email-label">
+              <img
+                [src]="member.avatarURL"
+                class="w-2rem h-2rem border-circle mr-2"
+                alt="profile image"
+              />
+              <label
+                class="ellipses-label"
+                [title]="member.memberName"
+                >{{ member.memberName }}</label
+              >
+            </div>
+            <div class="flex div-email-input">
+              <input
+                pInputText
+                type="email"
+                [(ngModel)]="member.email"
+                [placeholder]="translation.timelog.emailReminder.missingEmailAddress.placeHolder"
+                title=""
+                class="email-input"
+                [pTooltip]=" isDuplicateEmail(member.email) ? translation.timelog.emailReminder.missingEmailAddress.duplicateEmailErrorMessage 
+                : isInvalidEmail(member.email) ? translation.timelog.emailReminder.missingEmailAddress.emailInvalidPatternError : null"
+                [pattern]="emailRegex"
+                (ngModelChange)="checkIfEmailsChanged()"
+                [ngClass]="{ 'ng-invalid': isDuplicateEmail(member.email) }"
+              />
+              <span *ngIf="isDuplicateEmail(member.email) || isInvalidEmail(member.email)">
+                <i class="pi pi-exclamation-circle email-icon exclamation-color"></i>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="button-container mt-3">
+        <button
+          pButton
+          class="custom-button-email p-button-text"
+          (click)="onCancelAddEmail()"
+        >
+          {{ translation.timelog.emailReminder.cancel }}
+        </button>
+        <button
+          pButton
+          class="custom-button-email"
+          (click)="onUpdateEmail()"
+          [disabled]="isUpdateDisabled || !isEmailValid || isDuplicatedEmail"
+        >
+          {{ translation.timelog.emailReminder.missingEmailAddress.updateEmail }}
+        </button>
+      </div>
+    </div>
+  </ng-template>
+</p-dialog>

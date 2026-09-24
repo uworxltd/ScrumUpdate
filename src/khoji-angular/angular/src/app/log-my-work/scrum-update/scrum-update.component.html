@@ -1,0 +1,21 @@
+<!--div class="flex align-items-center gap-3 request-panel-bar justify-content-center"
+  [ngClass]="{ 'request-panel-shadow': requestPanelShadow }">
+  <div style="font-size: 1.3rem; font-weight: 600">{{ today | date:'EEEE, MMMM d, y' }}</div>
+  <div style="font-size: 1.3rem; font-weight: 600">Pulse</div>
+  <khoji-request-panel
+    [pinnable]="constants.WORKLOG_REQUEST_PANNEL_PINNABLE"
+    [pinned]="constants.WORKLOG_REQUEST_PANNEL_PINNED"
+    *ngIf="translation"
+  >
+    <khoji-week-input
+      [value]="selectedWeek"
+      [maxDate]="maxDate"
+      [maxWeek]="maxWeek"
+      [loading]="false"
+      (onChange)="handleWeekChange($event)"
+      (_isNextWeekAvailable)="handleNextWeek($event)"
+      [timeZone]="timeZone"
+    ></khoji-week-input>
+  </khoji-request-panel>
+</div-->
+<khoji-daily-scrum-updates></khoji-daily-scrum-updates>

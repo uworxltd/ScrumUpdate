@@ -1,0 +1,41 @@
+// Rag Slider Styles
+
+.btn-save {
+  color: #f6501c;
+}
+
+.btn-cancel {
+  color: #8d43ac;
+}
+
+.heading {
+  font-size: 20px;
+}
+
+.khoji-success-button-modal {
+  border: none;
+  background-color: white;
+  color: #f75f31;
+}
+
+.khoji-success-button-modal:hover {
+  border: none;
+  background-color: white;
+  color: #db6541;
+}
+
+h6 {
+  color: #7f7f7f;
+}
+
+:host ::ng-deep {
+
+  .p-dialog,
+  .p-dialog-mask.p-component-overlay {
+    border-radius: 20px;
+  }
+}
+
+.top-140px {
+  top: 140px;
+}

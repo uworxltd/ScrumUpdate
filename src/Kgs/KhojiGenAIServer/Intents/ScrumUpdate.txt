@@ -1,0 +1,41 @@
+﻿sup
+What’s my scrum update?
+Give me the daily update.
+Share my status?
+What I did yesterday?
+What I am working on today?
+Any blockers to report?
+Share my standup update.
+What’s my progress in the sprint?
+Tell me the daily scrum.
+Do I have any impediments?
+How’s my Jira board looking?
+What tasks are in progress?
+What did I complete yesterday?
+Anything preventing progress?
+Update me on the sprint tasks.
+Can I get the status report?
+What’s my agile update?
+Give me a quick standup.
+What are I stuck on?
+Scrum update please.
+Hey, got a quick update?
+What’s up with the tasks?
+How’s the sprint going?
+Any updates?
+I am done with the stuff?
+What I am working on today?
+Anything blocking me?
+Got anything to report?
+Made any progress?
+What’s cooking at our end?
+Where am I at with the work?
+Any news on our tasks?
+Done with yesterday’s stuff?
+Still stuck or moving ahead?
+Got my standup ready?
+What’s my vibe today work-wise?
+Can I get a quick check-in?
+Are we moving things along?
+Let’s hear the work update.
+What's my status, buddy?

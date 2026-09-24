@@ -1,0 +1,28 @@
+:host {
+    display: block;
+    padding: 2rem 0;
+}
+
+.logo-card {
+    background: #DBDBDB;
+    width: 3.3rem;
+    height: 3.3rem;
+    border: 1px solid #B7B7B7;
+    border-radius: 5px;
+    align-items: center;
+}
+
+.main {
+    border: 2px solid #DBDBDB;
+    min-width: 300px;
+}
+
+.div-margin {
+    margin: 2rem 0;
+}
+
+.flex-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}

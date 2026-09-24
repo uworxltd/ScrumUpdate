@@ -1,0 +1,43 @@
+.scroll-container {
+  overflow-y: auto;
+  padding-bottom: 5px;
+
+  .slides-container {
+    width: max-content;
+  }
+
+  &::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: 3px;
+    transition: background 0.3s ease;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+    transition: background 0.3s ease;
+  }
+
+  &:hover::-webkit-scrollbar-thumb {
+    background: #ccc;
+  }
+  &:hover::-webkit-scrollbar-track {
+    background: #f2f2f2;
+  }
+}
+
+.controls {
+  text-align: right;
+}
+
+.slider-button{
+  border: none;
+  border-top-width: 0px;
+  border-bottom-width: 0px;
+  padding-bottom: 4px;
+  padding-top: 2px;
+}
+

@@ -1,0 +1,41 @@
+{
+  "name": "khoji-express",
+  "version": "1.0.0",
+  "description": "Express server for Khoji Angular app",
+  "private": true,
+  "main": "server.ts",
+  "scripts": {
+    "build": "tsc",
+    "start": "ts-node server.ts",
+    "start:prod": "NODE_ENV=production node dist/server.js",
+    "dev": "ts-node server.ts",
+    "dev:watch": "ts-node-dev --respawn --transpile-only server.ts",
+    "prod": "npm run build && npm run start:prod"
+  },
+  "keywords": [
+    "express",
+    "server",
+    "api"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "compression": "^1.8.1",
+    "dotenv": "^16.1.4",
+    "envalid": "^7.2.0",
+    "express": "^5.2.1",
+    "http-proxy-middleware": "^3.0.5",
+    "pg": "^8.11.3",
+    "tslib": "^2.8.1",
+    "typescript": "^5.4.5",
+    "winston": "^3.9.0"
+  },
+  "devDependencies": {
+    "@types/compression": "^1.7.5",
+    "@types/express": "^5.0.6",
+    "@types/node": "^18.19.75",
+    "@types/pg": "^8.11.4",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0"
+  }
+}

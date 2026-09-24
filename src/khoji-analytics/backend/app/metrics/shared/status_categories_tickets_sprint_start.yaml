@@ -1,0 +1,209 @@
+name: status_categories_tickets_sprint_start
+description: |
+  Shared metric that returns ticket IDs for each status category (To Do, In Progress, Done)
+  at the START of the sprint.
+  
+  This is used on Day 1 of a sprint when there's no "yesterday" data to compare against.
+  Instead, we compare the sprint's starting state with the current state.
+  
+  Uses the sprint's start_date from the sprints table to determine the cutoff point
+  and queries changelogs to find what tickets were in the sprint AND what status 
+  each ticket had at that moment.
+
+version: 1.1
+
+inputs:
+  sprint_id: { type: int, default: 1 }
+
+steps:
+  - id: get_sprint_start_tickets_by_status
+    type: sql
+    service: main-db
+    query: |
+      WITH sprint_start AS (
+        -- Get the sprint start date
+        SELECT start_date
+        FROM {{ schema }}.sprints
+        WHERE sprint_id = $1::int
+      ),
+      -- Get tickets that were in the sprint at sprint start date
+      -- This includes: current members + tickets that were in sprint at start but may have been removed
+      sprint_membership_at_start AS (
+        -- Current members that existed at sprint start
+        SELECT DISTINCT si.issue_key
+        FROM {{ schema }}.sprint_issues si
+        INNER JOIN {{ schema }}.issues i ON si.issue_key = i.issue_key
+        CROSS JOIN sprint_start ss
+        WHERE si.sprint_id = $1::int
+          -- Only include if the ticket existed at sprint start
+          AND i.created_date <= ss.start_date
+        
+        UNION
+        
+        -- Tickets that were in this sprint at start (based on Sprint changelog)
+        -- This finds tickets where the sprint was added BEFORE or AT start date
+        SELECT DISTINCT issue_key
+        FROM (
+          SELECT 
+            i.issue_key,
+            cl.created_date,
+            cl.to_value,
+            cl.from_value,
+            -- Get the most recent sprint change before/at sprint start for each ticket
+            ROW_NUMBER() OVER (
+              PARTITION BY i.issue_key 
+              ORDER BY cl.created_date DESC
+            ) as rn
+          FROM {{ schema }}.changelogs cl
+          INNER JOIN {{ schema }}.issues i ON cl.issue_key = i.issue_id::text
+          CROSS JOIN sprint_start ss
+          WHERE cl.field_name = 'Sprint'
+            AND cl.created_date <= ss.start_date
+        ) latest_sprint_change
+        WHERE rn = 1
+          -- Check if sprint_id exists in comma-separated to_value
+          AND (',' || REPLACE(to_value, ' ', '') || ',') LIKE '%,' || $1::text || ',%'
+      ),
+      -- Build status spans from base tables
+      -- Use only the status transitions (to_display_value) from changelogs
+      -- The first from_display_value is the initial status, but we handle it differently
+      status_changes AS (
+        SELECT 
+          i.issue_key,
+          cl.created_date AS ts,
+          cl.from_display_value,
+          cl.to_display_value,
+          ROW_NUMBER() OVER (PARTITION BY i.issue_key ORDER BY cl.created_date) AS change_num
+        FROM {{ schema }}.changelogs cl
+        INNER JOIN {{ schema }}.issues i ON cl.issue_key = i.issue_id::text
+        INNER JOIN sprint_membership_at_start sm ON sm.issue_key = i.issue_key
+        WHERE cl.field_name = 'status'
+      ),
+      status_events AS (
+        -- First change: include the initial status (from_display_value) with a slightly earlier timestamp
+        SELECT 
+          issue_key,
+          ts - INTERVAL '0.001 second' AS ts,
+          from_display_value AS status
+        FROM status_changes
+        WHERE change_num = 1 AND from_display_value IS NOT NULL
+        
+        UNION ALL
+        
+        -- All transitions: use to_display_value
+        SELECT 
+          issue_key,
+          ts,
+          to_display_value AS status
+        FROM status_changes
+        WHERE to_display_value IS NOT NULL
+      ),
+      status_spans AS (
+        SELECT issue_key, status, ts AS from_ts,
+               LEAD(ts) OVER (PARTITION BY issue_key ORDER BY ts) AS to_ts
+        FROM status_events
+        WHERE status IS NOT NULL
+      ),
+      issue_status_at_sprint_start AS (
+        -- Get the status each issue had at the sprint start date
+        SELECT DISTINCT ON (s.issue_key)
+          s.issue_key,
+          s.status
+        FROM status_spans s
+        CROSS JOIN sprint_start ss
+        WHERE s.from_ts <= ss.start_date
+          AND (s.to_ts IS NULL OR s.to_ts > ss.start_date)
+        ORDER BY s.issue_key, s.from_ts DESC, s.to_ts DESC NULLS FIRST
+      ),
+      -- For tickets with no status history at sprint start, determine their initial status
+      initial_status AS (
+        SELECT DISTINCT ON (i.issue_key)
+          i.issue_key,
+          COALESCE(
+            -- Use from_display_value of first status change if it exists
+            (SELECT cl.from_display_value
+             FROM {{ schema }}.changelogs cl
+             WHERE cl.issue_key = i.issue_id::text 
+               AND cl.field_name = 'status'
+             ORDER BY cl.created_date
+             LIMIT 1),
+            -- Otherwise use current status (ticket never had status changes)
+            i.status
+          ) AS status
+        FROM {{ schema }}.issues i
+        INNER JOIN sprint_membership_at_start sm ON sm.issue_key = i.issue_key
+      ),
+      tickets_with_status AS (
+        SELECT 
+          sm.issue_key,
+          COALESCE(iss.status, init.status) AS status
+        FROM sprint_membership_at_start sm
+        LEFT JOIN issue_status_at_sprint_start iss ON iss.issue_key = sm.issue_key
+        LEFT JOIN initial_status init ON init.issue_key = sm.issue_key
+      ),
+      first_post_cutoff_status_change AS (
+        SELECT DISTINCT ON (i.issue_key)
+          i.issue_key,
+          cl.from_display_value,
+          cl.to_display_value,
+          cl.created_date
+        FROM {{ schema }}.issues i
+        INNER JOIN tickets_with_status t ON t.issue_key = i.issue_key
+        CROSS JOIN sprint_start ss
+        INNER JOIN {{ schema }}.changelogs cl ON cl.issue_key = i.issue_key
+        WHERE cl.field_name = 'status'
+          AND cl.created_date >= ss.start_date
+        ORDER BY i.issue_key, cl.created_date ASC
+      ),
+      sprint_start_with_category AS (
+        SELECT
+          t.issue_key,
+          t.status,
+          CASE
+            WHEN i.status = t.status THEN i.status_category
+            WHEN COALESCE(i.status_category_change_date, TIMESTAMP '1970-01-01') < ss.start_date THEN i.status_category
+            WHEN fpc.from_display_value = t.status THEN
+              CASE i.status_category
+                WHEN 'Done' THEN
+                  CASE
+                    WHEN LOWER(TRIM(fpc.from_display_value)) IN ('to do', 'open', 'backlog', 'new', 'todo') THEN 'To Do'
+                    ELSE 'In Progress'
+                  END
+                WHEN 'In Progress' THEN 'To Do'
+                WHEN 'To Do' THEN
+                  CASE
+                    WHEN LOWER(TRIM(fpc.from_display_value)) IN ('done', 'closed', 'resolved', 'complete', 'completed', 'finished') THEN 'Done'
+                    ELSE 'In Progress'
+                  END
+                ELSE 'In Progress'
+              END
+            WHEN COALESCE(i.status_category_change_date, TIMESTAMP '1970-01-01') >= ss.start_date THEN
+              CASE i.status_category
+                WHEN 'Done' THEN 'In Progress'
+                WHEN 'In Progress' THEN 'To Do'
+                WHEN 'To Do' THEN 'Done'
+                ELSE 'In Progress'
+              END
+            ELSE i.status_category
+          END AS status_category
+        FROM tickets_with_status t
+        INNER JOIN {{ schema }}.issues i ON i.issue_key = t.issue_key
+        CROSS JOIN sprint_start ss
+        LEFT JOIN first_post_cutoff_status_change fpc ON fpc.issue_key = t.issue_key
+        WHERE t.status IS NOT NULL
+      )
+      -- Return ticket IDs grouped by category (as JSON)
+      SELECT jsonb_build_object(
+        'todo_tickets',
+        COALESCE(jsonb_agg(issue_key ORDER BY issue_key) FILTER (WHERE status_category = 'To Do'), '[]'::jsonb),
+        'inprogress_tickets',
+        COALESCE(jsonb_agg(issue_key ORDER BY issue_key) FILTER (WHERE status_category = 'In Progress'), '[]'::jsonb),
+        'done_tickets',
+        COALESCE(jsonb_agg(issue_key ORDER BY issue_key) FILTER (WHERE status_category = 'Done'), '[]'::jsonb)
+      ) AS sprint_start_tickets
+      FROM sprint_start_with_category
+    params:
+      - "{{ inputs.sprint_id }}"
+    output: { name: sprint_start_tickets }
+
+return: "get_sprint_start_tickets_by_status.sprint_start_tickets"

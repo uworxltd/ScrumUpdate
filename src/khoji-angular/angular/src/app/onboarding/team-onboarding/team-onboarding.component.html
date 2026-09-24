@@ -1,0 +1,227 @@
+<!-- /*
+Copyright 2026 UWorx Services.
+Licensed under the Apache License, Version 2.0.
+See LICENSE for the full license text.
+*/ -->
+
+<khoji-split-container class="h-full w-full">
+  <ng-container leftContent>
+    <div class="flex flex-column align-items-start justify-content-start gap-4 h-full px-4">
+      <!-- title -->
+      <h2
+        class="m-0 responsive-page-title-font-size"
+        *ngIf="!quickSetup && !addJiraUsers"
+      >
+        {{ teamOnboardingTranslation.title }}
+      </h2>
+      <p
+        class="text-gray-800 mb-2"
+        *ngIf="!quickSetup && !addJiraUsers"
+      >
+        {{ teamOnboardingTranslation.subTitle }}
+      </p>
+      <!-- message for user limit reached -->
+      <p-messages
+        *ngIf="userLimit === selectedUsers.length && usersLoaded && !(quickSetup || addJiraUsers)"
+        [(value)]="messages"
+        [enableService]="false"
+        [closable]="false"
+        class="w-11"
+      >
+      </p-messages>
+      <!-- team name label and input field -->
+      <div
+        class="flex flex-column gap-2 w-full"
+        *ngIf="!quickSetup && !addJiraUsers"
+      >
+        <label for="teamName">{{ teamOnboardingTranslation.teamName }}</label>
+
+        <p-skeleton
+          *ngIf="!usersLoaded"
+          width="91.6667%"
+          height="41px"
+        ></p-skeleton>
+
+        <input
+          *ngIf="usersLoaded"
+          type="text"
+          pInputText
+          id="teamName"
+          class="w-11"
+          [ngClass]="{ 'ng-invalid ng-dirty': !teamName && usersLoaded }"
+          [(ngModel)]="teamName"
+        />
+        <small
+          class="p-error"
+          *ngIf="!teamName && usersLoaded"
+        >
+          {{ teamOnboardingTranslation.enterTeamName }}
+        </small>
+      </div>
+      <!-- add members to team drop down -->
+      <div class="flex flex-column mt-2 w-full">
+        <div class="flex align-items-center h-2rem w-11">
+          <label for="teamDropdown">{{ teamOnboardingTranslation.addMembersToTeam }}</label>
+          <span class="ml-auto">{{ getLimitText() }}</span>
+        </div>
+
+        <!-- loading skeleton -->
+        <p-skeleton
+          *ngIf="!usersLoaded"
+          width="91.6667%"
+          height="41px"
+        ></p-skeleton>
+
+        <!-- multiSelect -->
+        <p-multiSelect
+          [options]="users"
+          [(ngModel)]="selectedUsers"
+          optionLabel="name"
+          styleClass="w-11"
+          optionDisabled="alreadyExisting"
+          placeholder="Search and select the users"
+          [selectionLimit]="userLimit"
+          display="chip"
+          [appendTo]="appendTo"
+          *ngIf="usersLoaded"
+        >
+          <ng-template
+            let-user
+            pTemplate="item"
+          >
+            <div
+              [pTooltip]="user.revoked ? 'User already added and has been revoked' : userLimit === selectedUsers.length && !isUserSelected(user.accountId) ? messages[0].detail : ''"
+              [tooltipPosition]="'bottom'"
+              tooltipStyleClass="custom-tooltip"
+              [ngClass]="{ 'pointer-events-all': !user.revoked, 'user-disabled': user.revoked }"
+            >
+              <div class="flex align-items-center gap-3">
+                <img
+                  [src]="user.avatarURL"
+                  class="w-2rem h-2rem border-circle"
+                />
+                <span class="text-lg">{{ user.name }} {{ user.revoked ? '(suspended)' : '' }}</span>
+              </div>
+            </div>
+          </ng-template>
+        </p-multiSelect>
+      </div>
+
+      <!-- selected members list -->
+      <div class="flex flex-column mt-2 w-full">
+        <div class="flex align-items-center justify-content-between flex-wrap w-11">
+          <span>{{ teamOnboardingTranslation.members }}</span>
+        </div>
+
+        <span
+          class="align-self-center"
+          *ngIf="selectedUsers.length === 0 && addJiraUsers"
+        >
+          No user selected
+        </span>
+
+        <!-- loading skeleton -->
+        <div
+          class="flex align-items-center border-round border-solid border-1 surface-border w-11 p-1"
+          style="height: 55px; min-width: 91.6667%"
+          *ngIf="!usersLoaded && !quickSetup && !addJiraUsers"
+        >
+          <div class="flex gap-3 align-items-center ml-2">
+            <p-skeleton
+              shape="circle"
+              size="2rem"
+            ></p-skeleton>
+            <p-skeleton
+              width="10rem"
+              height="2rem"
+            ></p-skeleton>
+          </div>
+
+          <p-skeleton
+            width="17rem"
+            height="41px"
+            class="ml-auto"
+          ></p-skeleton>
+        </div>
+
+        <!-- list of selected users -->
+        <div
+          [ngClass]="{
+            'overflow-above-5-users': !quickSetup ? selectedUsers.length > getScreenLimit() : selectedUsers.length > 5,
+            'over-flow-height': !quickSetup && selectedUsers.length > getScreenLimit(),
+            'limit-has-reached-and-showing-info-message': !quickSetup && usersLoaded && userLimit === selectedUsers.length
+          }"
+        >
+          <div
+            *ngFor="let user of selectedUsers"
+            class="flex align-items-center mb-3 w-12"
+          >
+            <div
+              class="flex align-items-center border-round border-solid border-1 surface-border w-11 min-w-11 p-1"
+              [ngClass]="{ 'increase-width-in-case-of-scroller': !quickSetup ? selectedUsers.length > getScreenLimit() : selectedUsers.length > 5 }"
+              style="height: 55px"
+            >
+              <!-- image and name -->
+              <div class="flex gap-3 align-items-center ml-2">
+                <img
+                  [src]="user.avatarURL"
+                  class="w-2rem h-2rem border-circle"
+                  alt="profile image"
+                />
+                <span>{{ user.name }}</span>
+              </div>
+
+              <!-- role -->
+              <khoji-single-select-dropdown
+                class="ml-auto"
+                appendTo="body"
+                (emitValueOnSelection)="roleChanged($event, user)"
+                [selectedItem]="user.userRole?.code"
+                [dropdownValues]="roles"
+                [classNames]="'clear'"
+                [appendTo]="appendTo"
+              >
+              </khoji-single-select-dropdown>
+            </div>
+
+            <!-- remove button (x) -->
+            <button
+              pButton
+              pRipple
+              type="button"
+              icon="pi pi-times"
+              class="p-button-rounded p-button-text p-button-plain mr-2"
+              *ngIf="!user.alreadyExisting"
+              (click)="removeUserFromSelection(user)"
+            ></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- footer buttons in the component -->
+      <div
+        *ngIf="!quickSetup && !addJiraUsers"
+        class="flex align-items-end justify-content-end gap-2 w-12 mt-auto mb-4"
+      >
+        <p-button
+          data-test="next-button"
+          pRipple
+          [disabled]="!teamName || !usersLoaded"
+          [label]="teamOnboardingTranslation.buttons.next"
+          (click)="saveTeam()"
+          [loading]="onboardingTeamLoadingState == 1"
+        ></p-button>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container rightContent>
+    <div class="flex h-full align-items-center z-3">
+      <img
+        src="assets/images/team-onboarding.png"
+        alt="Build Your Team"
+        class="max-h-full max-w-full ml-auto z-3 shadow-4 border-round-left-3xl"
+      />
+    </div>
+  </ng-container>
+</khoji-split-container>

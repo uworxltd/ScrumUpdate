@@ -1,0 +1,213 @@
+name: sprint_team_pulse
+description: |
+  This metric retrieves team pulse data using base tables directly (no views/functions).
+  Returns team performance metrics including pulse score, key contributors, member progress,
+  and current/total points with pulse change from yesterday.
+  
+  Queries sprint_issues, issues, changelogs, and comments tables directly.
+version: 2.0
+
+inputs:
+  sprint_id: { type: int, default: 1 }
+
+steps:
+  - id: sprint_burndown
+    type: sql
+    service: main-db
+    query: |
+      -- Generate burndown data from base tables (sprint_issues, issues, changelogs)
+      WITH bounds AS (
+        SELECT 
+          s.sprint_id,
+          s.start_date::date AS start_d,
+        CASE
+            WHEN s.complete_date IS NOT NULL THEN s.complete_date::date
+        ELSE GREATEST(s.end_date::date, CURRENT_DATE)
+           END AS end_d
+        FROM {{ schema }}.sprints s
+        WHERE s.sprint_id = $1::int
+          AND s.start_date IS NOT NULL
+      ),
+      days AS (
+        SELECT 
+          b.sprint_id, 
+          d::date AS day
+        FROM bounds b
+        CROSS JOIN LATERAL generate_series(b.start_d, b.end_d, '1 day') AS d
+      ),
+      sprint_membership AS (
+        SELECT 
+          si.sprint_id,
+          si.issue_key
+        FROM {{ schema }}.sprint_issues si
+        WHERE si.sprint_id = $1::int
+      ),
+      issue_done_at AS (
+        SELECT 
+          i.issue_key,
+          CASE 
+            WHEN i.status_category = 'Done' THEN
+              COALESCE(
+                (SELECT MIN(cl.created_date)
+                 FROM {{ schema }}.changelogs cl
+                 WHERE cl.issue_key = i.issue_id::text
+                   AND cl.field_name = 'status'
+                   AND cl.to_display_value = i.status),
+                i.status_category_change_date,
+                i.resolution_date
+              )
+            ELSE NULL 
+          END AS done_at
+        FROM {{ schema }}.issues i
+      ),
+      base AS (
+        SELECT
+          d.sprint_id,
+          d.day,
+          SUM(COALESCE(i.story_points, 0))::numeric AS scope_points,
+          SUM(
+            CASE
+              WHEN da.done_at IS NOT NULL
+               AND da.done_at <= (d.day + INTERVAL '1 day' - INTERVAL '1 second')
+              THEN COALESCE(i.story_points, 0) 
+              ELSE 0
+            END
+          )::numeric AS done_points
+        FROM days d
+        INNER JOIN sprint_membership sm ON sm.sprint_id = d.sprint_id
+        INNER JOIN {{ schema }}.issues i ON i.issue_key = sm.issue_key
+        LEFT JOIN issue_done_at da ON da.issue_key = sm.issue_key
+        GROUP BY d.sprint_id, d.day
+      )
+      SELECT
+        sprint_id,
+        day,
+        scope_points,
+        done_points,
+        GREATEST(scope_points - done_points, 0) AS remaining_points,
+        GREATEST(scope_points - LAG(scope_points) OVER (PARTITION BY sprint_id ORDER BY day), 0)   AS added_points_day,
+        GREATEST(LAG(scope_points) OVER (PARTITION BY sprint_id ORDER BY day) - scope_points, 0)   AS removed_points_day
+      FROM base
+      ORDER BY sprint_id, day
+    params:
+      - "{{ inputs.sprint_id }}"
+    output: { name: burndown }
+
+  - id: sprint_facts
+    type: sql
+    service: main-db
+    query: |
+      -- Generate facts data from base tables
+      WITH sprint_membership AS (
+        SELECT 
+          si.sprint_id,
+          si.issue_key
+        FROM {{ schema }}.sprint_issues si
+        WHERE si.sprint_id = $1::int
+      ),
+      issue_done_at AS (
+        SELECT 
+          i.issue_key,
+          CASE 
+            WHEN i.status_category = 'Done' THEN
+              COALESCE(
+                (SELECT MIN(cl.created_date)
+                 FROM {{ schema }}.changelogs cl
+                 WHERE cl.issue_key = i.issue_id::text
+                   AND cl.field_name = 'status'
+                   AND cl.to_display_value = i.status),
+                i.status_category_change_date,
+                i.resolution_date
+              )
+            ELSE NULL 
+          END AS done_at
+        FROM {{ schema }}.issues i
+      ),
+      contributor_activity AS (
+        SELECT 
+          sm.issue_key,
+          i.assignee_display_name AS person,
+          COUNT(DISTINCT c.comment_id) AS comments_count,
+          COUNT(DISTINCT cl.changelog_id) FILTER (WHERE cl.field_name = 'status') AS status_changes_count,
+          GREATEST(
+            MAX(c.created_date),
+            MAX(cl.created_date) FILTER (WHERE cl.field_name = 'status')
+          ) AS last_activity
+        FROM sprint_membership sm
+        INNER JOIN {{ schema }}.issues i ON i.issue_key = sm.issue_key
+        LEFT JOIN {{ schema }}.comments c ON c.issue_key = sm.issue_key 
+          AND c.author_display_name = i.assignee_display_name
+        LEFT JOIN {{ schema }}.changelogs cl ON cl.issue_key = i.issue_id::text
+          AND cl.author_display_name = i.assignee_display_name
+        WHERE i.assignee_display_name IS NOT NULL
+        GROUP BY sm.issue_key, i.assignee_display_name
+      ),
+      contributors AS (
+        SELECT
+          sm.sprint_id,
+          i.assignee_display_name AS person,
+          COUNT(*) AS issues_assigned_now,
+          SUM(COALESCE(i.story_points, 0))::numeric AS points_assigned_now,
+          COUNT(*) FILTER (WHERE da.done_at IS NOT NULL) AS issues_done_total,
+          SUM(COALESCE(i.story_points, 0)) FILTER (WHERE da.done_at IS NOT NULL)::numeric AS points_done_total,
+          COALESCE(SUM(ca.comments_count), 0) AS comments_count_total,
+          COALESCE(SUM(ca.status_changes_count), 0) AS status_changes_count_total,
+          MAX(ca.last_activity) AS last_activity
+        FROM sprint_membership sm
+        INNER JOIN {{ schema }}.issues i ON i.issue_key = sm.issue_key
+        LEFT JOIN issue_done_at da ON da.issue_key = sm.issue_key
+        LEFT JOIN contributor_activity ca ON ca.issue_key = sm.issue_key 
+          AND ca.person = i.assignee_display_name
+        WHERE i.assignee_display_name IS NOT NULL
+        GROUP BY sm.sprint_id, i.assignee_display_name
+      ),
+      data_quality_flags AS (
+        -- Calculate flags for missing data across all sprint issues
+        SELECT
+          COUNT(*) FILTER (WHERE i.assignee_display_name IS NULL OR TRIM(i.assignee_display_name) = '') > 0 AS has_missing_assignees,
+          COUNT(*) FILTER (WHERE i.story_points IS NULL OR i.story_points = 0) > 0 AS has_missing_story_points,
+          COUNT(*) AS total_issues,
+          COUNT(*) FILTER (WHERE i.assignee_display_name IS NULL OR TRIM(i.assignee_display_name) = '') AS missing_assignees_count,
+          COUNT(*) FILTER (WHERE i.story_points IS NULL OR i.story_points = 0) AS missing_story_points_count
+        FROM sprint_membership sm
+        INNER JOIN {{ schema }}.issues i ON i.issue_key = sm.issue_key
+      )
+      SELECT jsonb_build_object(
+        'contributors', COALESCE(
+          (SELECT jsonb_agg(
+            jsonb_build_object(
+              'person', c.person,
+              'issues_assigned_now', c.issues_assigned_now,
+              'points_assigned_now', c.points_assigned_now,
+              'issues_done_total', c.issues_done_total,
+              'points_done_total', c.points_done_total,
+              'comments_count_total', c.comments_count_total,
+              'status_changes_count_total', c.status_changes_count_total,
+              'last_activity', c.last_activity
+            )
+            ORDER BY c.points_assigned_now DESC NULLS LAST
+          )
+          FROM contributors c),
+          '[]'::jsonb
+        ),
+        'dataQuality', (SELECT jsonb_build_object(
+          'hasMissingAssignees', dq.has_missing_assignees,
+          'hasMissingStoryPoints', dq.has_missing_story_points,
+          'totalIssues', dq.total_issues,
+          'missingAssigneesCount', dq.missing_assignees_count,
+          'missingStoryPointsCount', dq.missing_story_points_count
+        ) FROM data_quality_flags dq)
+      ) AS facts
+    params:
+      - "{{ inputs.sprint_id }}"
+    output: { name: facts }
+
+  - id: transform
+    type: function
+    function: app.processors.sprint_cards.extract_team_pulse
+    inputs:
+      burndown: "{{ steps.sprint_burndown.outputs.burndown }}"
+      facts: "{{ steps.sprint_facts.outputs.facts }}"
+    output: { name: team_pulse }
+
+return: "transform.team_pulse"

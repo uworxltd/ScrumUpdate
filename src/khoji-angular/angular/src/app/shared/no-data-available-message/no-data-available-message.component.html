@@ -1,0 +1,11 @@
+<!-- /*
+Copyright 2026 UWorx Services.
+Licensed under the Apache License, Version 2.0.
+See LICENSE for the full license text.
+*/ -->
+
+
+<div class="ml-2 mr-2 px-3 py-2 d-flex align-items-center" data-test="no-data-message" [ngClass]="'alert-container-'+tooltipType">
+  <i class="fa fa-exclamation-circle" style="font-size: 20px;" [ngClass]="'alert-icon-'+tooltipType"></i>
+  <div class="ml-2">{{noDataAvailableMessage}}</div>
+</div>

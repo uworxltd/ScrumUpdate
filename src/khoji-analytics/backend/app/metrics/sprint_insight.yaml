@@ -1,0 +1,40 @@
+name: sprint_insight_complete_web
+version: 1.0
+
+inputs:
+  jira_browse_base: { type: string, default: "https://company-name.atlassian.net/browse/" }
+  sprint_id: { type: int, default: 1 }
+  team_name: { type: string, default: "" }
+
+steps:
+  # 1) Run the AI cards pipeline and grab its final JSON
+  - id: ai_cards
+    type: pipeline
+    metric: sprint_insight/ai_cards
+    inputs:
+      sprint_id: "{{ inputs.sprint_id }}"
+      team_name: "{{ inputs.team_name }}"
+    select: "parse.processed_insight"   # <- from the child metric's return path
+    output: { name: cards }
+
+  # 2) Run the tabulator table pipeline and grab the table JSON
+  - id: tabulator_table
+    type: pipeline
+    metric: sprint_insight/db_tabulator_table
+    inputs:
+      jira_browse_base: "{{ inputs.jira_browse_base }}"
+      sprint_id: "{{ inputs.sprint_id }}"
+      team_name: "{{ inputs.team_name }}"
+    select: "to_tabulator.tabulator_json"  # <- returns: { "table": {...} }
+    output: { name: table_payload }
+
+  # 3) Merge: append `table` to the AI cards JSON
+  - id: merge_final
+    type: function
+    function: app.processors.sprint_insight.merge_cards_and_table
+    inputs:
+      cards: "{{ steps.ai_cards.outputs.cards }}"
+      table_payload: "{{ steps.tabulator_table.outputs.table_payload }}"
+    output: { name: final }
+
+return: "merge_final.final"

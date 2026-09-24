@@ -1,0 +1,79 @@
+<!-- /*
+Copyright 2026 UWorx Services.
+Licensed under the Apache License, Version 2.0.
+See LICENSE for the full license text.
+*/ -->
+
+
+<div class="p-container max-w-full">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item active" aria-current="page">
+        {{translation?.adminPanel.dashboard.createTeams.manageSupervisors.breadcrumb}}</li>
+    </ol>
+  </nav>
+  <h4>{{translation?.adminPanel.dashboard.createTeams.manageSupervisors.title}}</h4>
+
+  <p-toolbar>
+    <div class="p-toolbar-group-left">
+      <span class="rows-per-page-left-tag">{{translation?.adminPanel.dashboard.createTeams.manageSupervisors.show}}</span>
+      <span class="rows-per-page-right-tag"> of {{tableData.length}}</span>
+    </div>
+    <div class="p-toolbar-group-right">
+      <label *ngIf="enableSearch" title="{{constants.DATA_TABLE_SEARCH_INPUT_TOOLTIP}}" class="p-input-icon-left">
+        <i class="pi pi-search"></i>
+        <input type="search" pInputText size="50" placeholder="Search"
+          (input)="customFilter(dt, $event.target.value, 'contains')" class="search-input">
+      </label>
+    </div>
+  </p-toolbar>
+
+  <p-table [id]="tableId" [value]="tableData" #dt sortField="email"
+    [rowsPerPageOptions]="[10,25,50,100,tableData.length]" [rows]="constants.INITIAL_ROWS_PER_PAGE"
+    [totalRecords]="tableData.length" [showCurrentPageReport]="true" [currentPageReportTemplate]="checkPaginationText()"
+    [paginator]="enablePaging" [columns]="cols" (onPage)="resetDisplayedStories()" (onSort)="resetDisplayedStories()"
+    sortField="userName" [sortOrder]="1" (onFilter)="onSearch()" (sortFunction)="customSort($event)"
+    [customSort]="true">
+
+    <ng-template pTemplate="header">
+      <tr *ngIf="cols.length>0">
+        <th *ngFor="let col of cols" class="header_font border-none"
+          [ngStyle]="{'width':col.width, 'max-width':col.width,'min-width':col.width}" [pSortableColumn]="col.field">
+          <div class="vertical_header">
+            <span>
+              {{col.header}}
+            </span>
+            <div>
+              <p-sortIcon [field]="col.field"></p-sortIcon>
+            </div>
+          </div>
+        </th>
+        <th class="border-none btn-colmn-width">
+        </th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-rowData let-columns="cols" let-rowIndex="rowIndex">
+      <tr>
+        {{addToDisplayedStories(rowData,rowIndex)}}
+        <td *ngFor="let col of cols" class="body_data_ellipsis border-none" [title]="rowData[col.field]"
+          [ngStyle]="{'width':col.width, 'max-width':col.width,'min-width':col.width}">
+          {{rowData[col.field]}}
+        </td>
+        <td class="body_data_ellipsis border-none">
+          <button pButton pRipple class="p-button-link underline"
+            (click)="getUserTeamsList(rowData['id'])">{{translation?.adminPanel.dashboard.createTeams.manageSupervisors.assignSupervisor}}</button>
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage" let-columns>
+      <tr>
+        <td [attr.colspan]="columns.length+1" class="border-none text-center text-base">
+          {{showEmptyMessage()}}
+        </td>
+      </tr>
+    </ng-template>
+
+  </p-table>
+</div>

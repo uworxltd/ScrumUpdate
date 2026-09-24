@@ -1,0 +1,83 @@
+<!-- /*
+Copyright 2026 UWorx Services.
+Licensed under the Apache License, Version 2.0.
+See LICENSE for the full license text.
+*/ -->
+
+
+<div>
+    <form (ngSubmit)="submit()" #inviteUserForm="ngForm" novalidate>
+        <!-- ------------------------------------Role------------------------------------------- -->
+        <div class="mt-4">
+            <div class="flex flex-column" >
+                <label for="userRole">{{translation?.adminPanel.formLabels.memberRole}} &#42;</label>
+                <khoji-single-select-dropdown appendTo="body" (selectedValue)="roleChanged($event)" [selectedItem]="currentRole"
+                    [dropdownValues]="rolesDropdownValues" data-test="khoji-users-edit-role-dropdown">
+                </khoji-single-select-dropdown>
+            </div>
+        </div>
+        <!-- ------------------------------------Access Level------------------------------------------- -->
+        <div class="mt-4">
+            <div class="flex flex-column"
+                [pTooltip]="accessLevelsDropdownDisabled ? translation?.adminPanel.formLabels.noPermissionAccessLevelText : null"
+                [tooltipPosition]="'bottom'" data-test="no permission"
+            >
+                <label for="userRole">{{translation?.adminPanel.formLabels.accessLevel}} &#42;</label>
+                <khoji-single-select-dropdown
+                    appendTo="body"
+                    (selectedValue)="getAccessLevelValue($event)"
+                    [selectedItem]="currentAccessLevel"
+                    [disabled]="accessLevelsDropdownDisabled || !isAccessLevelEditable"
+                    [dropdownValues]="accessLevels"
+                    data-test="khoji-users-edit-access-dropdown"
+                >
+                </khoji-single-select-dropdown>
+            </div>
+        </div>
+        <!-- ------------------------------------Email------------------------------------------- -->
+        <div class="mt-4">
+            <div >
+                <label for="email">{{translation.viewUserDetail.modal.fields.email}}</label>
+                <input
+                    [ngClass]="{'p-disabled':disableEmailField}"
+                    pInputText
+                    id="email"
+                    class="w-full"
+                    type="email"
+                    #email="ngModel"
+                    [(ngModel)]="userModel.email"
+                    name="email"
+                    [placeholder]="translation.viewUserDetail.modal.fields.emailPlaceholder"
+                    pattern="{{constants.KHOJI_EMAIL_REGX}}"
+                    data-test="khoji-users-edit-email-text"
+                >
+
+                <div
+                    class="p-error"
+                    style="position: absolute;"
+                    *ngIf="!email?.valid && !disableEmailField"
+                    data-test="email-validation-text"
+                >
+                    {{showErrorMessage(email.errors, 'emailValidation')}}
+                </div>
+            </div>
+        </div>
+        <div class="flex align-items-center gap-2 justify-content-end mt-6">
+            <button
+                pButton
+                pRipple
+                type="reset"
+                [label]="translation.viewUserDetail.modal.button.cancel"
+                class="p-button-text text-primary"
+                (click)="closeModal(false)"
+            ></button>
+            <button
+                pButton
+                pRipple
+                type="submit"
+                [label]="translation.viewUserDetail.modal.button.update"
+                [disabled]="!inviteUserForm.form.valid || !hasChanges()"
+            ></button>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,106 @@
+name: scope_creep
+description: Issues added mid-sprint (created, moved, or story points increased after sprint start)
+version: 1.0
+
+inputs:
+  sprint_id: { type: int, required: true }
+
+steps:
+  - id: scope_query
+    type: sql
+    service: main-db
+    query: |
+      WITH sprint_info AS (
+        SELECT sprint_id, start_date, end_date
+        FROM {{ schema }}.sprints
+        WHERE sprint_id = $1
+      ),
+
+      sprint_issues AS (
+        -- Only issues that are CURRENTLY in this sprint
+        SELECT issue_key
+        FROM {{ schema }}.sprint_issues
+        WHERE sprint_id = $1
+      ),
+
+      -- 1️⃣ Issues created mid-sprint
+      created_mid AS (
+        SELECT
+          i.issue_key,
+          'Created mid-sprint' AS source_type,
+          i.created_date::timestamp AS event_date
+        FROM {{ schema }}.issues i
+        JOIN sprint_issues si ON si.issue_key = i.issue_key
+        JOIN sprint_info sp ON sp.sprint_id = $1
+        WHERE i.created_date > sp.start_date
+      ),
+
+      -- 2️⃣ Issues added to sprint mid-way (moved from backlog or other sprint)
+      added_mid AS (
+        SELECT
+          sse.issue_key,
+          'Added via Move' AS source_type,
+          sse.created_date::timestamp AS event_date
+        FROM {{ schema }}.v_sprint_scope_events sse
+        JOIN sprint_info sp ON sp.sprint_id = sse.sprint_id
+        WHERE sse.sprint_id = $1
+          AND sse.event_type = 'added'
+          AND sse.created_date > sp.start_date
+
+          -- ✅ FIX: Only include if still in this sprint
+          AND sse.issue_key IN (
+            SELECT issue_key FROM sprint_issues
+          )
+
+          -- Avoid double-counting issues created mid-sprint
+          AND NOT EXISTS (
+            SELECT 1
+            FROM created_mid cm
+            WHERE cm.issue_key = sse.issue_key
+          )
+      ),
+
+      -- 3️⃣ Story Points increased mid-sprint (SP went from blank/0 → >0 OR increased)
+      sp_change AS (
+        SELECT
+          i.issue_key,
+          'Story Points Increased mid-sprint' AS source_type,
+          MIN(c.created_date)::timestamp AS event_date
+        FROM {{ schema }}.changelogs c
+        INNER JOIN {{ schema }}.issues i ON c.issue_key = i.issue_id::text
+        JOIN sprint_issues si ON si.issue_key = i.issue_key
+        JOIN sprint_info sp ON sp.sprint_id = $1
+        WHERE c.field_name ILIKE '%story point%'
+          AND c.created_date > sp.start_date
+          AND COALESCE(NULLIF(c.to_display_value, ''), '0')::numeric
+              > COALESCE(NULLIF(c.from_display_value, ''), '0')::numeric
+        GROUP BY i.issue_key
+      ),
+
+      -- Combine all scope creep sources
+      scope_events AS (
+        SELECT * FROM created_mid
+        UNION ALL
+        SELECT * FROM added_mid
+        UNION ALL
+        SELECT * FROM sp_change
+      )
+
+      SELECT DISTINCT ON (se.issue_key)
+        se.issue_key,
+        i.summary AS title,
+        i.assignee_display_name AS assignee,
+        i.status AS current_status,
+        i.priority,
+        TO_CHAR(se.event_date, 'YYYY-MM-DD HH24:MI:SS') AS added_date,
+        EXTRACT(DAY FROM (CURRENT_TIMESTAMP - se.event_date))::int AS days_since_added,
+        se.source_type
+      FROM scope_events se
+      JOIN {{ schema }}.issues i ON i.issue_key = se.issue_key
+      ORDER BY se.issue_key, se.event_date DESC;
+
+    params:
+      - "{{ inputs.sprint_id }}"
+    output: { name: scope_creep_issues }
+
+return: scope_query.scope_creep_issues

@@ -1,0 +1,19 @@
+<p-chip (click)="onChipClick(chip)" class="cursor-pointer" [ngClass]="{'selected-chip-background': chip.selected}">
+  <div class="flex align-items-center justify-content-center h-2rem gap-2">
+    <span>{{chip.label}}</span>
+    <ng-container *ngIf="chip.tooltip">
+      <khoji-tooltip position="bottom" styleclass="chip-tooltip">
+        <span class="text-md pi pi-info-circle mt-1"></span>
+        <div tooltip>
+          <ng-container *ngIf="isTemplateRef(chip.tooltip); else stringTooltipContent">
+            <div [ngTemplateOutlet]="chip.tooltip"  [ngTemplateOutletContext]="{ chip }"></div>
+          </ng-container>
+          <ng-template #stringTooltipContent>
+            {{ chip.tooltip }}
+          </ng-template>
+        </div>
+
+      </khoji-tooltip>
+    </ng-container>
+  </div>
+</p-chip>

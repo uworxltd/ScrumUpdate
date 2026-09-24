@@ -1,0 +1,108 @@
+<div
+  class="flex align-items-center gap-3 request-panel-bar"
+  [ngClass]="{ 'request-panel-shadow': requestPanelShadow }"
+>
+  <div style="font-size: 1.3rem; font-weight: 600">My Work</div>
+  <khoji-request-panel
+    [pinnable]="constants.WORKLOG_REQUEST_PANNEL_PINNABLE"
+    [pinned]="constants.WORKLOG_REQUEST_PANNEL_PINNED"
+    *ngIf="translation"
+  >
+    <khoji-week-input
+      [value]="selectedWeek"
+      [maxDate]="maxDate"
+      [maxWeek]="maxWeek"
+      [loading]="worklogSummaryLoadingState === loadingStates.Loading"
+      (onChange)="handleWeekChange($event)"
+      (_isNextWeekAvailable)="handleNextWeek($event)"
+      [timeZone]="timeZone"
+    ></khoji-week-input>
+
+    {{ noMemberSelected }}
+  </khoji-request-panel>
+</div>
+<ng-container *ngIf="instanceUserMetaDataLoadingState === 1 || worklogSummaryLoadingState === 1; else logMyWorkTemplate">
+  <div class="center-spinner">
+    <p-progressSpinner
+      [style]="{ width: '70px', height: '70px' }"
+      strokeWidth="4"
+      animationDuration="1s"
+    ></p-progressSpinner>
+  </div>
+</ng-container>
+<ng-template #logMyWorkTemplate>
+  <div *ngIf="worklogSummaryLoadingState === 2" class="mb-3 mr-1">
+    <khoji-summary
+      @fadeInOut
+      [ngClass]="{'hidden': !isSummaryView}"
+      [isNextWeekAvailable]="isNextWeekAvailable"
+      (openWorkLogModal)="handleModalEvent($event)"
+    >
+    </khoji-summary>
+    <div class="flex justify-content-between align-items-end pb-3 pt-2" [ngStyle]="{ 'margin-top': isSummaryView ? '-1.5rem' : '1rem' }">
+      <div *ngIf="isSummaryView" class="p-1"><!--empty div as placeholder--></div>
+      <khoji-mini-summary *ngIf="!isSummaryView"></khoji-mini-summary>
+      <div>
+        <button
+          data-test="View-edit-timesheet"
+          type="button"
+          pButton
+          [icon]="'pi ' + (isSummaryView ? 'pi-file-edit' : 'pi-chevron-left')"
+          class="p-button-sm p-button-outlined"
+          (click)="isSummaryView = !isSummaryView"
+          [label]="isSummaryView ? 'View & edit timesheet' : 'Back to summary view'"
+        ></button>
+      </div>
+    </div>
+    <khoji-worklog-details
+      #worklogDetailsComponent
+      [ngClass]="{'hidden': isSummaryView}"
+      @fadeInOut
+      (openWorkLogModal)="handleModalEvent($event)">
+    </khoji-worklog-details>
+  </div>
+  <div *ngIf="worklogSummaryLoadingState === 2">
+    <khoji-generate-worklog
+      (openWorkLogModal)="handleModalEvent($event)"
+      [isNextWeekAvailable]="isNextWeekAvailable"
+      @fadeInOut
+    >
+    </khoji-generate-worklog>
+  </div>
+</ng-template>
+
+<p-dialog
+  [(visible)]="showModal"
+  [style]="{ width: '70vw' }"
+  [modal]="true"
+  [draggable]="false"
+  [closeOnEscape]="true"
+  [resizable]="false"
+>
+  <div class="modal-content-ms-teams m-3">
+    <h4>Know that...</h4>
+    <span class="mb-5">
+      Your work is more than what Jira tracks. Make sure that every meeting and collaboration is logged.
+      <i class="far fa-hand-point-right"></i>
+      <img
+        [src]="constants.OUTLOOK_SVG"
+        height="20"
+        width="20"
+      />
+      <a
+        class="ms-calendar-connect-link"
+        (click)="connectMSCalendar()"
+      >
+        Connect MS Calendar</a
+      >
+    </span>
+    <button
+      pButton
+      pRipple
+      type="reset"
+      label="Generate work log"
+      class="p-button"
+      (click)="generateWorkLogClick()"
+    ></button>
+  </div>
+</p-dialog>

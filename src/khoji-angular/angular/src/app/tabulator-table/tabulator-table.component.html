@@ -1,0 +1,59 @@
+<div class="table-container" [ngClass]="{'full-screen': expandTable, 'collapsed': collapseTable}">
+    <div class="relative flex align-items-center justify-content-between gap-2 mb-2" *ngIf="tableReady">
+        <span *ngIf="collapseTable && !expandTable" class="text-xl font-bold z-10 collapsed-title">Sprint Items</span>
+        <div class="flex align-items-center flex-wrap">
+            <!-- group chips -->
+            <ng-container *ngIf="groupBy && (!collapseTable || expandTable)">
+                <p-chip class="mr-1 mb-1" styleClass="inline-flex align-items-center gap-2" removable="true"
+                    (onRemove)="removeGroupBy()">
+                    <div class="filter-operator">group by</div>
+                    <div>{{groupBy}}</div>
+                </p-chip>
+            </ng-container>
+            <!-- filter chips -->
+            <ng-container *ngIf="filters.length && (!collapseTable || expandTable)">
+                <div *ngFor="let filter of filters" class="mr-1 mb-1 p-chip inline-flex align-items-center gap-2">
+                    <div>{{filter.title}}</div>
+                    <div class="filter-operator">{{filter.type}}</div>
+                    <div>{{formatFilterValue(filter.value)}}</div>
+                    <i class="pi pi-times-circle cursor-pointer" (click)="removeFilter(filter)"></i>
+                </div>
+            </ng-container>
+        </div>
+
+        <div><!-- empty div to strech left side --></div>
+        <div class="flex align-items-center justify-content-between gap-2">
+            <ng-container *ngIf="!collapseTable || expandTable">
+                <p-menu #exportMenu [popup]="true" [model]="exportOptions" appendTo="body"></p-menu>
+                <input type="search" [(ngModel)]="searchTerm" placeholder="Search..." title="search term"
+                    class="p-inputtext p-component p-inputtext-sm table-search-input" (search)="onSearch()" />
+                <button pButton title="search" icon="pi pi-search" class="p-button-primary p-button-sm"
+                    (click)="onSearch()"></button>
+                <button pButton title="filter" icon="pi {{this.headerFilters ? 'pi-filter-slash' : 'pi-filter'}}"
+                    class="p-button-sm p-button-secondary" (click)="showFiltersUi()"></button>
+                <button pButton title="reset" icon="pi pi-undo" class="p-button-sm p-button-secondary"
+                    (click)="onReset()"></button>
+                <button pButton title="export" type="button" icon="pi pi-download" class="p-button-sm p-button-secondary"
+                    (click)="exportMenu.toggle($event)"></button>
+                <button pButton title="columns" type="button" icon="pi pi-cog" class="p-button-sm p-button-secondary"
+                    (click)="op.toggle($event)">
+                    <p-overlayPanel #op>
+                        <div>
+                            <div *ngFor="let opt of columnOptions" (click)="toggleColumn(opt)" class="align-items-center cursor-pointer flex gap-2 hover:text-teal-600 p-1">
+                                <i class="pi" [ngClass]="{'pi-circle-on':opt.visible,'pi-circle-off':!opt.visible}"></i>
+                                <div>{{opt.title}}</div>
+                            </div>
+                        </div>
+                    </p-overlayPanel>
+                </button>
+                <button pButton [title]="collapseTable ? 'expand' : 'collapse'" type="button" [icon]="collapseTable ? 'pi pi-chevron-down' : 'pi pi-chevron-up'" 
+                    [class]="collapseTable ? 'p-button-sm p-button-primary' : 'p-button-sm p-button-secondary'" (click)="toggleCollapse()" *ngIf="!expandTable"></button>
+            </ng-container>
+            <button pButton title="expand" type="button" icon="pi pi-chevron-down" 
+                class="p-button-sm p-button-primary" (click)="toggleCollapse()" *ngIf="collapseTable && !expandTable"></button>
+            <i class="fa fa-solid hover:bg-gray-300 p-2 full-screen-icon" (click)="toggleExpand()" [title]="expandTable ? 'exit full screen' : 'full screen'" [attr.aria-label]="expandTable ? 'Exit full screen' : 'Full screen'" role="button"
+                [ngClass]="{'fa-expand':!expandTable,'fa-compress':expandTable}"></i>
+        </div>
+    </div>
+    <div [attr.id]="tableId" [class.hidden]="collapseTable && !expandTable"></div>
+</div>

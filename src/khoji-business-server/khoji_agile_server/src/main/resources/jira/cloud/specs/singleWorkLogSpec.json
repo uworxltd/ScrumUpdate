@@ -1,0 +1,17 @@
+[
+  {
+    "operation": "shift",
+    "spec": {
+      "issueId": "issueId",
+      "id": "workLogId",
+      "started": "started",
+      "created": "created",
+      "updated": "updated",
+      "timeSpentSeconds": "timeSpentSeconds",
+      "comment": "comment",
+      "author": {
+        "accountId": "author.accountId"
+      }
+    }
+  }
+]

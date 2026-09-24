@@ -1,0 +1,12 @@
+[
+  {
+    "operation": "shift",
+    "spec": {
+      "*": {
+        "id": "[&1].id",
+        "name": "[&1].name",
+        "colorName": "[&1].color"
+      }
+    }
+  }
+]

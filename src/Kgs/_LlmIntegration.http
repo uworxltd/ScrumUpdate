@@ -1,0 +1,58 @@
+#@baseUrl = http://localhost:5200, http://localhost:5130, http://localhost:9090
+@baseUrl = http://localhost:9090
+#@llm = claude, geminiflash, together, together8, together70, openrouter-nemotron, ollama, local-from-docker, local
+@llm = local
+
+# Dev-testing protected (9090) endpoints as the service:
+# The key is base64(KHOJI_BASICAUTHUSERNAME:KHOJI_BASICAUTHUSERPASSWORD) — the same value
+# KGS sends to KBS. Set the pair in your environment (e.g. .env / launchSettings.json).
+
+## test
+GET {{baseUrl}}/test
+
+### input
+POST {{baseUrl}}/api/llm/invoke
+Content-Type: application/json
+
+
+{
+  "instance": 1,
+  "llm": "{{llm}}",
+  "prompt": "BurndownInterpreter",
+  "input": "KFX-1 SP5 Monday, KFX-2 SP3 Tuesday"
+}
+### input with cache-control
+POST {{baseUrl}}/api/llm/invoke
+Cache-Control: max-age=120
+Content-Type: application/json
+
+
+{
+  "instance": 1,
+  "llm": "{{llm}}",
+  "prompt": "BurndownInterpreter",
+  "input": "KFX-1 SP5 Monday, KFX-2 SP3 Tuesday"
+}
+### data
+POST http{{baseUrl}}/api/llm/invoke
+Cache-Control: max-age=120
+Content-Type: application/json
+
+
+{
+  "instance": 1,
+  "llm": "{{llm}}",
+  "prompt": "BurndownInterpreter",
+  "data": [
+    {
+      "ticket": "KFX-1",
+      "storyPoint": 5,
+      "done": "Monday"
+    },
+    {
+      "ticket": "KFX-2",
+      "storyPoint": 3,
+      "done": "Tuesday"
+    }
+  ]
+}

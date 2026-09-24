@@ -1,0 +1,50 @@
+[
+    {
+        "name":"Adam1",
+        "email":"adam1@abc.com",
+        "accountId":"123",
+        "avatarURL": "https://secure.gravatar.com/avatar/11f3df196397a16c7ea3dea2ec2c7662?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FIC-4.png",
+        "locationId": "1",
+        "userRole": "adm"
+    },
+    {
+        "name":"Adam2",
+        "email":"adam2@abc.com",
+        "accountId":"1234",
+        "avatarURL":"https://secure.gravatar.com/avatar/aa78281aa7e7c5305953773a11ae4e83?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FMI-3.png",
+        "locationId": "",
+        "userRole": "qa"
+    },
+    {
+        "name":"Adam3",
+        "email":"adam3@abc.com",
+        "accountId":"12345",
+        "avatarURL":"https://secure.gravatar.com/avatar/aa78281aa7e7c5305953773a11ae4e83?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FMI-3.png",
+        "locationId": "1",
+        "userRole": "adm"
+    },
+    {
+        "name":"Adam4",
+        "email":"adam4@abc.com",
+        "accountId":"123456",
+        "avatarURL":"https://secure.gravatar.com/avatar/aa78281aa7e7c5305953773a11ae4e83?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FMI-3.png",
+        "locationId": "1206",
+        "userRole": "dpm"
+    },
+    {
+        "name":"Adam5",
+        "email":"adam5@abc.com",
+        "accountId":"1234567",
+        "avatarURL": "https://secure.gravatar.com/avatar/11f3df196397a16c7ea3dea2ec2c7662?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FIC-4.png",
+        "locationId": "1",
+        "userRole": "adm"
+    },
+    {
+        "name":"Adam6",
+        "email":"adam6@abc.com",
+        "accountId":"12345678",
+        "avatarURL": "https://secure.gravatar.com/avatar/11f3df196397a16c7ea3dea2ec2c7662?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FIC-4.png",
+        "locationId": "1206",
+        "userRole": "adm"
+    }
+]

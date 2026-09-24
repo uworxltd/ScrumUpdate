@@ -1,0 +1,3336 @@
+{
+  "members": "Members: ",
+  "onboarding": {
+    "team": {
+      "title": "Build your team",
+      "subTitle": "For streamlined work log tracking and better productivity insights.",
+      "teamName": "Team name*",
+      "enterTeamName": "Please enter a team name",
+      "addMembersToTeam": "Add members to your team",
+      "members": "Members",
+      "buttons": {
+        "next": "Next",
+        "updateTeam": "Update team",
+        "cancel": "Cancel",
+        "skip": "I'll do it later"
+      }
+    },
+    "inviteUserDialog": {
+      "header": "Add a Jira User",
+      "selectUser": "Select a user *",
+      "selectUserPlaceholder": "Select a user",
+      "selectRole": "Select a role",
+      "selectAccessLevel": "Select an access level",
+      "emailLabel": "Provide an email address if you want to notify the user.",
+      "emailPlaceholder": "Enter an email address (optional)",
+      "emailInvalidPatternError": "Please enter a valid email address",
+      "buttons": {
+        "save": "Add Jira user",
+        "cancel": "Cancel"
+      }
+    },
+    "worklogCategories": {
+      "title": "Group issue types into categories to track {0} effort",
+      "getStarted": "Get started",
+      "doItLater": "I'll do it later",
+      "reset": "Reset",
+      "save": "Save"
+    },
+    "survey": {
+      "welcomeMessage": "Welcome, ",
+      "introductionPrompt": "Tell us a bit about yourself",
+      "informationHelpText": "Providing this information will help us improve your experience.",
+      "finishButtonLabel": "Finish"
+    }
+  },
+  "dashboardInsightsTranslation": {
+    "gotoTeamDashboard": "Go to %s1 Dashboard",
+    "gotoManageTeams": "Go to Manage Teams",
+    "noTeamDetailsAreAvailable": "No team details are available.",
+    "viewDetails": "View Details",
+    "teamMembers": {
+      "icon": "pi pi-users",
+      "toolTip": "Team Members"
+    }
+  },
+  "sprintInsights": {
+    "statusOverView": {
+      "title": "Status Overview::In Progress Status Tracking",
+      "button": {
+        "label": "View Status Details"
+      },
+      "toolTip": [
+        {},
+        {
+          "name": "pi pi-info-circle cursor-pointer",
+          "label": "Track the status breakdown of Jira's \"In Progress\" status category. Hover over bars for status names and %s1."
+        }
+      ],
+      "open": "Open",
+      "inProgress": "In Progress",
+      "resolved": "Resolved",
+      "icLabel": "issue counts"
+    },
+    "scopeVsVelocity": {
+      "title": "Sprint Scope Vs Avg. Velocity",
+      "button": {
+        "label": "View Velocity Analysis"
+      },
+      "inScope": "In Scope",
+      "avgVelocity": "Avg. Velocity",
+      "is": "is",
+      "are": "are",
+      "s": "s",
+      "SAME_AS_SCOPE": "Planned scope is equal to the average velocity of previous <b>%s1</b> sprint%s2.",
+      "OVER_COMMITTED_SCOPE": "Planned scope is <b>%s1</b> %s2 more than the average velocity of previous <b>%s3</b> sprint%s4.",
+      "UNDER_COMMITTED_SCOPE": "Planned scope is <b>%s1</b> %s2 less than the average velocity of previous <b>%s3</b> sprint%s4.",
+      "NO_ISSUES_IN_CURRENT": "No issues are available in the sprint to compare with the average velocity of the previous <b>%s1</b> sprint%s2.",
+      "NO_PREVIOUS_SPRINTS_AVAILABLE": "No previous sprints are available to calculate the average velocity."
+    },
+    "changeInScope": {
+      "title": "Change in Scope",
+      "button": {
+        "label": "View Burnup Historical Details"
+      },
+      "toolTip": {
+        "label": "Changes in scope are not captured after the end date of the sprint."
+      },
+      "SPRINT_START_MESSAGE": "Since the start of the sprint.",
+      "added": "Added",
+      "removed": "Removed",
+      "netChange": "Net Change"
+    },
+    "dataReliability": {
+      "title": "Data Reliability",
+      "subTitle": {
+        "sp": "Story Points Coverage",
+        "d": "Issue Estimates Coverage"
+      },
+      "sp": "story points",
+      "d": "issue estimates",
+      "is": "is",
+      "are": "are",
+      "singleIssueMessage": "<b>%s1</b> out of <b>%s2</b> issue %s3 without %s4.",
+      "pluralIssueMessage": "<b>%s1</b> out of <b>%s2</b> issues %s3 without %s4.",
+      "wellDefinedScope": "All the issues are well estimated.",
+      "button": {
+        "singleIssueLabel": "View Issue with Missing Estimates",
+        "pluralIssuesLabel": "View Issues with Missing Estimates"
+      },
+      "toolTip": {
+        "label": ""
+      }
+    },
+    "teamMembers": {
+      "title": "Team Members",
+      "button": {
+        "label": "Manage Teams"
+      },
+      "added": "Added",
+      "removed": "Removed",
+      "clearText": "<span class=\"clear-text\">placeHolder</span>"
+    },
+    "teamWorkLog": {
+      "title": "Team View",
+      "button": {
+        "label": "View Team Analysis"
+      },
+      "workLog": "Total Work Log",
+      "mainCategories": "Main Categories",
+      "others": "Others",
+      "daysUnitLabel": " d",
+      "REQUESTED_DATE_RANGE": "Since Sprint Start",
+      "LAST_MONTH_DATE_RANGE": "Last Month",
+      "THIS_MONTH_DATE_RANGE": "This Month"
+    },
+    "defectsReported": {
+      "title": "No. of Defects Reported::In Progress Status Tracking",
+      "open": "Open",
+      "inProgress": "In Progress",
+      "resolved": "Resolved",
+      "toolTip": [
+        {},
+        {
+          "name": "pi pi-info-circle cursor-pointer",
+          "label": "Track the status breakdown of Jira's \"In Progress\" status category. Hover over bars for status names and issue counts."
+        }
+      ],
+      "clearText": "<span class=\"clear-text\">placeHolder</span>",
+      "button": {
+        "manageIssueDefectSettings": "Manage Issue Defect Settings",
+        "viewIssueDefectAnalysis": "View Issue Defect Analysis"
+      }
+    }
+  },
+  "insightsCodes": {
+    "KANBAN_DEFAULT_1": {
+      "preFixMessage": "Explore details by clicking on ",
+      "message": "Analysis by Team board.",
+      "messageClass": "text-primary cursor-pointer font-bold",
+      "postFixMessage": "",
+      "click": "abt",
+      "messageType": "Information"
+    },
+    "KANBAN_DEFAULT_0": {
+      "message": "Insights coming soon.",
+      "messageType": "Information"
+    },
+    "NO_BOARDS_OR_MEMBERS_0": {
+      "message": "No members or boards are added to this team.",
+      "messageType": "Information"
+    },
+    "NO_BOARDS_OR_MEMBERS_1": {
+      "message": "Please update your team details.",
+      "messageType": "Information"
+    },
+    "NO_BOARDS": {
+      "message": "No boards are assigned to this team.",
+      "messageType": "Information"
+    },
+    "NO_BOARDS_OR_MEMBERS_FOR_USER_ACCESS_LEVEL": {
+      "message": "Please ask your admin to update your team details.",
+      "messageType": "Information"
+    },
+    "NO_ACTIVE_SPRINTS": {
+      "message": "No active sprints are available.",
+      "messageType": "Information"
+    },
+    "NO_ISSUES_FOUND": {
+      "message": "No issues are available in the sprint.",
+      "messageType": "Information"
+    },
+    "NO_WEIGHTAGE_AVAILABLE_SP": {
+      "message": "No story points are added to the issues.",
+      "messageType": "Information"
+    },
+    "NO_WEIGHTAGE_AVAILABLE_IE": {
+      "message": "No issue estimates are added to the issues.",
+      "messageType": "Information"
+    },
+    "RUNNING_OUT_OF_WORK": {
+      "title": "Hello,",
+      "message": "It seems like the team has completed all the tasks assigned. Let's make sure that enough work packets are prepared to maintain productivity.",
+      "messageType": "Warning"
+    },
+    "SUCCESSFUL_COMPLETION": {
+      "title": "Cheers,",
+      "message": "Congratulations on completing your tasks on time. Keep up the good work to ensure continued success.",
+      "messageType": "Success"
+    },
+    "NO_SCOPE_DEFINED": {
+      "message": "No scope has been defined yet.",
+      "messageType": "Information"
+    },
+    "NO_ISSUES_FOR_DATA_RELIABILITY": {
+      "message": "No issues are available to calculate the reliability.",
+      "messageType": "Information"
+    },
+    "NO_DATA_IN_CLOSED_AND_CURRENT_SPRINT": {
+      "message": "No scope and velocity of previous sprints is available.",
+      "messageType": "Information"
+    },
+    "NO_CLOSED_SPRINTS_AVAILABLE": {
+      "message": "No previous sprints are available to calculate the average velocity.",
+      "messageType": "Information",
+      "messageClass": "flex text-center"
+    },
+    "NO_CHANGE_IN_MEMBERSHIP": {
+      "message": "There have not been any changes made to the team.",
+      "messageType": "Information"
+    },
+    "NO_MEMBERS": {
+      "message": "There are no members added to the team to calculate the Work Log.",
+      "messageType": "Information",
+      "messageClass": "flex text-center"
+    },
+    "NO_WORK_LOGGED": {
+      "message": "The team has not logged their work yet",
+      "messageType": "Information",
+      "messageClass": "flex text-center"
+    },
+    "START_DATE_MISSING": {
+      "message": "Work Log cannot be calculated since the start date of the sprint is missing.",
+      "messageType": "Information",
+      "messageClass": "flex text-center"
+    },
+    "NO_DEFECTS_FOUND": {
+      "message": "No defects have been reported yet.",
+      "messageType": "Information"
+    },
+    "DEFECTS_CONFIGURATION_MISSING": {
+      "message": "Defects configuration is missing. Please contact the support team.",
+      "messageType": "Information",
+      "messageClass": "flex text-center"
+    },
+    "DEFECTS_CONFIGURATION_MISSING_ADMIN_SUBTEXT": {
+      "message": "Please update the settings from Admin Dashboard.",
+      "messageType": "Information"
+    },
+    "DEFECTS_CONFIGURATION_MISSING_USER_SUBTEXT": {
+      "message": "Please ask your administrator to update the settings.",
+      "messageType": "Information"
+    },
+    "NO_SCOPE_FOUND_ISSUE_COUNT": {
+      "message": "Scope has not changed since the start of the sprint.",
+      "messageType": "Information"
+    },
+    "NO_SCOPE_FOUND_WEIGHTAGE": {
+      "message": "Scope has not changed since the start of the sprint.",
+      "messageType": "Information"
+    },
+    "RETRY": {
+      "message": "Refresh",
+      "messageClass": "text-primary cursor-pointer font-bold",
+      "preFixMessage": "Please click",
+      "postFixMessage": " to try again.",
+      "click": "retry",
+      "messageType": "Information"
+    },
+    "ERROR_OCCURED": {
+      "message": "An error occurred while loading the details. ",
+      "messageType": "Information"
+    }
+  },
+  "dashboardComponent": {
+    "mainCard": {
+      "projectSourceTitle": "Project Source",
+      "projectSourceubTitle": "Connect ScrumUpdate with your project source and sync projects, releases, team boards, and users.",
+      "teamManagementTitle": "Teams",
+      "teamManagementSubTitle": "Create and manage teams by assigning team boards and team members to specific teams, allowing for easy progress tracking.",
+      "userManagementTitle": "Users",
+      "userManagementSubtitle": "Invite your team members to access ScrumUpdate, manage and allocate them to their respective teams.",
+      "organizationalPracticesTitle": "Organizational Practices",
+      "organizationalPracticesSubtitle": "Customize your organization's time tracking source and default tracking fields.",
+      "workLogSettingsSubtitle": "Customize your organization's categories and RAG range.",
+      "workLogSettings": "Work Log Settings"
+    },
+    "children": {
+      "configureTheProjectSource": "Configure the Project Source",
+      "importProjects": "Import Projects",
+      "importTeamBoards": "Import Team Boards",
+      "importAndInviteUsers": "Import and Invite Users",
+      "mapCustomFields": "Map Custom Fields",
+      "review": "Review",
+      "teamManagementCreateTeam": "Create a team",
+      "teamManagementManageTeam": "Manage and assign supervisors to the Team",
+      "userManagementInviteUser": "Invite a User to ScrumUpdate",
+      "userManagementManageUsers": "Manage Users",
+      "organizationalPracticesCategoryManagement": "Work Log Category Management",
+      "organizationalPracticesWorklogRagManagement": "RAG settings",
+      "organizationalPracticesBurnupManagement": "Burnup Issue Types Management"
+    },
+    "toolTips": {
+      "configureSourceCard": "To edit the configured project source, please contact ScrumUpdate Support at hello@ScrumUpdate.com.",
+      "configureSourceChildren": "Integrate and save the project source to access this page.",
+      "tooltip1TeamConfigured": "Account Upgrade Required \n One team has already been configured. To create additional teams, please upgrade your account.",
+      "tooltipInviteUserDisabled": "Account Upgrade Required \n To invite people, please upgrade your account.",
+      "tooltipBurnupDisabled": "Account Upgrade Required \n To confiure settings, please upgrade your account."
+    }
+  },
+  "khojiTenantAdminLoginPage": {
+    "title": "Welcome to ScrumUpdate",
+    "subtitle": "We are here to help you get things rolling.",
+    "videoTitle": "How ScrumUpdate can help you?",
+    "cards": {
+      "projectSource": {
+        "title": "Integrate a Project Source",
+        "description": "Connect ScrumUpdate with your project source and sync projects, releases. team boards, and users.",
+        "buttons": {
+          "configureButton": "Configure"
+        }
+      },
+      "inviteUsers": {
+        "title": "Invite Users",
+        "description": "Invite your team members to access ScrumUpdate, manage and allocate them to their respective teams.",
+        "buttons": {
+          "manageUsersButton": "Manage Users",
+          "addUserButton": "Invite a User"
+        }
+      }
+    }
+  },
+  "toastMessages": {
+    "severities": {
+      "success": "success",
+      "error": "error",
+      "info": "info"
+    },
+    "summaries": {
+      "success": "Success!",
+      "error": "Error!",
+      "info": "Info!"
+    },
+    "keys": {
+      "message": "message"
+    },
+    "dataTableMessages": {
+      "exportMessage": "%s1 have been exported successfully.",
+      "multipleRowsExportMessage": "%s1 rows have been exported successfully.",
+      "singleRowExportMessage": "%s1 row has been exported successfully.",
+      "copyMessageMultipleRows": "%s1 have been copied to the clipboard.",
+      "copyMessageSingleRow": "%s1 has been copied to the clipboard."
+    },
+    "messages": {
+      "changesNotSaved": "Changes could not be saved.",
+      "changesSaved": "Changes were saved successfully.",
+      "userLimitReached": "Users limit reached.",
+      "userAlreadyExists": "User already added."
+    }
+  },
+  "imageErrorMessages": {
+    "maximumFileSizeError": "Maximum image size allowed is 10 MB. Please select a smaller image and try again.",
+    "invalidFormatError": "Image upload failed. The accepted formats are JPG, JPEG, and PNG."
+  },
+  "dashboardTrialMessage": "%s1 day(s) remaining in your free trial.",
+  "cacheDataMessage": "The data displayed may be cached and will be updated at %s1.",
+  "infoMessage": "Info!",
+  "disabledSettingsConfiguration": {
+    "toolTip": "To update your settings, please contact ScrumUpdate support for further assistance."
+  },
+  "multiSelectDropdown": {
+    "filterDataBasedOnDateNote": "Note: Last %s1 months releases are being displayed.",
+    "loadMoreButtonText": "load more...",
+    "itemSelectedMessage": " Selected",
+    "cancelButtonText": "Cancel",
+    "applyButtonText": "Apply",
+    "showAllButtonText": "Show All"
+  },
+  "profileSidebarMessages": {
+    "heading": "Welcome",
+    "profilePageTitle": "Profile Settings",
+    "profilePageSubtitle": "Update your profile settings",
+    "changePasswordTitle": "Change Password",
+    "accountSettings": "Account Setting",
+    "accountSettingsSubtitle": "Manage your ScrumUpdate account",
+    "changePasswordSubtitle": "Change current password",
+    "settingsTitle": "Settings",
+    "settingsSubtitle": "Change email preferences",
+    "signOutTitle": "Log out",
+    "signOutSubtitle": "Log out from this session",
+    "billingTitle": "Billing & Subscription",
+    "billingSubtitle": "Manage your subscription",
+    "switchAccountTitle": "Switch Account",
+    "switchAccountSubTitle": "Sign-in using another account"
+  },
+  "loginErrorMessage": {
+    "SE001": "You have entered invalid credentials.",
+    "SE002": "You do not have permission to login to your account. For more help, contact your administrator.",
+    "SE005": "Unable to process the request due to technical difficulties. Please try again or contact ScrumUpdate support.",
+    "SE006": "An account for your organization already exists. Please contact your admin for an invitation.",
+    "SE009": "Your email is already linked with another account. Please contact ScrumUpdate support for help."
+  },
+  "pageTitles": {
+    "dashboard": "ScrumUpdate",
+    "onboarding": "Onboarding | ScrumUpdate",
+    "requestAccess": "Request Access | ScrumUpdate",
+    "analysis": "Delivery | ScrumUpdate",
+    "teamboardAnalysis": "Analysis by Teamboard | ScrumUpdate",
+    "releaseAnalysis": "Analysis by Release  | ScrumUpdate",
+    "worklogAnalysis": "Analysis by Worklog  | ScrumUpdate",
+    "worklog": "Worklog  | ScrumUpdate",
+    "reports": "Reports  | ScrumUpdate",
+    "teamProgressReport": "Team Progress Report  | ScrumUpdate",
+    "teamIndicatorSummary": "Team Indicator Summary  | ScrumUpdate",
+    "releaseReport": "Release  | ScrumUpdate",
+    "adminPanel": "Admin Panel | ScrumUpdate",
+    "profileSettings": "Profile Settings | ScrumUpdate",
+    "login": "Login | ScrumUpdate",
+    "appSetup": "App Setup | ScrumUpdate",
+    "forgotPassword": "Forgot Password | ScrumUpdate",
+    "logMyWork": "My Work | ScrumUpdate",
+    "pulse": "My Work | Pulse",
+    "home": "Home | ScrumUpdate"
+  },
+  "dashboardTilesTitle": {
+    "noDashboardMenuCards": "All menus are disabled. Kindly contact support.",
+    "releaseReport": "Release Report",
+    "teamIndicatorsSummary": "Indicators Summary by Team Board",
+    "teamIndicatorsSummaryReport": "Indicators Summary by Team Report",
+    "teamProgressReport": "Team Progress Report",
+    "deliveryAnalysis": "Delivery Analysis",
+    "workLogAnalysis": "Team work log analysis",
+    "reports": "Reports",
+    "analysisByTeamboard": "Analysis by Team Board",
+    "analysisByRelease": "Analysis by Release",
+    "analysisByWorkLog": "Analysis by Work Log"
+  },
+  "quickSearch": {
+    "title": "Quick Search",
+    "menuHeading": "Menu",
+    "searchParameterHeading": "Search Parameter",
+    "noDataFound": "No matching records found.",
+    "loadingMessage": "Loading data. Please wait.",
+    "noDataAccess": "You don’t have the access to the requested data or it does not exist anymore."
+  },
+  "dataSource": {
+    "Jira": "Jira",
+    "ES": "ES"
+  },
+  "generalSettings": {
+    "tabHeading": "General settings",
+    "alphabetOnlyErrorMessage": "Only alphabets are allowed.",
+    "duplicateAliasNameError": "Alias name can not be same as a category name.",
+    "requiredAliasNameError": "Alias name is required."
+  },
+  "ragConfig": {
+    "tabHeading": " RAG",
+    "heading": "Manage RAG Values for Work Log",
+    "ragStatusHeading": "Set percentage thresholds to display worklog progress using RAG (Red, Amber, Green) indicators.",
+    "ragStatusSubheading": "Set range for each RAG status",
+    "burnupRagHeading": "Manage RAG Values for Data Reliability",
+    "burnupRagSubHeading": "Use the slider or enter values to set your Red and Amber range.",
+    "burnupRagWarningPopup": "Changes made to the Burnup RAG status have not been saved.",
+    "subHeading": "Use the slider or enter values to set your Red and Amber range.",
+    "red": "Red:",
+    "title": "Edit the range of RAG Statuses",
+    "header": "Settings for Work Log Analysis RAG ranges",
+    "amber": "Amber:",
+    "green": "Green:",
+    "edit": "RAG settings",
+    "andAboveText": "and above",
+    "button": {
+      "save": "Save changes",
+      "cancel": "Cancel",
+      "dontSave": "Don't Save",
+      "clear": "Reset"
+    },
+    "ragStatuses": {
+      "red": "Red",
+      "amber": "Amber"
+    },
+    "warningDialog": {
+      "header": "Warning! Unsaved Changes",
+      "message": "Want to save your changes made to the Work Log RAG Status?",
+      "burnupRagMessage": "You have unsaved changes. Do you want to save your changes before closing?",
+      "acceptLabel": "Save",
+      "rejectLabel": "Don't Save"
+    }
+  },
+  "userAgreement": {
+    "firstPart": "I accept and agree to the",
+    "termOfService": "Terms of Service",
+    "privacyPolicy": "Privacy Policy",
+    "lastPart": " of ScrumUpdate."
+  },
+  "noDataAvailable": {
+    "notApplicable": "N/A",
+    "errorEpic": "No epics were found based on the selected criteria.",
+    "errorStoryAnalysis": "No stories were found based on the selected criteria.",
+    "errorIssueAnalysis": "No issues were found based on the selected criteria.",
+    "errorIssueDefectAnalysis": "No defects were found in issues based on the selected criteria.",
+    "errorIndicatorSummary": "There is no data available for Indicators Summary by Team Board.",
+    "errorNoIssueDefectsCategoryAvailableForUser": "Issue Defect Settings are incomplete. Contact your Admin for support.",
+    "errorNoIssueDefectsCategoryAvailableForAdmin": "Issue Defect Settings are incomplete. Please update them in the Subtask Category Settings on the Admin Dashboard.",
+    "errorNoStoryDefectsCategoryAvailableForUser": "Story Defect Settings are incomplete. Contact your Admin for support.",
+    "errorNoStoryDefectsCategoryAvailableForAdmin": "Story Defect Settings are incomplete. Please update them in the Subtask Category Settings on the Admin Dashboard.",
+    "errorVelocityAnalysis": "No data available",
+    "errorNoDataAvailable": "No data available.",
+    "noDataAvailableMessageForVelocityWithFeatureFlag": "%s1 cannot be calculated for previously closed %s2 as no resolved issues were found for the issue types in the default tracking field.",
+    "noDataAvailableMessageForVelocityActiveSprintsWithFeatureFlag": "%s1 cannot be calculated as no resolved issues were found for the issue types in the default tracking field.",
+    "noDataAvailableMessageForVelocity": "%s1 cannot be calculated for previously closed %s2 as no resolved stories were found based on the selected criteria.",
+    "noDataAvailableMessageForVelocityActiveSprints": "%s1 cannot be calculated as no resolved stories were found based on the selected criteria.",
+    "errorBunrupAnalysisTable": "No burnup details were found based on the selected criteria.",
+    "errorLoadingDataMessage": "Unable to load the data. Please try again.",
+    "velocity": "Velocity",
+    "throughput": "Throughput",
+    "sprints": "sprints",
+    "intervals": "intervals"
+  },
+  "dataAccuracy": {
+    "burnUpAccuracyTitle": "Data Reliability:",
+    "burnUpAccuracyToolTipStr": "Data Reliability is based on the issues in burnup with missing story points",
+    "trackFieldLabel": "Track",
+    "onIssueTypeLabel": "on Issue Types :",
+    "issueTypeLabel": "Issue Types :"
+  },
+  "calculationCriteria": {
+    "dateStarted": {
+      "description": "Date Started represents the date of an issue or it's subtask's transition from open to any other category.",
+      "transitions": {
+        "openToInProgress": "Open -> In Progress",
+        "openToDone": "Open -> Done"
+      }
+    },
+    "dateResolved": {
+      "description": "Date Resolved is fetched from Source if available; otherwise, it represents the date of an issue's transition to the done category. ",
+      "transitions": {
+        "openToDone": "Open -> Done",
+        "inProgressToDone": "In Progress -> Done"
+      }
+    }
+  },
+  "releases": {
+    "timePeriodCalculationCriteria": {
+      "RELEASED_BOTH_DATES_MISSING": "Dates were not added in source, so ScrumUpdate calculated end date by looking at last issue resolved and start date using 'end date - %s1'.",
+      "RELEASED_START_DATE_MISSING": "Start date was not added in source, so ScrumUpdate calculated start date using 'end date - %s1'.",
+      "RELEASED_END_DATE_MISSING": "End date was not added in source, so khoji calculated end date by looking at last issue resolved.",
+      "UNRELEASED_BOTH_DATES_MISSING": "Dates were not added in source, so ScrumUpdate calculated start date using 'current date - %s2' and end date using 'curent date + %s3'.",
+      "UNRELEASED_START_DATE_MISSING": "Start date was not added in source, so ScrumUpdate calculated start date using 'end date - %s1'.",
+      "UNRELEASED_END_DATE_MISSING": "End date was not added in source, so ScrumUpdate calculated end date using 'start date + %s1'."
+    },
+    "defaultTimePeriodCalculationCriteria": "Both start and end dates were added in source."
+  },
+  "spinner": {
+    "spinnertext": "Loading, please wait...",
+    "loadingtext": "Loading... "
+  },
+  "errorPage": {
+    "errorTitle": "404",
+    "errorDescription": "Something went wrong",
+    "pageNotFoundDescription": "Page Not Found",
+    "pageNotFoundButtonText": "Go to Dashboard",
+    "errorMessage": "This page is not accessible at the moment. If you are already a KHOJI user, please login",
+    "button": "Login to Your Account"
+  },
+  "sessionExpired": {
+    "sessionExpiredTitle": "Session Expired",
+    "sessionExpiredDescription": "Your session has expired. Please log in again",
+    "sessionExpiredButton": "Go to log in"
+  },
+  "requestAccess": {
+    "title": "Access Required",
+    "description": "Looks like someone from your company is already registered with ScrumUpdate. Please request access to log in.",
+    "buttonTitle": "Request Access",
+    "linkTitle": "Go back to log in page"
+  },
+  "accessDenied": {
+    "accessDeniedTitle": "Access Denied.",
+    "accessDeniedDescription": "It looks like you do not have the necessary permissions to access this page.",
+    "accessDeniedButton": "Go to log in",
+    "pageAccessDeniedMessage": "This page is not available on your subscription plan. Please contact support."
+  },
+  "userProfile": {
+    "tabs": {
+      "settings": "Settings",
+      "changePassword": "Change Password",
+      "profile": "Profile",
+      "manageSubscription": "Plan details",
+      "submit": "Submit",
+      "profileSettings": "Profile settings"
+    },
+    "manageSubscription": {
+      "heading": "Manage your Subscription",
+      "subHeading": "Configure your payment details and manage your subscription as per your organizational needs.",
+      "hostedPageButtonLabel": "Manage and view your subscription details",
+      "hostedPageButtonText": "Manage Billing",
+      "planDetailsButtonText": "View Details"
+    },
+    "settings": {
+      "emailSubscriptionLabel": "Manage your email subscription",
+      "emailSubscriptionCheckboxLabel": "Subscribe to work log email",
+      "updateSettingsButtonText": "Update settings",
+      "emailFrequencyLabel": "How often would you like to receive notifications?",
+      "emailFrequencyTooltip": "Please note that the daily, weekly, and monthly notifications exclude weekends (Saturday and Sunday).",
+      "emailFrequencies": {
+        "weekly": "Weekly",
+        "monthly": "Monthly",
+        "daily": "Daily"
+      }
+    },
+    "accountSettings": {
+      "heading": "Account Settings",
+      "deleteButton": "Delete account",
+      "sectionDeleteAccount": "Delete account",
+      "deteteAccountWarning1": "All of your configurations and settings, will be deleted permanently.",
+      "deteteAccountWarning2": "All the members you have added will be removed from ScrumUpdate."
+    },
+    "deleteAccount": {
+      "title": "Delete ScrumUpdate account",
+      "cancelBtn": "Cancel",
+      "deleteAccountBtn": "Delete Account",
+      "reasonQuestion": "Kindly tell us your reason for leaving.",
+      "warningTitle": "Important Notice",
+      "warningMessage": "Deleting your account will also delete all of your saved data."
+    },
+    "deleteAppConfirmation": {
+      "title": "Confirm deletion?",
+      "cancelBtn": "Cancel",
+      "deleteAppBtn": "Delete app",
+      "warningTitle": "Important Notice",
+      "warningMessage": "Deleting your app will remove all its data and integrations.",
+      "message": "This action cannot be undone."
+    },
+    "deleteApp": {
+      "title": "Delete app",
+      "pleaseNote": "Please note:",
+      "deleteAppBtn": "Delete app",
+      "deteteAppWarning1": "All of your configurations and settings, will be deleted permanently.",
+      "deteteAppWarning2": "All the members you have added will be removed from ScrumUpdate."
+    },
+    "manageIntegrations": {
+      "title": "Manage Outlook 365 Calendar integration",
+      "subTitle": "To revoke consent for Outlook 365 Calendar, please follow the steps below:"
+    },
+    "userPreference": {
+      "title": "Configure your leave ticket",
+      "subTitle": "Select a Jira issue to track your leave requests for quick holiday logging."
+    },
+    "dataStoragePermission": {
+      "title": "Data storage & tool optimization",
+      "subTitle": "By sharing data about your AI-generated outputs, you help us improve accuracy and reduce errors. This data is used only to enhance our tool and you can opt out anytime."
+    },
+    "workLogIncludeWeekends": {
+      "title": "Include weekends in work log",
+      "subTitle": "By including weekends in your work log, you can ensure a more comprehensive view of your work patterns."
+    }
+  },
+  "login": {
+    "placeholderText": {
+      "email": "Email",
+      "password": "Password"
+    },
+    "loginHeading": "Please enter your credentials.",
+    "supportEmailTextFirstPartForLogin": "Having trouble logging in? Contact us at",
+    "supportEmailTextFirstPartForSignup": "Having trouble signing up? Contact us at",
+    "loginText": "Log in",
+    "forgotPassword": "Forgot Password?",
+    "user": {
+      "fieldErrors": {
+        "email": {
+          "requiredFieldError": "Please enter an email address"
+        },
+        "password": {
+          "requiredFieldError": "Please enter password"
+        }
+      }
+    }
+  },
+  "forgotPassword": {
+    "placeholderText": {
+      "email": "Email"
+    },
+    "copyRight": "Copyright YEAR ScrumUpdate Contributors.",
+    "emailSent": {
+      "forgotPasswordHeading": "Forgot Password",
+      "forgotPasswordText": "Enter your email to reset the password.",
+      "enterValidEmail": "Email should have a valid format",
+      "buttonText": "Send Reset Password link",
+      "goBackbutton": "Back to Login"
+    },
+    "newPassword": {
+      "newPasswordheading": "New Password",
+      "currentPasswordHeading": "Current Password",
+      "confirmNewPasswordHeading": "Confirm New Password",
+      "buttonText": "Reset Password",
+      "validation": {
+        "passwordStrengthWeak": "Password strength is weak",
+        "passwordMatched": "Password matched",
+        "passwordMisMatched": "Password mismatched",
+        "samePasswordAndConfirmPassword": "New password cannot be same as your current password."
+      }
+    },
+    "successEmailSent": {
+      "emailSentHeading": "Email Sent",
+      "emailSentText": "If your email exists, you will receive an email with a link to reset your password."
+    },
+    "successPasswordChanged": {
+      "passwordChangedSuccessfully": "Password Changed Successfully",
+      "buttonText": "Login to Your Account"
+    }
+  },
+  "updatePassword": {
+    "userOffline": "You are offline. Please check your connection.",
+    "incorrectCurrentPassword": "The current password is incorrect."
+  },
+  "signupUser": {
+    "buttons": {
+      "next": "Next",
+      "back": "Back",
+      "signUp": "Sign Up",
+      "configure": "Configure Payment"
+    },
+    "tooltipMessages": {
+      "organizationCodeToolTipMessage": "The organization code is a unique identifier assigned to an organization in order to distinguish between various organizations, e.g. ‘ScrumUpdate' could be 'KFA’."
+    },
+    "organizationFieldErrors": {
+      "organizationName": "Please enter an organization name",
+      "organizationAddress": "Please enter an organization address",
+      "officeName": "Please enter an office name",
+      "country": "Please select a country",
+      "city": "Please enter a city",
+      "organizationCode": "Please enter an organization code"
+    },
+    "billingInformation": {
+      "title": "Billing Information",
+      "subTitle": "Provide the billing details.",
+      "configureButtonHeading": "To manage your subscription, please set up your billing card."
+    },
+    "organizationInformation": {
+      "title": "Organization Information",
+      "subTitle": "Provide organization details.",
+      "organizationName": "Organization Name *",
+      "organizationCode": "Organization Code *",
+      "optionalText": "(Optional)",
+      "organizationAddress": "Organization Address *",
+      "officeName": "Office Name *",
+      "country": "Country *",
+      "state": "State",
+      "city": "City *"
+    },
+    "signupPage": {
+      "titleForTenantAdmin": "Sign up for ScrumUpdate",
+      "title": "Join your team at ScrumUpdate!",
+      "heading": "Complete your profile and sign up to join your team at ScrumUpdate.",
+      "headingForTenantAdmin": "Provide the following details to sign up and get started with ScrumUpdate.",
+      "emailTitle": "Email Address *",
+      "firstNameTitle": "First Name *",
+      "lastNameTitle": "Last Name *",
+      "passwordTitle": "Password *",
+      "confirmPasswordTitle": "Confirm Password *",
+      "validation": {
+        "passwordStrengthWeak": "Password strength is weak",
+        "passwordMatched": "Password matched",
+        "passwordMisMatched": "Password mismatched"
+      },
+      "PasswordCriteria": {
+        "passwordHeading": "Password must contain:",
+        "smallLetter": "One small letter",
+        "capitalLetter": "One capital letter",
+        "numericCharacter": "One numeric digit",
+        "specialCharacter": "One special character",
+        "minimumCharacter": "Minimun 8 characters"
+      },
+      "button": "Join the team",
+      "needHelp": "Need any help?"
+    },
+    "errorPage": {
+      "errorTitle": "404",
+      "errorDescription": "Something went wrong",
+      "errorMessage": "This page is not accessible at the moment. If you are already a KHOJI user, please login",
+      "button": "Login to Your Account"
+    },
+    "successPage": {
+      "title": "Welcome to ScrumUpdate!",
+      "successMessage": "You have created your ScrumUpdate account successfully. Click below to log in to your account.",
+      "button": "Log in to your Account"
+    }
+  },
+  "uploadImage": {
+    "buttons": {
+      "uploadPhoto": "Upload Photo",
+      "avtarURL": "Avatar URL",
+      "changePhoto": "Change Photo",
+      "save": "Save",
+      "cancel": "Cancel"
+    },
+    "modal": {
+      "title": "Crop your image"
+    }
+  },
+  "adminPanel": {
+    "boards": {
+      "headers": {
+        "boardId": "Board ID",
+        "boardIdentifier": "Board Source",
+        "boardDataSource": "Board Source Type",
+        "boardName": "Board Name",
+        "type": "Board Type"
+      },
+      "placeHolders": {
+        "teamBoardDataSource": "Select Board Source Type"
+      }
+    },
+    "dashboard": {
+      "title": "Welcome to ScrumUpdate",
+      "detail": "Here's a step-by-step guide to add users, teams, projects, and boards for better analysis.",
+      "detailForAdmin": "Below you can create and manage teams within your organization.",
+      "inviteUser": {
+        "userTitle": "Invite Users",
+        "userDetail": "Invite the users to ScrumUpdate and manage their access.",
+        "addManual": "OR ADD MANUALLY"
+      },
+      "integrateProjSource": {
+        "title": "Integrate Project Source",
+        "detail": "Configure the project source to import projects, team boards, and users in simple steps.",
+        "disableProjSource": "Integrate and save the project source to access this page.",
+        "noProjectSourceConfigured": "The project source is not configured."
+      },
+      "configuredSource": {
+        "jiraCloud": "JIRA Cloud",
+        "project": "Project(s)",
+        "team": "Team",
+        "board": "Board(s)",
+        "user": "User(s)"
+      },
+      "assignSupervisorModal": {
+        "title": "Assign Supervisor to Teams"
+      },
+      "createTeams": {
+        "createTeamsTitle": "Manage Teams",
+        "integrateProjectSourceTitle": "Integrate the project source to manage Teams.",
+        "createTeamsDetail": "Manage teams to view work log and performance of teams and its members.",
+        "createTeamsHeading": "Manage Teams",
+        "teamsAdded": "Teams added: ",
+        "membersAdded": "Members added: ",
+        "assignSupervisor": "Assign Supervisor",
+        "createTeamsDescription": "Create teams to view the member's work log and team working analysis.",
+        "createTeamsModal": {
+          "modalHeading": "Create Team",
+          "labels": {
+            "teamName": "Team name *",
+            "teamNameToolTip": "Up to 25 alphanumeric characters with spaces, hyphens (-), dots (.), apostrophe (') and forward slashes (/) are allowed. The mentioned special characters cannot be next to each other, or at the start or end of the name.",
+            "organization": "Owning Organization ",
+            "members": "Selected members",
+            "member": "Team member",
+            "supervisor": "Supervisor",
+            "teamBoard": "Team Board",
+            "noOrganizationAvailable": "No Organization Available"
+          },
+          "popupMessage": "Want to save your changes made to the Team?",
+          "popupMessageForBulkSupervisorAssignment": "Want to save your changes made to the Teams?",
+          "multiTeamMembers": "Multi-Team Members"
+        },
+        "editTeamsModal": {
+          "modalHeading": "Edit "
+        },
+        "cancel": "Cancel",
+        "deleteTeamDialog": {
+          "header": "Are you sure you want to delete this team?",
+          "message": "All the assigned team boards and users will be unassigned from this team.",
+          "multipleTeamsHeader": "Are you sure you want to delete these teams?",
+          "multipleTeamsMessage": "All the assigned team boards and users will be untagged from these teams.",
+          "acceptLabel": "Yes",
+          "rejectLabel": "Cancel"
+        },
+        "manageSupervisors": {
+          "title": "Manage Team Access for Supervisors",
+          "breadcrumb": "Supervisors",
+          "assignSupervisor": "Manage Team Access",
+          "teamsBreadcrumb": "Manage Team Access",
+          "searchTooltip": "Search a Team",
+          "deleteTeamButtonLabel": "Remove Access",
+          "noUserTeamsText": "This user is not currently allocated as a supervisor to any team.",
+          "noTeamsText": "No teams found. Please create a team to allocate a supervisor.",
+          "noUserText": "No user found",
+          "allocateTeamToSupervisor": "Assign Team to Supervisor",
+          "removeUserTeamAccessModalTitle": "Are you sure you want to remove the supervisor's access to the team?",
+          "removeUserTeamAccessDescription": "The supervisor is currently allocated to this team. This action will remove their supervisor privileges.",
+          "noTeamExist": "No teams found.",
+          "supervisorLabel": "Supervisor:",
+          "show": "Show"
+        }
+      },
+      "manageOrganizationalSettings": {
+        "title": "Manage Organizational Settings",
+        "detail": "Enhance data tracking by configuring your organizational practices.",
+        "burnupSettingsBtn": "Burnup Settings",
+        "trackingFieldSettingsBtn": "Tracking Field Settings",
+        "subtaskCategorySettingsBtn": "Subtask Category Settings",
+        "worklogSettingsBtn": "Work Log Settings",
+        "disabledTooltip": "Integrate the project source to access Organizational Settings."
+      },
+      "worklogSettings": {
+        "title": "Manage Work Log Settings",
+        "detail": "Analyze the team progress by maintaining the work log categories.",
+        "subtaskCategorySettingsBtn": "Subtask Category Settings",
+        "worklogSettingsBtn": "Work Log Settings",
+        "disabledTooltip": "Integrate the project source to access Work Log Settings."
+      }
+    },
+    "dashboardButtons": {
+      "goBackToClassic": "Go back to Classic Dashboard",
+      "manageSettings": "Manage Settings",
+      "manageUsers": "Manage Users",
+      "inviteUsers": "Invite User",
+      "configure": "Configure",
+      "viewTeams": "View Teams",
+      "manageTeams": "Manage Teams",
+      "createTeams": "Create Team",
+      "newTeam": "Create team",
+      "newTeamTooltip": "Create a new team",
+      "newTeamDisabledTooltip": "The maximum team limit has been reached. Contact support to upgrade your plan.",
+      "assignSupervisorDisabedBtnTooltip": "Select the teams to assign the supervisor.",
+      "deleteTeamsDisabledBtnTitle": "Select the teams to delete",
+      "deleteTeamsEnabledBtnTitle": "Delete the selected teams",
+      "createNewTeamMessage": "(Click on 'New Team' to create a team)",
+      "allocateSupervisors": "Manage Team Access for Supervisors."
+    },
+    "createNewTeam": {
+      "selectMembersToRemove": "Select the memebrs to remove",
+      "removeSelectedMembers": "Remove the selected members",
+      "removeMember": "Remove member",
+      "selectMembers": "Select a member",
+      "selectSupervisor": "Select a supervisor",
+      "noMembersAvailable": "No members available",
+      "noSupervisorsAvailable": "No supervisors available",
+      "selectTeamboards": "Select a Team Board",
+      "createTeam": "Create team",
+      "editTeam": "Update team",
+      "noTeamboardsAvailable": "No teamboards available"
+    },
+    "formLabels": {
+      "inviteUser": "Invite User",
+      "accountIdHelp": "Let us help you to find",
+      "memberFirstName": "First Name",
+      "memberLastName": "Last Name",
+      "memberEmail": "Email",
+      "accountId": "Account ID",
+      "memberRole": "Role",
+      "memberOrganization": "Owning Organization",
+      "rolePlaceHolder": "Select a Role",
+      "organizationPlaceHolder": "Select an Owning Organization",
+      "sendInviteButton": "Send Invitation",
+      "cancelButton": "Cancel",
+      "optional": "(Optional)",
+      "accessLevel": "Access level",
+      "accessLevelPlaceholder": "Select an Access Level",
+      "owningOrganizationPlaceholder": "Select Owning Organization",
+      "noPermissionAccessLevelText": "You do not have the required access to assign this access level to a user."
+    },
+    "breadCrumbs": {
+      "inviteUser": "Invite User",
+      "userManagement": "User Management",
+      "dashBoard": "Dashboard",
+      "viewTeams": "Manage Teams",
+      "manageUsers": "Manage Users"
+    },
+    "sourceMappingImpact": {
+      "tableOfContents": {
+        "issueStatusCategory": "Issue Status Category",
+        "globalFilter": "Global Filter",
+        "dataTableInformation": "Data Table Information",
+        "graphsInformation": "Graphs Information",
+        "chartsInformation": "Charts Information",
+        "sprintStatus": "Sprint Status",
+        "sprintDropdown": "Sprint Dropdown",
+        "releaseStatus": "Release Status",
+        "releaseDropdown": "Release Dropdown and Criteria"
+      },
+      "headings": {
+        "tableOfContents": "Table of content",
+        "impactOnDataAnalysis": "Status Mapping's Impact on ScrumUpdate's Data Analysis",
+        "issueStatusCategory": "1. Issue Status Category",
+        "globalFilter": "1.1 Global Filter",
+        "dataTableInformation": "1.2 Data Table Information",
+        "graphInformation": "1.3 Graph Information",
+        "chartsInformation": "1.4 Charts Information",
+        "sprintStatus": "2. Sprint Status",
+        "sprintDropdown": "2.1 Sprint Dropdown",
+        "releaseStatus": "3. Release Status",
+        "releaseDropdown": "3.1 Release Dropdown and Criteria"
+      },
+      "content": {
+        "globalFilterMappingImpact": "The mapping of Issue Status Category affects the global filter, appearing in Reports and Analysis of \nTeam board, Worklog, and Release. The status filter shows ScrumUpdate's categories which once mapped, \ncontains the value of the source system's categories. The filter is set to \"All\" by default and the \nanalysis performed on Team boards, worklogs, releases, and reports is based on this filter. The \ninformation is fetched from the source system against these status categories. If a status category \nfield is left unmapped or a duplicate value is selected for that field, the filter dropdown is \naffected which results in inaccurate data throughout the page. Even if the filter is set to \"All\", the \ndata for an unmapped field does not show any results for that particular status.",
+        "dataTableInformationMappingImpact": "The graph generated in Team boards, Worklogs, Releases, and Reports are based on the ScrumUpdate's Status \nCategory filters which are mapped against the source system's Status Categories. The filter is set to \n\"All\" by default and the graphs are populated according to the selection of the filter. If the Global \nFilter is set to \"In Progress\" the graphs will be populated based only on in progressed data. The \ngraphs that are impacted because of this Global filter are, Burn Up Analysis, Story Analysis, Epic \nAnalysis, Throughput/Velocity Analysis, Variance Indicator, and Story Defect Analysis.",
+        "pieChartMappingImpact": "The Pie Charts generated in Team boards, Worklogs, Releases, and Reports are based on the ScrumUpdate's \nStatus Category filters which are mapped against the source system's Status Categories. The filter is \nset to \"All\" by default and the Pie Charts are populated according to the selection of the filter. If \nthe Global Filter is set to \"In Progress\" the charts will be populated based only on progressed data. \nThe Charts that are impacted because of this Global filter are Bug Analysis, Indicators Summary, \nIndicator's summary by team, and Alerts Analysis",
+        "chartsInformation": "The Data Tables generated in Team boards, Worklogs, and Releases are based on the ScrumUpdate's Status \nCategory filters which are mapped against the source system's Status Categories. These Data Tables \ncontain the details of the Graphs and Charts generated. The filter is set to \"All\" by default and the \nData Tables are populated according to the selection of the filter.",
+        "sprintStatusMappingImpact": "The mapping of Sprint Statuses affects the Sprint filter, appearing in Reports and Analysis of Team \n board. The sprint filter shows ScrumUpdate's sprint statuses which once mapped, contains the value of the \nsource system's sprints. The filter appears when scrum boards are selected from the team board's \ndropdown. The information is fetched from the source system against these sprint statuses. If a sprint \nstatus field is left unmapped or a duplicate value is selected for that field, the filter dropdown is \naffected which results in inaccurate/missing dropdown values.",
+        "releaseStatusMappingImpact": "The mapping of Release Statuses affects the Release dropdown, appearing in Reports and Analysis of \nRelease. The filter shows ScrumUpdate's \"active\" and \"closed\" release statuses, which once mapped, contains \nthe data of the source system's releases. The filter appears when a user goes to the Analysis by \nRelease page and if they try to generate a report of releases. The information is fetched from the \nsource system against these release statuses. If a release status field is left unmapped or a \nduplicate value is selected for that field, the release dropdown is affected which results in \ninaccurate/missing dropdown values."
+      }
+    },
+    "projectIntegration": {
+      "sourceSystem": {
+        "title": "Integrate Project Source",
+        "name": "JIRA Cloud",
+        "projectSourceSelect": "Select the Project Source: ",
+        "sourceUrlLabel": "JIRA URL",
+        "sourceUserLabel": "JIRA Email",
+        "apiTokenLabel": "API Token",
+        "customFieldHelpText": "How to find your Custom Field?",
+        "apiTokenHelpText": "Looking for your API token?",
+        "urlValidationError": "Enter a Valid URL",
+        "cancel": "Cancel",
+        "next": "Next : Projects"
+      },
+      "review": {
+        "title": "Review",
+        "projectNameLabel": "Project Source Name:",
+        "selectedProjects": "Selected Projects",
+        "selectedTeamboards": "Selected Team Boards",
+        "selectedUsers": "Selected users",
+        "importedUsers": "Selected users",
+        "saveSource": "Save Project Source",
+        "sourceNameValidationError": "Project Source Name can't be Empty",
+        "customFieldsMapping": "Selected Custom Fields",
+        "statusMapping": "Status Mapping"
+      },
+      "project": {
+        "title": "Select Projects",
+        "subtitle": "Choose the projects to access in ScrumUpdate.",
+        "nameCol": "PROJECT NAME",
+        "keyCol": "PROJECT KEY",
+        "leadCol": "LEAD",
+        "backButton": "Back",
+        "nextButton": "Next",
+        "cancel": "Cancel",
+        "skipStep": "Skip this Step",
+        "emptyProjectListText": "ScrumUpdate couldn't find any listed projects to your account",
+        "contactAdmintText": "Either you dont have access, or ask your Jira administrator to grant you access to projects.",
+        "refresh": "Refresh",
+        "error": "ScrumUpdate couldn't find any listed projects because of some technical error",
+        "loadAgain": "the page and load again",
+        "searchBar": {
+          "searchBarPlaceHolder": "Search"
+        }
+      },
+      "users": {
+        "title": "Select Users",
+        "paymentSchemeTableTitle": "Source Users",
+        "subtitle": "Choose the required users and provide their email addresses to send the invitations.",
+        "paymentSchemeSubTitle": "All the users from the configured project source will be added to ScrumUpdate. Provide the email addresses to send invitations.",
+        "nameCol": "NAME",
+        "email": "EMAIL",
+        "accountId": "ACCOUNT ID",
+        "role": "ROLE",
+        "organizationHeader": "OWNING ORGANIZATION",
+        "backButton": "Back",
+        "nextButton": "Next",
+        "cancel": "Cancel",
+        "skipStep": "Skip this Step",
+        "emptyUsersListText": "ScrumUpdate couldn't find any listed users to your account",
+        "contactAdmintText": "Contact your admin to provide you access on JIRA.",
+        "refresh": "Refresh",
+        "error": "ScrumUpdate couldn't find any listed users because of some technical error",
+        "missingFieldTooltip": "Role or Owning organization is missing.",
+        "loadAgain": "the page and load again",
+        "existingUsersCheckbox": "Existing Users",
+        "userInfo": "ScrumUpdate will send an invitation to the selected users once the project source is saved.",
+        "userNotification": "The total number of users selected from the project source are ",
+        "customFieldInfo": "Undefined custom fields will result in missing information in ScrumUpdate.",
+        "usernameInputToolTip": "Up to 40 alphabetic characters with spaces, hyphens (-), dots (.) and apostrophes (‘) are allowed. The mentioned special characters cannot be next to each other.",
+        "accountIdInputTooltip": "Account ID is the unique identifier of a user’s Jira account. Provide the Account ID to view the user’s work log.",
+        "fieldErrors": {
+          "invalidLengthError": "Character limit reached",
+          "emptyFormFieldsError": "Required fields cannot be left empty.",
+          "emptyFieldError": "Please fill out this field",
+          "emailValidation": {
+            "requiredFieldError": "Please enter an email address",
+            "invalidPatternError": "Please enter a valid email address"
+          },
+          "firstNameValidation": {
+            "requiredFieldError": "Please enter a first name",
+            "invalidPatternError": "Please enter a valid first name"
+          },
+          "lastNameValidation": {
+            "requiredFieldError": "Please enter a last name",
+            "invalidPatternError": "Please enter a valid last name"
+          },
+          "teamNameValidation": {
+            "requiredFieldError": "Please enter a team name",
+            "invalidPatternError": "Please enter a valid team name",
+            "lengthLimitExceed": "Character limit reached",
+            "minimumLengthError": "Minimum length must be %s1 characters",
+            "teamNameAlreadyExistMessage": "A team with the same name already exists"
+          },
+          "organizationValidation": {
+            "requiredFieldError": "Please select a organization"
+          }
+        }
+      },
+      "customFields": {
+        "title": "Select Custom Fields",
+        "description": "Map the custom fields from the project source.",
+        "teamBoardLabel": "Team Board",
+        "epicIdLabel": "Epic Link",
+        "storyPointsLabel": "Story Points",
+        "sprintListsLabel": "Sprint",
+        "highLevelEstimatesLabel": "High Level Estimate",
+        "nextButton": "Next",
+        "errorMessage": "The above field is required",
+        "teamBoardPlaceholder": "Select custom field for Team Board",
+        "epicIdPlaceholder": "Select custom field for Epic Link",
+        "storyPointsPlaceholder": "Select custom field for Story Points",
+        "sprintListsPlaceholder": "Select custom field for Sprint",
+        "highLevelEstimatesPlaceholder": "Select custom field for High Level Estimate"
+      },
+      "teamboards": {
+        "title": "Select Team Boards",
+        "subtitle": "Choose the team boards to access in ScrumUpdate.",
+        "tableColumns": {
+          "boardName": "BOARD NAME",
+          "boardSourceType": "BOARD SOURCE TYPE",
+          "boardSource": "BOARD SOURCE",
+          "boardType": "BOARD TYPE",
+          "projectGroupName": "PROJECT"
+        },
+        "backButton": "Back",
+        "nextButton": "Next",
+        "skipStep": "Skip this Step",
+        "cancel": "Cancel",
+        "noDataMessage1": "ScrumUpdate couldn't find any listed Team Boards to your account",
+        "noDataMessage2": "Contact your admin to allocate you some Team Boards on JIRA.",
+        "errorMessage1": "ScrumUpdate couldn't find any listed Team Boards because of some technical error.",
+        "errorMessage2a": "Refresh",
+        "errorMessage2b": "the page and load again.",
+        "noProjectSelectedMessage": "Please select any Project(s) to see the associated Team board(s)",
+        "projectNamesWithNoBoards": "ScrumUpdate could not find the team boards for",
+        "projects": "Project(s).",
+        "searchBar": {
+          "searchBarPlaceHolder": "Search"
+        },
+        "dropdown": {
+          "pageDropdownTitle": "Showing"
+        }
+      },
+      "sourceMappings": {
+        "title": "Map your JIRA Statuses",
+        "subTitle": "Configure your Jira categories and statuses onto ScrumUpdate",
+        "infoMessage": "Jira values have already been mapped by default.",
+        "mappingGroups": "MAPPING GROUPS",
+        "khojiStatus": "KHOJI STATUS",
+        "jiraStatus": "JIRA STATUS",
+        "backButton": "Back",
+        "cancel": "Cancel",
+        "nextButton": "Next",
+        "sprintStatus": "Sprint Status",
+        "releaseStatus": "Release Status",
+        "issueStatusCategory": "Issue Status Category",
+        "duplicateValue": "Duplicate value",
+        "noMapping": "Select Jira Status",
+        "noMapWarning": "Please select a value to map the status",
+        "connectionError1": "Jira connection not found because of some technical error.",
+        "refresh": "Refresh",
+        "connectionError2": "the page and load again.",
+        "unmappedFields": "There are some unmapped fields that may result in inaccurate data. For detail, ",
+        "mappedFields": "To view the impact areas of mapped fields, ",
+        "clickHere": "Click here",
+        "issueCategory": "Issue Category",
+        "sprint": "Sprint",
+        "release": "Release",
+        "unmapped": "Unmapped",
+        "duplicate": "Duplicate"
+      }
+    }
+  },
+  "viewUser": {
+    "breadCrumbs": {
+      "dashboard": "Dashboard",
+      "users": "Manage Users"
+    },
+    "revokeModal": {
+      "modalMessage": "Are you sure you want to revoke the access of",
+      "cancelButton": "Cancel",
+      "revokeButton": "Yes, Revoke Access",
+      "revokeSuccessMessage": "The access has been suspended for %s1 successfully."
+    },
+    "title": "Manage Users",
+    "manageJiraUsers": "Manage Jira users",
+    "manageJiraUsersSubtitle": "Choose the required users and provide their email addresses to send the invitations.",
+    "inviteButton": "Invite User",
+    "usersAdded": "Users added: ",
+    "tableHeaders": {
+      "name": "Name",
+      "email": "Email",
+      "organization": "OWNING ORGANIZATION",
+      "sourceUser": "SOURCE USER",
+      "role": "Role",
+      "status": "Status",
+      "accessLevel": "Access level",
+      "lastSeen": "Last seen"
+    },
+    "accessLevels": {
+      "TENANT_ADMIN": "Tenant Admin",
+      "ADMIN": "Admin",
+      "USER": "User"
+    },
+    "sourceUserNotification": "A source user cannot be revoked or removed from ScrumUpdate and a user revoked from source cannot be re-invited.",
+    "sourceUserHeaderToolTip": "This column indicates the users that are imported from the project source.",
+    "dropdown": {
+      "pageDropdownTitle": "Showing"
+    },
+    "searchBar": {
+      "searchBarPlaceHolder": "Search"
+    },
+    "errors": {
+      "noDataAvailable": "No data available",
+      "duplicateEmail": "Email already exists"
+    },
+    "button": {
+      "addJiraUser": "Add Jira user",
+      "addJiraUserDisabledTooltip": "The maximum user limit has been reached. Contact support to upgrade your plan.",
+      "inviteAgain": "Invite Again",
+      "viewDetails": "View Details",
+      "revokeAccess": "Revoke Access",
+      "inviteToJoinAgain": "Invite to Join Again",
+      "editUser": "Edit"
+    },
+    "tooltip": {
+      "revokeAccess": "Revoke access",
+      "revokeAccessDisabled": "You do not have the required access to revoke this user's access.",
+      "emailFieldDisabled": "Email of a joined user can not be changed.",
+      "accessLevelFieldDisabled": "Access level of the logged-in user can not be changed.",
+      "editUserDisabledForRevokedUser": "Suspended user can not be edited.",
+      "suspendAccessDisabledForLoggedInUser": "Access of the logged-in user can not be suspended.",
+      "editUser": "Edit user",
+      "cancelEditUser": "Cancel",
+      "saveUser": "Save",
+      "inviteUserAgainAfterRevoked": "Restore access",
+      "suspendAccess": "Suspend access",
+      "emailRequiredForPending": "Email is required while user status is PENDING."
+    }
+  },
+  "viewUserDetail": {
+    "breadCrumbs": {
+      "dashboard": "Dashboard",
+      "users": "Manage Users",
+      "userDetail": "User Detail"
+    },
+    "detailsGrid": {
+      "emailHeading": "Email:",
+      "roleHeading": "Role:",
+      "organizationHeading": "Organization:",
+      "accessLevelHeading": "Access Level:"
+    },
+    "modal": {
+      "headingEditUser": "Edit User",
+      "fields": {
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "email": "Email",
+        "emailPlaceholder": "Enter an email address (optional)",
+        "owningOrganization": "Owning Organization"
+      },
+      "placeHolder": {
+        "selectOwningOrganization": "Select Owning Organization"
+      },
+      "button": {
+        "update": "Update",
+        "cancel": "Cancel"
+      }
+    }
+  },
+  "inviteUser": {
+    "breadCrumbs": {
+      "dashboard": "Dashboard",
+      "userManagement": "User Management"
+    },
+    "title": "Invite a User",
+    "fields": {
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "email": "Email",
+      "accountId": "Account ID",
+      "helptext": "Let us help you to find",
+      "role": "Role",
+      "owningOrganization": "Owning Organization"
+    },
+    "placeHolder": {
+      "selectRole": "Select Role",
+      "selectOwningOrganization": "Select Owning Organization"
+    },
+    "button": {
+      "sendInvitation": "Send Invitation",
+      "cancel": "Cancel"
+    }
+  },
+  "releaseInfoPanel": {
+    "version": "Version",
+    "overdue": "(overdue)",
+    "status": "Status:",
+    "remainingDays": "Remaining Day(s):",
+    "startDate": "Start Date:",
+    "releaseDate": "Release Date:",
+    "active": "Active",
+    "cacheMessage": "The cached data displayed was last synced at %s1. Updated information will be available in %s2 minutes.",
+    "CachedTitle": "Cached"
+  },
+  "titles": {
+    "report": {
+      "exportFileButtonTootip": "Export the current view including any hidden columns",
+      "storyAnalysisTitle": "Stories Analysis",
+      "storyAnalysisTableTitle": "Stories Details",
+      "epicAnalysisTitle": "Epic Analysis",
+      "epicAnalysisTableTitle": "Epic Details",
+      "storyIndicatorTitle": "Stories Indicators",
+      "storyPointsIndicatorsTitle": "Story Points Indicators",
+      "varainceIndicatortitle": "Variance Indicators",
+      "teamIndicatorsTitle": "Indicators: ",
+      "teamIndicatorsTableTitle": "Indicators Details",
+      "bugAnalysisTitle": "Bugs Analysis",
+      "bugAnalysisTableTitle": "Bugs Details",
+      "velocityAnalysisTitle": "Velocity Analysis",
+      "velocityAnalysisTableTitle": "Velocity Details",
+      "throughputAnalysisTitle": "Throughput Analysis",
+      "throughputAnalysisTableTitle": "Throughput Details",
+      "qualityAnalysisTitle": "Story Defect Analysis",
+      "qualityAnalysisTableTitle": "Story Defect Details",
+      "alertAnalysisTitle": "Alerts Analysis",
+      "alertAnalysisTableTitle": "Alerts Details",
+      "varianceIndicatorsTitleDetail": "Calculated on Resolved stories only",
+      "tabs": {
+        "indicatorsSummary": "Summary",
+        "indicatorDetails": "Details"
+      }
+    },
+    "teamboardAnalysis": {
+      "storyAnalysisTitle": "Stories Analysis",
+      "storyAnalysisTableTitle": "Stories Details",
+      "storyIndicatorTitle": "Stories Indicators",
+      "storyPointsIndicatorsTitle": "Story Points Indicators",
+      "varainceIndicatortitle": "Variance Indicators",
+      "teamIndicatorsTitle": "Indicators",
+      "teamIndicatorsTableTitle": "Indicators Details",
+      "bugAnalysisTitle": "Bugs Analysis",
+      "bugAnalysisTableTitle": "Bugs Details",
+      "velocityAnalysisTitle": "Velocity Analysis",
+      "velocityAnalysisTableTitle": "Velocity Details",
+      "throughputAnalysisTitle": "Throughput Analysis",
+      "throughputAnalysisTableTitle": "Throughput Details",
+      "qualityAnalysisTitle": "Story Defect Analysis",
+      "qualityAnalysisTableTitle": "Story Defect Details",
+      "alertAnalysisTitle": "Alerts Analysis",
+      "alertAnalysisTableTitle": "Alerts Details",
+      "lastSprintsIncluded": "Based on last <u>%s1</u> sprints",
+      "lastIntervalsIncluded": "Based on last <u>%s1</u> intervals"
+    },
+    "teamAnalysis": {
+      "storyAnalysisTitle": "Stories Analysis",
+      "storyAnalysisTableTitle": "Stories Details",
+      "storyIndicatorTitle": "Stories Indicators",
+      "storyPointsIndicatorsTitle": "Story Points Indicators",
+      "varainceIndicatortitle": "Variance Indicators",
+      "teamIndicatorsTitle": "Indicators",
+      "teamIndicatorsTableTitle": "Indicators Details",
+      "bugAnalysisTitle": "Bugs Analysis",
+      "bugAnalysisTableTitle": "Bugs Details",
+      "velocityAnalysisTitle": "Velocity Analysis",
+      "velocityAnalysisTableTitle": "Velocity Details",
+      "throughputAnalysisTitle": "Throughput Analysis",
+      "throughputAnalysisTableTitle": "Throughput Details",
+      "qualityAnalysisTitle": "Story Defect Analysis",
+      "qualityAnalysisTableTitle": "Story Defect Details",
+      "alertAnalysisTitle": "Alerts Analysis",
+      "alertAnalysisTableTitle": "Alerts Details"
+    },
+    "releaseAnalysis": {
+      "storyAnalysisTitle": "Stories Analysis",
+      "storyAnalysisTableTitle": "Stories Details",
+      "epicAnalysisTitle": "Epic Analysis",
+      "epicAnalysisTableTitle": "Epic Details",
+      "storyIndicatorTitle": "Stories Indicators",
+      "storyPointsIndicatorsTitle": "Story Points Indicators",
+      "varainceIndicatortitle": "Variance Indicators",
+      "teamIndicatorsTitle": "Indicators",
+      "teamIndicatorsTableTitle": "Indicators Details",
+      "bugAnalysisTitle": "Bugs Analysis",
+      "bugAnalysisTableTitle": "Bugs Details",
+      "velocityAnalysisTitle": "Velocity Analysis",
+      "velocityAnalysisTableTitle": "Velocity Details",
+      "throughputAnalysisTitle": "Throughput Analysis",
+      "throughputAnalysisTableTitle": "Throughput Details",
+      "qualityAnalysisTitle": "Story Defect Analysis",
+      "qualityAnalysisTableTitle": "Story Defect Details",
+      "alertAnalysisTitle": "Alerts Analysis",
+      "alertAnalysisTableTitle": "Alerts Details",
+      "burnupAnalysis": "Burnup Chart"
+    },
+    "export": {
+      "storyAnalysisTableTitle": "Stories Details",
+      "issueAnalysisTableTitle": "Issues Details",
+      "EpicAnalysisTableTitle": "Epic Details",
+      "teamIndicatorsTableTitle": "Team Indicators Details",
+      "bugAnalysisTableTitle": "Bugs Details",
+      "velocityAnalysisTableTitle": "Velocity Details",
+      "throughputAnalysisTableTitle": "Throughput Details",
+      "qualityAnalysisTableTitle": "Story Defect Details",
+      "alertAnalysisTableTitle": "Alerts Details",
+      "timeLogDistribution": "Timelog Distrubution Details",
+      "bunUpAnalysisTableTitle": "Burnup Details",
+      "historicalDetailsTitle": "Historical Details",
+      "storyCommentsTableTitle": "Story Comments"
+    },
+    "componentTitles": {
+      "workLogComparison": {
+        "title": "Teams Work Log Comparison by Categories",
+        "subTitle": ""
+      },
+      "loggedTimeAnalysis": {
+        "title": "Logged Time Analysis by Percentage",
+        "subTitle": ""
+      },
+      "distributionByIssueType": {
+        "title": "Team View Details",
+        "subTitle": "Represents a user who is part of multiple teams."
+      },
+      "distributionMainCategory": {
+        "title": "Total Work Log Distribution",
+        "subTitle": "Including 'Others'"
+      },
+      "distributionOthersCategory": {
+        "title": "%s1 Work Log Distribution",
+        "subTitle_1": "By default",
+        "subTitle_2": "issue types are enabled in the ‘%s1’ category."
+      },
+      "timelogTable": {
+        "title": "Team View Details",
+        "subTitle": ""
+      },
+      "varianceIndicators": {
+        "title": "Variance Indicator",
+        "subTitle": "Calculated on all Stories",
+        "timeSpentToStoryPointVariance": "Time Spent to Story Points Variance",
+        "timeSpentToOriginalEstimateVariance": "Time Spent to Story Estimates Variance",
+        "projectedTimeSpentToStoryPointVariance": "Expected Time Spent to Story Points Variance",
+        "projectedTimeSpentToOriginalEstimateVariance": "Expected Time Spent to Story Estimates Variance",
+        "timeSpent": "Time Spent",
+        "storyPoints": "Story Points",
+        "originalEstimate": "Story Estimates",
+        "timeRemaining": "Time Remaining",
+        "projectedTimeSpent": "Projected Time",
+        "totalResolvedStories": "Total Resolved Stories: 0"
+      },
+      "storyPointIndicator": {
+        "title": "Story Points Indicator",
+        "subTitle": "Story Points of Stories only"
+      },
+      "storyIndicator": {
+        "title": "Stories Indicator",
+        "subTitle": "Stories only"
+      },
+      "storiesAnalysis": {
+        "title": "Story Analysis",
+        "subTitle": "",
+        "viewButton": "View Story Details"
+      },
+      "issuesAnalysis": {
+        "title": "Issue Analysis",
+        "subTitle": "",
+        "viewButton": "View Issue Details"
+      },
+      "statusTracking": {
+        "dashboard": {
+          "issueCount": {
+            "title": "Issue Count",
+            "subtitle": "Count of the issues in scope",
+            "totalLabel": "Total Issues"
+          },
+          "storyPointsTracker": {
+            "title": "Story Points Tracker",
+            "subtitle": "Story points of the issues in scope",
+            "totalLabel": "Total Story Points"
+          },
+          "issueEstimatesTracker": {
+            "title": "Issue Estimates Tracker",
+            "subtitle": "Issue Estimates of the issues in scope",
+            "totalLabel": "Total Issue Estimates",
+            "days": "(days)"
+          }
+        },
+        "burnup": {
+          "issueCount": {
+            "title": "Burnup Issue Count",
+            "subtitle": "",
+            "totalLabel": "Total Issues"
+          },
+          "storyPointsTracker": {
+            "title": "Burnup Story Points Tracker",
+            "subtitle": "",
+            "totalLabel": "Total Story Points"
+          },
+          "issueEstimatesTracker": {
+            "title": "Burnup Issue Estimates Tracker",
+            "subtitle": "",
+            "totalLabel": "Total Issue Estimates",
+            "days": "(days)"
+          }
+        }
+      },
+      "storiesDetails": {
+        "title": "Story Details",
+        "subTitle": ""
+      },
+      "issuesAnalysisDetails": {
+        "title": "Issue Analysis Details",
+        "subtitle": ""
+      },
+      "epicsAnalysis": {
+        "title": "Epic Analysis",
+        "subTitle": "",
+        "viewButton": "View Epic Details"
+      },
+      "epicsDetails": {
+        "title": "Epic Details",
+        "subTitle": ""
+      },
+      "bugAnalysis": {
+        "title": "Bugs Analysis",
+        "subTitle": "",
+        "viewButton": "View Bugs' Details"
+      },
+      "bugDetails": {
+        "title": "Bugs Details",
+        "subTitle": ""
+      },
+      "qualityAnalysis": {
+        "title": "Story Defect Analysis",
+        "subTitle": ""
+      },
+      "qualityDetails": {
+        "title": "Story Defect Details",
+        "subTitle": ""
+      },
+      "issueDefectAnalysis": {
+        "title": "Issue Defect Analysis",
+        "subTitle": "Analysis of issues with defects only"
+      },
+      "issueDefectDetails": {
+        "title": "Defect Analysis Details",
+        "subTitle": ""
+      },
+      "alertsAnalysis": {
+        "title": "Alerts Analysis",
+        "subTitle": ""
+      },
+      "alertsDetails": {
+        "title": "Alerts Details",
+        "subTitle": ""
+      },
+      "velocityAnalysis": {
+        "title": "Velocity Analysis",
+        "reloadButtonText": "Reload Velocity Analysis",
+        "subTitle": "Analysis of Resolved stories only"
+      },
+      "velocityDetails": {
+        "title": "Velocity Details",
+        "subTitle": ""
+      },
+      "throughputAnalysis": {
+        "title": "Throughput Analysis",
+        "reloadButtonText": "Reload Throughput Analysis",
+        "subTitle": "Analysis of Resolved Stories only"
+      },
+      "throughputDetails": {
+        "title": "Throughput Details",
+        "subTitle": ""
+      },
+      "nSprintsthroughputAnalysis": {
+        "title": "Throughput Analysis",
+        "subTitle": "Analysis of Resolved Stories only"
+      },
+      "nSprintsVelocityAnalysis": {
+        "title": "Velocity Analysis",
+        "subTitle": "Analysis of Resolved Stories only"
+      },
+      "burnUpAnalysis": {
+        "title": "Burnup Analysis",
+        "subTitle": "Story Points of Stories and Bugs",
+        "viewButton": "View Burnup Details"
+      },
+      "burnUpDetails": {
+        "title": "Burnup Details",
+        "subTitle": ""
+      },
+      "teamindicators": {
+        "title": "Indicators",
+        "subTitle": "",
+        "viewButton": "View Indicators' Details"
+      },
+      "teamIndicatorsDetails": {
+        "title": "Team Indicators Details",
+        "subTitle": ""
+      },
+      "indicatorSumaryAnalysis": {
+        "title": "Indicators Summary by Team Board",
+        "subTitle": ""
+      },
+      "issueAnalysis": {
+        "title": "Issue Analysis",
+        "subTitle": ""
+      }
+    }
+  },
+  "dashboard": {
+    "title": "Select the type of Stat Analysis",
+    "teamAnalysis": "Team Analysis",
+    "individualAnalysis": "Individual Analysis",
+    "allTeamAnalysis": "All Team Analysis",
+    "timeLogAudit": "Time Log Audit"
+  },
+  "confirmation": {
+    "confirmDeleteBoard": "Assigned teams will no longer be able to see this board. Are you sure?",
+    "confirmDeleteOrganization": "Are you sure you want to delete this organisation?",
+    "confirmDeleteLocation": "Are you sure you want to delete this location?"
+  },
+  "success": {
+    "saveSuccess": "Saved Successfully",
+    "deleteSuccess": "Successfully Deleted",
+    "almostDone": "Almost Done"
+  },
+  "dropDown": {
+    "releaseSelect": "Select a Release",
+    "teamboardSelect": "Select a Team Board",
+    "teamboardFilter": "Choose a Team Board to filter",
+    "teamsSelect": "Select a Team",
+    "teamsText": "ScrumUpdate Platform",
+    "teamsTextSecondTeam": "Team ScrumUpdate Discovery",
+    "membersSelect": "Choose Member to filter",
+    "epicSelect": "Choose an Epic to filter",
+    "sprintFilterDropdown": "Sprint",
+    "kfa160": "KFA - 1.6.0"
+  },
+  "teamsModalTitle": {
+    "teamsKhojiPlatformTitle": "Team ScrumUpdate Platform",
+    "teamsKhojiDiscoveryTitle": "Team ScrumUpdate Discovery"
+  },
+  "error": {
+    "noDataAvailable": "No data available",
+    "errorLoadingData": "Error loading data",
+    "noRecordsFoundMessage": "No results found",
+    "noStoryPointsAvailable": "No story points available",
+    "noTeamsAvailable": "No teams were created.",
+    "noMembersAvailable": "No member added",
+    "failedResponse": "Something went wrong, please try again.",
+    "saveError": "Error saving",
+    "loadError": "Error loading",
+    "deleteError": "Error deleting",
+    "missingCfError": "Error saving must provide filterQuery or Team Board CF",
+    "cfOrFilterQueryError": "Error must provide filterQuery or Team Board CF",
+    "noStoriesAvailable": "No stories available",
+    "adminAccessRequired": "This action requires admin access.",
+    "NA": "N/A"
+  },
+  "exportMessage": {
+    "exportSuccessMessage": "The Report is Published at:"
+  },
+  "filter": {
+    "teams": "Team",
+    "teamboards": "Team board",
+    "issueType": "Issue type:",
+    "dateRange": "Date range",
+    "sprints": "Sprint filter",
+    "sprintList": "Sprint",
+    "submit": "Submit",
+    "refresh": "Refresh",
+    "export": "Export",
+    "confluenceDropdwon": "Confluence",
+    "exportToConfluence": "Export to Confluence",
+    "exportToPdf": "PDF",
+    "exporting": "Exporting..",
+    "remove": "Remove Item",
+    "reset": "Reset Table",
+    "loading": "Loading...",
+    "loadingOnSubmit": "Loading",
+    "loadingAlerts": "Loading Alerts... ",
+    "loadingThroughput": "Loading Throughput... ",
+    "loadingVelocity": "Loading Velocity... ",
+    "statusFilter": "Status filter",
+    "statusCategoryFilter": "Status Category Filter",
+    "allMembers": "Member filter",
+    "releases": "Release",
+    "teamboard": "Team Board",
+    "teamboardFilterLabel": "Team Board Filter",
+    "epicId": "Epic Filter",
+    "status": {
+      "all": "All",
+      "open": "Open",
+      "inProgress": "In Progress",
+      "resolved": "Resolved"
+    },
+    "issue": {
+      "story": "Story",
+      "bug": "Bug"
+    },
+    "members": "Members:"
+  },
+  "multiselectFilter": {
+    "releases": "Select a Release",
+    "teamboard": "Select a Team Board",
+    "epicSelect": "Choose an Epic to filter",
+    "epicid": "Please select an Epic Id"
+  },
+  "exportButtonToastMessages": {
+    "error": "Error!",
+    "success": "Success!",
+    "errorMessage": "Failed to export the report.",
+    "successMessage": "PDF report has been exported successfully.",
+    "infoMessage": "Please wait while the report is being generated. Do not leave or scroll the page."
+  },
+  "storyComments": {
+    "table": {
+      "columns": {
+        "comments": "Comments"
+      }
+    }
+  },
+  "team": {
+    "tabs": {
+      "dashboard": "Dashboard",
+      "deliveryAnalysis": "Story Analysis",
+      "issueAnalysis": "Issue Analysis",
+      "epicAnalysis": "Epic Analysis",
+      "qualityAnalysis": "Story Defect Analysis",
+      "defectAnalysis": "Issue Defect Analysis",
+      "qualityAnalysisLoading": "Loading Story Defect... ",
+      "defectAnalysisLoading": "Loading Issue Defect... ",
+      "indicators": "Indicators",
+      "alertAnalysis": "Alerts Analysis",
+      "velocityAnalysis": "Velocity Analysis",
+      "throughputAnalysis": "Throughput Analysis",
+      "burnUpAnalysis": "Burnup Analysis",
+      "burnUpDetails": "Burnup Details",
+      "burnUpHistoricalDetails": "Historical Details",
+      "timlogAnalysisDetails": "Work Log Details",
+      "timlogAnalysisDashboard": "Dashboard",
+      "epicDataLoading": "Loading Epics...",
+      "burnUpDataLoading": "Loading Burnup...",
+      "storyDataLoading": "Loading Story...",
+      "alertsDataLoading": "Loading Alerts...",
+      "indicatorsDataLoading": "Loading Indicators... ",
+      "loadingBug": "Loading Bug... ",
+      "issueDataLoading": "Loading Issue..."
+    },
+    "dashboard": {
+      "noTeamForAdminOrHigherLevel": "It seems you are not currently associated with any teams. Join or become a supervisor of a team to start tracking progress.",
+      "noTeamForUserLevel": "It appears you are not currently assigned to any teams. Please reach out to your admin to get assigned to a team.",
+      "deliveryAnalysis": {
+        "title": "Stories Analysis",
+        "aboveThreshold": "Above Threshold",
+        "projected": "Projected",
+        "modal": "Modal",
+        "yAxisText": "Time Spent (days)",
+        "yAxisTextProjected": "Time Spent + Time Remaining (days)",
+        "xAxisLabel": "Stories"
+      },
+      "aboveThresholdTooltip": {
+        "title": "Above Threshold (20%)",
+        "subtitle": "On stories only",
+        "info": "This filter is not applicable on:",
+        "tooltipTextList": {
+          "epicAnalysis": "Epic Analysis",
+          "bugsAnalysis": "Bugs Analysis",
+          "burnupAnalysis": "Burnup Analysis"
+        }
+      },
+      "epicAnalysis": {
+        "title": "Epic Analysis"
+      },
+      "qualityAnalysis": {
+        "title": "Story Defect Analysis",
+        "yAxisLabel": "Time Spent (days)",
+        "xAxisLabel": "Stories"
+      },
+      "burnupChart": {
+        "title": "Burnup Chart",
+        "xAxisLabel": "Dates",
+        "idealBurnup": "Ideal",
+        "markpointXaxis": "Today",
+        "markLinesLabel": {
+          "today": "Today",
+          "release": "Release Date",
+          "sprint": "Sprint End Date"
+        },
+        "tooltip": {
+          "_today": "Today: ",
+          "_sprintEndDate": "Sprint End Date",
+          "sprintEndToday": "Sprint Ending Today: ",
+          "releaseDate": "Release Date: ",
+          "releaseEndToday": "Release Ending Today: "
+        },
+        "STORY_POINTS": {
+          "title": "“Story Points”",
+          "missing": "Issues with Missing Estimates",
+          "burnUpChartTitleDetail": "<strong>Story Points</strong> of selected Issue Types",
+          "yAxisLabel": "Story Points",
+          "actualProgress": "Banked",
+          "scope": "Scope",
+          "dropdownLabel": "Story Points",
+          "historyDetailsHeader": "Story Points",
+          "burnUpDetailTableHeader": "Story Points",
+          "noDataMessage": "No Story Points were added to issues available in the selected criteria. Change the “Tracking” field value to view the burnup.",
+          "burnUpAccuracyToolTipTitle": "Data Reliability of Story Points",
+          "burnUpAccuracyToolTipStr": "Data Reliability represents the available % of “Story Points” across all of the trackable issues in the scope.",
+          "clickToView": "Click to view the issues with missing “Story Points”."
+        },
+        "ISSUE_ESTIMATES": {
+          "title": "“Issue Estimates”",
+          "missing": "Issues with Missing Estimates",
+          "burnUpChartTitleDetail": "<strong>Issue Estimates</strong> of selected Issue Types",
+          "yAxisLabel": "Issue Estimates",
+          "actualProgress": "Banked",
+          "scope": "Scope",
+          "dropdownLabel": "Issue Estimates",
+          "historyDetailsHeader": "Issue Estimates",
+          "burnUpDetailTableHeader": "Issue Estimates (days)",
+          "noDataMessage": "No Issue Estimates were added to issues available in the selected criteria. Change the “Tracking” field value to view the burnup.",
+          "burnUpAccuracyToolTipTitle": "Data Reliability of Issue Estimates",
+          "burnUpAccuracyToolTipStr": "Data Reliability represents the available % of “Issue Estimates” across all of the trackable issues in the scope.",
+          "clickToView": "Click to view the issues with missing “Issue Estimates”."
+        },
+        "burnUpChartTitleDetail": "Story Points of Stories and Bugs",
+        "trackFieldToolTip": "Changing the Tracking Field will recalculate the Burnup. Please be patient while it loads.",
+        "burnUpSettingInfo": "Changing the default Tracking Field or Issue Type mapping will recalculate the Burnup.",
+        "errorLoadingMessage": "Unable to load the data. Please try again.",
+        "burnupTooltIpRagInfo": "Following are the RAG configurations for Data Reliability:"
+      },
+      "velocity": {
+        "legendTotal": "Total",
+        "legendAvg": "Average",
+        "titleSingleTeam": "Velocity Analysis",
+        "titleMultiTeam": "Throughput Analysis",
+        "singleTabletitle": "Velocity Details",
+        "MultiTabletitle": "Throughput Details",
+        "storyPointsPlanned": "Story Points Planned",
+        "storyPointsRemaining": "Story Points Remaining",
+        "storyPointsResolved": "Story Points",
+        "velocityLine": "Average Story Points",
+        "yaxis": "Story Points / Days",
+        "xaxisSingleTeam": "Sprint Time Period",
+        "xaxisMultiTeam": "Time Period",
+        "avgVelocity": "Average",
+        "velocitySlidertooltip": "Move the slider to zoom in/out on the sprints",
+        "velocityGraphTitleDetail": "Analysis of Resolved Stories only",
+        "storyEstimates": "Issue Estimates (days)",
+        "timeSpent": "Time Spent (days)",
+        "legendsUnits": {
+          "storyEstimatesLegendUnit": "Days",
+          "timeSpentLegendUnit": "Days",
+          "storyPointsResolvedLegendUnit": "Story Points",
+          "avgStoryPointsResolvedLegendUnit": "Story Points"
+        },
+        "showValueLabel": "Show Values",
+        "excludeActiveStoryPointLabelVelocity": "Include Active Sprints",
+        "excludeActiveStoryPointLabelThroughput": "Include Active Time Period",
+        "noDatesSprintDisclaimer": "The data of the sprints with missing start/end dates will not be plotted in the above graph.",
+        "sprintDisclaimer": "Note: The graph displays the issues from previous <strong><u>%s1</u></strong> %s2.",
+        "sprintDisclaimerStartEndDate": " Sprints without start/end dates will not be plotted.",
+        "issueEstimates": "Issue Estimates",
+        "storyPoints": "Story Points",
+        "days": "Days",
+        "stories": "Stories",
+        "issues": "Issues",
+        "interval": "intervals",
+        "sprints": "sprints",
+        "subTitle": "Resolved <b> %s1 </b> of issue types in default Tracking Field"
+      },
+      "deliveryAnalysisChart": {
+        "title": "Burnup Chart"
+      },
+      "varianceIndicators": {
+        "title": "Variance Indicators",
+        "yaxisLabel": "Effort (days)",
+        "xAxisLabel": "Estimated and Actual Effort",
+        "legendStoryPoints": "Story Points",
+        "legendOriginalEstimates": "Story Estimates",
+        "legendTimeSpent": "Time Spent ",
+        "legendTimeRemaining": "Time Remaining",
+        "timeSpentToStoryPointVariance": "Time Spent to Story Point Variance",
+        "timeSpentToOriginalEstimateVariance": "Time Spent to Story Estimate Variance",
+        "noStoryPoints": "No story points available",
+        "noEstimatesAvailable": "No story estimates available",
+        "totalStories": "Total Stories",
+        "storiesInProgress": "Stories In Progress",
+        "storiesResolved": "Stories Resolved",
+        "storiesOpen": "Stories Open",
+        "varianceIndicatorsTitleDetail": "Calculated on all Stories",
+        "statusFilterAppliedTooltipText": "Calculated for All stories",
+        "projectedTimeSpentToStoryPointVariance": "Expected Time Spent to Story Point Variance",
+        "projectedTimeSpentToOriginalEstimateVariance": "Expected Time Spent to Story Estimate Variance",
+        "varianceTableTitle": "Variance Indicator Table"
+      },
+      "indicatorsInfo": {
+        "indicatorSubtextForAllStories": "(Calculated for %s1 stories)",
+        "indicatorSubTextForAllResolvedIssues": "(Calculated for %s1 issues)",
+        "indicatorSubTextForSomeResolvedIssues": "(Calculated for %s1 issues only)",
+        "indicatorSubtextForSomeStoriesOnly": "(Calculated for %s1 stories only)",
+        "and": " and ",
+        "storyEstimateWithinDays": "Calculated for All stories",
+        "storyCycleTime": "Calculated for In Progress and Resolved stories only",
+        "completionWithinThreshold": "Calculated for Resolved stories only",
+        "avgStoryDefectToDevTime": "Calculated for Resolved stories only",
+        "underEstimatedStories": "Calculated for Resolved stories only",
+        "overEstimatedStories": "Calculated for Resolved stories only",
+        "storyPointToTimeSpent": "Calculated for All stories",
+        "timeSpentToStoryEstimate": "Calculated for All stories",
+        "storyPointToTimeSpentTooTip": "Calculated for: All",
+        "timeSpentToStoryEstimateToolTip": "Calculated for: All",
+        "toolTipsubsTitles": {
+          "indicatorsTooltip": "Calculated for: %s1",
+          "teamPlanningIndicator": "Calculated for: All",
+          "TeamDeliveryIndicator": "Calculated for: Resolved",
+          "TeamQualityIndicator": "Calculated for: Resolved",
+          "OverAgedIndicatorPre": "The stories which have been <u>In Progress</u> for more than <u>",
+          "OverAgedIndicatorPost": " weeks</u>.<p>Calculated for: %s1</p>",
+          "OverEstimatedIndicator": "The stories completed within <u>%s1%</u> of it’s estimated time.<p>Calculated for: %s2</p>",
+          "UnderEstimatedIndicator": "The stories which take <u>%s1%</u> more time (above threshold) than it’s estimated time.<p>Calculated for: %s2</p>"
+        }
+      },
+      "storyIndicators": {
+        "title": "Story Indicators"
+      },
+      "storyPointsIndicators": {
+        "title": "Story Points Indicators",
+        "graphTitle": "Story Points",
+        "legend": "Legend",
+        "inprogress": "In Progress",
+        "resolved": "Resolved",
+        "totalStories": "Total Stories",
+        "storiesInProgress": "Stories In Progress",
+        "storiesResolved": "Stories Resolved",
+        "storiesOpen": "Stories Open",
+        "totalStoryPoints": "Total Story Points",
+        "storyPointsInProgress": "Story Points In Progress",
+        "storyPointsResolved": "Story Points Resolved",
+        "storyPointsOpen": "Story Points Open",
+        "storyPointIndicatorsTitleDetail": "Story Points of Stories only"
+      },
+      "teamIndicators": {
+        "title": "Indicators",
+        "titleTable": "Indicators Details",
+        "originalEstimateInFinteenDays": "Story Estimates within ",
+        "completionWithinThreshold": "Completion within Threshold ",
+        "originalEstimateInThresholdDays": "Story Estimates within threshold days",
+        "completionWithinEstimatesAndThreshold": "Completion within Story Estimates + threshold",
+        "defectToDevPercent": "Avg Story Defect to Dev Time %",
+        "issueDefectToIssueTimeSpent": "Avg Issue Defect to Issue Time Spent %",
+        "overAgedStories": "Over Aged Stories",
+        "overEstimatedStories": "Over Estimated Stories",
+        "underEstimatedStories": "Under Estimated Stories",
+        "timeSpentToStoryPointsVariance": "Time Spent to Story Points Variance",
+        "timeSpentToStoryEstimateVariance": "Time Spent to Story Estimate Variance",
+        "noDataAvailable": "No data found to calculate Indicators based on the selected criteria.",
+        "allIndicatorsDisabledMessage": "All the indicators are currently hidden as per the organizational settings.",
+        "errorLoadingMessage": "Unable to load the data. Please try again.",
+        "selectIndicatorToShowMessage": "There is no data available. Please select an indicator in the Summary tab to view its details."
+      },
+      "teamIndicatorsTableTitle": {
+        "TEAM_PLANNING_INDEX": "Story Estimates within %s1",
+        "TEAM_DELIVERY_INDEX": "Completion within Threshold %s2",
+        "TEAM_QUALITY_INDEX": "Avg Story Defect to Dev Time %",
+        "OVER_AGED_STORIES": "Over Aged Stories",
+        "OVER_ESTIMATED_STORIES": "Over Estimated Stories",
+        "UNDER_ESTIMATED_STORIES": "Under Estimated Stories",
+        "TIME_SPENT_TO_SP_VARIANCE": "Time Spent to Story Point Variance",
+        "TIME_SPENT_TO_ESTIMATE_VARIANCE": "Time Spent to Story Estimate Variance",
+        "ISSUE_DEFECT_TO_ISSUE_TIME_SPENT": "Avg Issue Defect to Issue Time Spent %"
+      },
+      "bugDistribution": {
+        "title": "Bugs Analysis",
+        "noDataAvailable": "No bugs were found based on the selected criteria.",
+        "errorLoadingMessage": "Unable to load the data. Please try again."
+      },
+      "graphSliderTooltip": "Move the slider to zoom in/out on the graph."
+    },
+    "epic": {
+      "title": "Epic Analysis",
+      "titleTable": "Epic Details",
+      "aboveThreshold": "Above Threshold",
+      "projected": "Projected",
+      "xAxisLable": "Stories",
+      "yAxisText": "Time Spent (days)",
+      "yAxisTextProjected": "Time Spent + Time Remaining (days)",
+      "slidertooltip": "Move the slider to zoom in/out on the graph epics.",
+      "legendTotal": "Total (days)",
+      "table": {
+        "columns": {
+          "teamBoard": "Team Boards",
+          "epicId": "Epic Id",
+          "IssueID": "Issue Id",
+          "IssueType": "Issue Type",
+          "IssueDescription": "Description",
+          "IssueStatus": "Status",
+          "refinedEstimates": "Refined Estimates",
+          "dateStarted": "Date Started",
+          "storyPoints": "Story Points",
+          "originalEstimates": "Issue Estimates (days)",
+          "timeSpent": "Time Spent (days)",
+          "timeRemaining": "Time Remaining (days)",
+          "timeSpentToStoryPointsVariance": "Time Spent to Story Points Variance (%)",
+          "timeSpentToOriginalEstimatesVariance": "Time Spent to Story Estimates Variance (%)",
+          "deliveryRisk": "RAG/ Alerts",
+          "onTimeDelivery": "On time: Completing within story estimates.",
+          "delayedDelivery": "Delayed: Completing within 120% of story estimates.",
+          "extremelyDelayedDelivery": "Extremely Delayed: Completing will be more that 120% of Story estimates",
+          "resolution": "Resolution",
+          "dateResolved": "Date Resolved",
+          "age": "Issue Age (Elapsed days)",
+          "fixVersions": "Fix Versions",
+          "ragStatus": "RAG/ Alerts",
+          "alerts": "Alerts"
+        },
+        "avg": "Average",
+        "tooltip": {
+          "ragStatus": "Rag Status",
+          "alerts": "Alerts",
+          "fixVersion": "Fix Versions",
+          "inheritedFromParent": "Represents inherited from parent. i.e 1.9.5.18 (i)",
+          "onTime": "On Time",
+          "projectedOnTime": "Expecting On Time",
+          "withinThreshold": "Within Threshold",
+          "projectedWithinThreshold": "Expecting Within Threshold",
+          "delayed": "Delayed",
+          "projectedDelayed": "Expecting Delay",
+          "error": "Errors",
+          "warning": "Warnings",
+          "errorR": "Errors(R)",
+          "warningR": "Warnings(R)"
+        }
+      },
+      "legend": {
+        "timeSpentWithOrignalEstimate": "Time Spent within Story Estimate",
+        "timeSpentWithinThreshold": "Time Spent within Threshold",
+        "timeSpentOverThreshold": "Time Spent Over Threshold",
+        "error": "Errors",
+        "warnings": "Warnings",
+        "errorsResolved": "Errors(R)",
+        "errorWarning": "Warnings(R)",
+        "slidertooltip": "Move the slider to zoom in/out on the graph stories."
+      },
+      "graph": {
+        "yAxisTextProjected": "Time Spent + Time Remaining (days)",
+        "legendsAndSeriesLabels": {
+          "timeSpentWithinHLE": "Time spent within epic HLE",
+          "timeRemainingWithinHLE": "Time remaining within epic HLE",
+          "timeSpentWithinThreshold": "Time spent within threshold",
+          "timeRemainingWithinThreshold": "Time remaining within threshold",
+          "timeSpentOverThreshold": "Time spent over threshold",
+          "timeRemainingOverThreshold": "Time remaining over threshold",
+          "unallocatedTimeRemainingWithinEpicHLE": "Unallocated time remaining within epic HLE"
+        }
+      }
+    },
+    "deliveryAnalysis": {
+      "title": "Story Analysis",
+      "titleTable": "Story Details",
+      "aboveThreshold": "Above Threshold",
+      "projected": "Projected",
+      "xAxisLable": "Stories",
+      "yAxisText": "Time Spent (days)",
+      "yAxisTextProjected": "Time Spent + Time Remaining (days)",
+      "slidertooltip": "Move the slider to zoom in/out on the graph stories.",
+      "legendTotal": "Total (days)",
+      "table": {
+        "columns": {
+          "teamBoard": "Team Boards",
+          "actualStoryStatusCategory": "Actual Status Category",
+          "inferredStoryStatusCategory": "Inferred Status Category",
+          "epicId": "Epic Id",
+          "storyNumber": "Story Id",
+          "storyDescription": "Story Description",
+          "storyStatus": "Story Status",
+          "storyStatusCategory": "Actual Story Category/ Inferred Story Category",
+          "dateStarted": "Date Started",
+          "storyPoints": "Story Points",
+          "originalEstimates": "Story Estimates (days)",
+          "timeSpent": "Time Spent (days)",
+          "timeRemaining": "Time Remaining (days)",
+          "timeSpentToStoryPointsVariance": "Time Spent to Story Points Variance (%)",
+          "timeSpentToOriginalEstimatesVariance": "Time Spent to Story Estimates Variance (%)",
+          "deliveryRisk": "RAG/ Alerts",
+          "onTimeDelivery": "On time: Completing within story estimates.",
+          "delayedDelivery": "Delayed: Completing within 120% of story estimates.",
+          "extremelyDelayedDelivery": "Extremely Delayed: Completing will be more that 120% of Story estimates",
+          "resolution": "Resolution",
+          "dateResolved": "Date Resolved",
+          "age": "Story Age (Elapsed days)",
+          "fixVersions": "Fix Versions",
+          "ragStatus": "RAG/ Alerts",
+          "alerts": "Alerts"
+        },
+        "avg": "Average",
+        "tooltip": {
+          "ragStatus": "Rag Status",
+          "priority": "Priority",
+          "onTime": "On Time",
+          "projectedOnTime": "Expecting On Time",
+          "withinThreshold": "Within Threshold",
+          "projectedWithinThreshold": "Expecting Within Threshold",
+          "delayed": "Delayed",
+          "projectedDelayed": "Expecting Delay",
+          "error": "Errors",
+          "warning": "Warnings",
+          "errorR": "Errors(R)",
+          "warningR": "Warnings(R)",
+          "highest": "Highest",
+          "high": "High",
+          "medium": "Medium",
+          "normal": "Normal",
+          "low": "Low",
+          "lowest": "Lowest"
+        }
+      },
+      "legend": {
+        "timeSpentWithOrignalEstimate": "Time Spent within Story Estimate",
+        "timeSpentWithinThreshold": "Time Spent within Threshold",
+        "timeSpentOverThreshold": "Time Spent Over Threshold",
+        "error": "Errors",
+        "warnings": "Warnings",
+        "errorsResolved": "Errors(R)",
+        "errorWarning": "Warnings(R)",
+        "slidertooltip": "Move the slider to zoom in/out on the graph stories."
+      },
+      "graph": {
+        "projectedTimeRemainingWithinStoryEstimates": "Time remaining within story estimates",
+        "timespentWithinStoryEstimates": "Time spent within story estimates",
+        "timeSpentWithinThreshold": "Time spent within threshold",
+        "timeRemainingWithinThreshold": "Time remaining within threshold",
+        "timeSpentOverThreshold": "Time spent over threshold",
+        "timeRemainingOverThreshold": "Time remaining over threshold",
+        "unallocatedTimeRemainingWithinEstimate": "Unallocated time remaining within story estimates",
+        "totalTimespentWithinStoryEstimates": "Total time spent within story estimates",
+        "totalProjectedTimeRemainingWithinStoryEstimates": "Total time remaining within story estimates",
+        "totalTimeSpentWithinThreshold": "Total time spent within threshold",
+        "totalTimeRemainingWithinThreshold": "Total time remaining within threshold",
+        "totalTimeSpentOverThreshold": "Total time spent over threshold",
+        "totalTimeRemainingOverThreshold": "Total time remaining over threshold",
+        "totalProjectedUnallocatedTimeRemainingWithinEstimate": "Total unallocated time remaining within story estimates",
+        "totalInprogressErrorAlerts": "Total error alerts in In Progress stories.",
+        "totalInprogressWarningAlerts": "Total warning alerts in In Progress stories.",
+        "timeSpent": "Time Spent"
+      },
+      "issueAnalysisGraph": {
+        "projectedTimeRemainingWithinIssueEstimates": "Time remaining within issue estimates",
+        "timespentWithinIssueEstimates": "Time spent within issue estimates",
+        "timeSpentWithinThreshold": "Time spent within threshold",
+        "timeRemainingWithinThreshold": "Time remaining within threshold",
+        "timeSpentOverThreshold": "Time spent over threshold",
+        "timeRemainingOverThreshold": "Time remaining over threshold",
+        "unallocatedTimeRemainingWithinEstimate": "Unallocated time remaining within issue estimates",
+        "totalTimespentWithinIssueEstimates": "Total time spent within issue estimates",
+        "totalProjectedTimeRemainingWithinIssueEstimates": "Total time remaining within issue estimates",
+        "totalTimeSpentWithinThreshold": "Total time spent within threshold",
+        "totalTimeRemainingWithinThreshold": "Total time remaining within threshold",
+        "totalTimeSpentOverThreshold": "Total time spent over threshold",
+        "totalTimeRemainingOverThreshold": "Total time remaining over threshold",
+        "totalProjectedUnallocatedTimeRemainingWithinEstimate": "Total unallocated time remaining within issue estimates",
+        "totalInprogressErrorAlerts": "Total error alerts in In Progress stories.",
+        "totalInprogressWarningAlerts": "Total warning alerts in In Progress stories.",
+        "timeSpent": "Time Spent"
+      }
+    },
+    "alertAnalysis": {
+      "title": "Alerts Analysis",
+      "alertTableTitle": "Alerts Details",
+      "noIssuesAvailableMessage": "No issues were found to generate alerts based on the selected criteria.",
+      "noAlertsAvailableMessage": "Everything looks fine. No alerts were generated based on the selected criteria.",
+      "errorLoadingMessage": "Unable to load the data. Please try again.",
+      "disableUntilComponentsLoad": "This functionality will become available once all the tabs on the page have finished loading.",
+      "alertsDisabledByAdmin": "All the alerts are currently hidden as per the organizational settings.",
+      "table": {
+        "columns": {
+          "parentIssue": "Parent Issue",
+          "issueId": "Issue Id",
+          "type": "Issue Type",
+          "description": "Alert Description"
+        }
+      },
+      "alertsModal": {
+        "title": "Subscribe to Alerts",
+        "subTitle": "Subscribe to the alerts as per your organizational needs.",
+        "toolTipInfo": "Manage the state of your Alerts",
+        "alerts": {
+          "Warn_OrgininalEstimate_NotMore_Threshold_StoryBug": "When the Estimates on an Issue Type is above recommended size, raise a Warning",
+          "Warn_StoryAge_NotMore_Threshold_Story": "When the age of an Issue Type is above the recommended time of %s1 Days, raise a Warning",
+          "Error_OriginalEstimate_AboveThreshold_StoryBug": "When the Estimates are missing on an Issue Type, raise an Error",
+          "Error_OriginalEstimates_Available_Subtask": "When the Estimates are missing on a Subtask, raise an Error",
+          "Error_TrackingField_OriginalEstimates_Available_Subtask": "When the value of Tracking Field is missing on configured subtask/child of a parent issue, raise an Error",
+          "Error_HLE_Available_StoryBug": "When the value of field “High Level Estimate” is missing on Issue Type “Epic”, raise an Error",
+          "Error_Tracking_field_Available": "When the value of a Tracking Field is missing on the configured Issue Types, raise an Error",
+          "Error_StoryPoints_Available_StoryBug": "When the value of Story Point is missing, raise an Error",
+          "Error_Subtasks_Available_Story": "When the Subtasks are not defined, raise an Error/Warning   *Error in case all of the subtasks are not defined"
+        }
+      }
+    },
+    "modalGraph": {
+      "storyEstimates": "Story Estimates",
+      "storyEstimate": "Story Estimate: ",
+      "issueEstimates": "Issue Estimates: ",
+      "ragStatus": "RAG Status: ",
+      "defectCount": "Defect Count: ",
+      "resolvedDate": "Resolved Date:",
+      "inferredStatusCategory": "Inferred Status Category:",
+      "teamBoard": "Team Boards: ",
+      "storyStatus": "Story Status: ",
+      "issueStatus": "Issue Status: ",
+      "dateStarted": "Date Started: ",
+      "storyPoints": "Story Points: ",
+      "timeSpenttoStoryPointVariance": "Time Spent to Story Point Variance: ",
+      "timeSpenttoStoryEstimateVariance": "Time Spent to Story Estimate Variance: ",
+      "storyAge": "Story Age (Elapsed days): ",
+      "issueAge": "Issue Age (Elapsed days): ",
+      "timeSpent": "Time Spent: ",
+      "timeRemaining": "Time Remaining: ",
+      "storyDefects": "Story Defects",
+      "xasxisDevEstimatesVsTime": "Dev Estimates Vs Time Spent",
+      "xasxisQAEstimatesVsTime": "QA Estimates Vs Time Spent",
+      "xasxisOthersEstimatesVsTime": "Other Estimates Vs Time Spent",
+      "yaxis": "Time Spent + Time Remaining (days)",
+      "barEstimatedEffort": "Estimated Effort",
+      "barTimeSpent": "Time Spent",
+      "barTimeRemaining": "Time Remaining",
+      "barStoryDefects": "Story Defects",
+      "ModalTotalAlerts": "Total Alerts",
+      "alertTypeErrors": "Errors",
+      "alertTypeWarning": "Warnings",
+      "clickhereText": "click here for more details >>",
+      "team": "Team",
+      "noSubtasksAvailable": "No further distribution available"
+    },
+    "modalTabs": {
+      "details": "Issue Details",
+      "comments": "Comments"
+    },
+    "qualityAnalysis": {
+      "title": "Story Defect Analysis",
+      "titleTable": "Story Defect Details",
+      "yAxisLabel": "Time Spent (days)",
+      "xAxisLabel": "Stories",
+      "legendTotal": "Total (days)",
+      "totalIssuesLabel": "Total Issues",
+      "defectCountLabel": "Defect Count",
+      "table": {
+        "columns": {
+          "teamBoard": "Team Boards",
+          "epicId": "Epic Id",
+          "storyNumber": "Story Id",
+          "storyDescription": "Story Description",
+          "storyStatus": "Story Status",
+          "defectCount": "Story Defects Count",
+          "devTaskCount": "Dev Task Count",
+          "timeSpentOnDev": "Time Spent on Development (days)",
+          "timeSpentOnDefects": "Time Spent on Story Defects (days)",
+          "defectTimePercent": "Dev to Defect time %",
+          "baQaDevDone": "BA/QA/DEV Done",
+          "missingTasks": "Missing Tasks"
+        },
+        "avg": "Average"
+      },
+      "legend": {
+        "timeSpentondevelopment": "Time Spent on development",
+        "timeSpentondefects": "Time Spent on story defects",
+        "totalTimeSpentondevelopment": "Total Time Spent on development",
+        "totalTimeSpentondefects": "Total Time Spent on story defects",
+        "totalTimeSpent": "Total Time Spent on issues",
+        "totalDefectCount": "Total Defects Count",
+        "totalIssuesCount": "Total Issues Count"
+      }
+    },
+    "teamIndicators": {
+      "title": "Indicators",
+      "originalEstimateInFinteenDays": "Story Estimates within ",
+      "completionWithinThreshold": "Completion within Threshold ",
+      "defectToDevPercent": "Avg Story Defect to Dev Time %",
+      "overAgedStories": "Over Aged Stories",
+      "overEstimatedStories": "Over Estimated Stories",
+      "underEstimatedStories": "Under Estimated Stories",
+      "timeSpentToStoryPointVariance": "Time Spent to Story Point Variance",
+      "timeSpentToOriginalEstimateVariance": "Time Spent to Story Estimate Variance",
+      "defectToTimePercent": "Avg Issue Defect to Issue Time Spent %",
+      "toolTip": {
+        "above": "Above %s1%",
+        "below": "%s1% or below"
+      },
+      "table": {
+        "columns": {
+          "storyNumber": "Story Id",
+          "storyDescription": "Story Description",
+          "storyStatus": "Story Status",
+          "originalEstimates": "Story Estimates (days)",
+          "timeSpent": "Time Spent (days)",
+          "thresholdValue": "Threshold Value",
+          "storyAge": "Story Age (Elapsed days)",
+          "aggregatedEstimatedTime": "Aggregated Estimated Time (days)",
+          "age": "Story Age (Column displays for 'Over Aged Stories' Indicator)",
+          "projectedThresholdTime": "Projected Threshold Time (days)"
+        },
+        "avg": "Average",
+        "total": "Total"
+      },
+      "indicatorsSummaryTeamHeaders": {
+        "appliedFilters": "Applied Filters",
+        "status": {
+          "all": "All",
+          "resolved": "Resolved",
+          "inProgressAndResolved": "In Progress & Resolved"
+        },
+        "indicators": {
+          "red": "Red Indicators",
+          "amber": "Amber Indicators"
+        },
+        "teamBoards": "Team Board",
+        "storiesCount": "Stories Count",
+        "issuesCount": "Issues Count"
+      }
+    },
+    "velocityAnalysis": {
+      "table": {
+        "teamboard": "Team Boards",
+        "sprintName": "Sprint Name",
+        "intervalStartDate": "Interval Start Date",
+        "sprintStartDate": "Sprint Start Date",
+        "intervalEndDate": "Interval End Date",
+        "sprintEndDate": "Sprint End Date",
+        "storyId": "Story Id",
+        "storyDesc": "Story Description",
+        "storyPoints": "Story Points",
+        "dateResolved": "Date Resolved",
+        "avg": "Average"
+      }
+    },
+    "burnupAnalysis": {
+      "issueStatusTracking": {
+        "issueCount": {
+          "title": "Issue Count",
+          "subtitle": "Count of issues participating in the Burnup",
+          "totalLabel": "Total Issues"
+        },
+        "storyPointsTracker": {
+          "title": "Story Points Tracker",
+          "subtitle": "Story Points of issues participating in the Burnup",
+          "totalLabel": "Total Story Points"
+        },
+        "issueEstimatesTracker": {
+          "title": "Issue Estimates Tracker",
+          "subtitle": "Issue Estimates of issues participating in the Burnup",
+          "totalLabel": "Total Issue Estimates",
+          "days": "(days)"
+        }
+      },
+      "table": {
+        "teamboard": "Team Boards",
+        "releaseId": "Fix Versions",
+        "sprints": "Sprints",
+        "epicId": "Epic Id",
+        "issueId": "Issue Id",
+        "issueType": "Issue Type",
+        "description": "Description",
+        "dateStarted": "Date Started",
+        "storyPoints": "Story Points",
+        "parentLink": "Parent Link",
+        "dateResolved": "Date Resolved",
+        "issueStatus": "Issue Status",
+        "average": "Average",
+        "originalEstimates": "Issue Estimates (days)",
+        "timeSpent": "Time Spent (days)",
+        "timeRemaining": "Time Remaining (days)"
+      },
+      "loadDataButtonLabel": "Load Details Table"
+    },
+    "historicalDetails": {
+      "table": {
+        "date": "Date",
+        "storyPoints": "Story Points",
+        "issueId": "Issue Id",
+        "issueType": "Issue Type",
+        "epicId": "Epic Id",
+        "parentLink": "Parent Link",
+        "teamboard": "Team Boards",
+        "description": "Description"
+      },
+      "noHistoricalDataAvailableMessages": {
+        "noDataAvailableMessageLiveMode": "Historical details are not available in the current subscription. For further details, contact ScrumUpdate Support.",
+        "noDataAvailableMessageAsyncMode": "No historical details were found based on the selected criteria."
+      }
+    },
+    "indicatorsSummaryAnalysis": {
+      "table": {
+        "overEstimatedStoriesTableTitle": "Details: Over Estimated Stories",
+        "columns": {
+          "teamboard": "Team Boards",
+          "storiesCount": "Stories Count",
+          "timeEstimatedToTimeSpentVariance": "Time Spent to Time Estimate Variance",
+          "storypointToTImeSpentVariance": "Time Spent to Story Point Variance",
+          "cycleTime": "Over Aged Stories",
+          "storyEstimatesInDays": "Story Estimates within ",
+          "completionWithinStoryEstimate": "Completion within Threshold",
+          "underEstimatedStories": "Under Estimated Stories",
+          "OverEstimatedStories": "Over Estimated Stories",
+          "avdefectToTime": "Avg Issue Defect to Issue Time Spent %",
+          "avdDefToDev": "Avg Story Defect to Dev Time %",
+          "RedCount": "Red Indicators",
+          "AmberCount": "Amber Indicators"
+        },
+        "toolTipInfo": {
+          "storiesCountDescription": "Stories on the team board where work is logged in the selected date range.",
+          "issuesCountDescription": "Issues on the team board where work is logged in the selected date range.",
+          "status": {
+            "open": "Open",
+            "inProgress": "In Progress",
+            "resolved": "Resolved"
+          }
+        }
+      },
+      "indicatorsInfo": {
+        "storyEstimateWithinDays": "Calculated for All stories",
+        "storyCycleTime": "Calculated for In Progress And Resolved stories only",
+        "completionWithinThreshold": "Calculated for Resolved stories only",
+        "avgStoryDefectToDevTime": "Calculated for Resolved stories only",
+        "underEstimatedStories": "Calculated for Resolved stories only",
+        "overEstimatedStories": "Calculated for Resolved stories only",
+        "storyPointToTimeSpent": "Calculated for Resolved stories only",
+        "timeSpentToStoryEstimate": "Calculated for Resolved stories only",
+        "storyPointToTimeSpentTooTip": "Calculated for: Resolved",
+        "timeSpentToStoryEstimateToolTip": "Calculated for: Resolved",
+        "toolTipsubsTitles": {
+          "indicatorsTooltip": "Calculated for: %s1",
+          "teamPlanningIndicator": "Calculated for: All",
+          "TeamDeliveryIndicator": "Calculated for: Resolved",
+          "TeamQualityIndicator": "Calculated for: Resolved",
+          "OverAgedIndicatorPre": "The stories which have been <u>In Progress</u> for more than <u>",
+          "OverAgedIndicatorPost": " weeks</u>.<p>Calculated for: %s1</p>",
+          "OverEstimatedIndicator": "The stories completed within <u>80%</u> of it’s estimated time.<p>Calculated for: %s1</p>",
+          "UnderEstimatedIndicatorPre": "The stories which take <u>",
+          "UnderEstimatedIndicatorPost": "%</u> more time (above threshold) than it’s estimated time.<p>Calculated for: %s1</p>"
+        }
+      }
+    },
+    "bug": {
+      "tabs": {
+        "dashboard": "Bugs",
+        "details": "Bugs Analysis"
+      },
+      "dashboard": {
+        "title": "Bugs Analysis",
+        "pieChart": "Bug Analysis Pie Chart",
+        "totalBugs": "Total Bugs Undertaken",
+        "timeSpent": "Total Time Spent (days)",
+        "avgTimeFromInProgressToResolve": "Avg. Time Elapsed from In Progress to Resolved (days)",
+        "avgTimePerResolved": "Avg. Time Spent per Resolved Bug (days)",
+        "open": "Open",
+        "resolved": "Resolved",
+        "inProgress": "In Progress",
+        "requiresReview": "Requires Review",
+        "inReview": "In Review",
+        "inTest": "In Test",
+        "readyToTest": "Ready To Test",
+        "legend": "Legend"
+      },
+      "details": {
+        "title": "Bugs Analysis",
+        "tableTitle": "Bugs Details",
+        "table": {
+          "avg": "Average",
+          "columns": {
+            "bugNumber": "Bug Id",
+            "teamBoard": "Team Boards",
+            "epic": "Epic Id",
+            "bugDescription": "Bug Description",
+            "priority": "Priority",
+            "bugStatus": "Bug Status",
+            "storyPoints": "Story Points",
+            "originalEstimates": "Bug Estimates (days)",
+            "timeSpent": "Time Spent (days)",
+            "timeRemaining": "Time Remaining (days)",
+            "dateCreated": "Date Created",
+            "dateStarted": "Date Started",
+            "dateResolved": "Date Resolved",
+            "timeElapsed": "Time Elapsed (days)",
+            "inProgressToResolved": "In Progress to Resolved (days)",
+            "resolution": "Resolution",
+            "fixVersions": "Fix Versions"
+          }
+        }
+      }
+    }
+  },
+  "ragStatusTimelog": {
+    "table": {
+      "columns": {
+        "worklogRag": "Work Log (%)",
+        "teamName": "Team Name",
+        "ragDist": "Members Work Log RAG Status",
+        "categorisePercentages": "Main / Others"
+      }
+    }
+  },
+  "timelog": {
+    "table": {
+      "columns": {
+        "tooltip": "It shows aggregated work log values of task types ",
+        "productiveColumnsTooltip": "Displays the categories that have been defined to group particular issue types.",
+        "unproductiveColumnsTooltip": "Displays all issue types that are not associated with any defined category.",
+        "teamName": "Team Name",
+        "memberCount": "Member Count",
+        "workLog": "Work Log (%)",
+        "worklog": "Work log",
+        "bug": "Bug",
+        "development": "Development",
+        "qaBa": "QA/BA",
+        "storyDefect": "Story Defect",
+        "others": "Others",
+        "members": {
+          "memberName": "Member Name",
+          "totalTimeLog": "Total Time Log (%)",
+          "bug": "Bug",
+          "development": "Development",
+          "qaBa": "QA/BA",
+          "storyDefect": "Story Defect",
+          "others": "Others"
+        }
+      },
+      "footer": {
+        "avgTimeLog": "Avg % / Total days"
+      }
+    },
+    "workLogStatistics": {
+      "title": "Work log statistics",
+      "summarySubTitle": "Work log summary",
+      "statusSubTitle": "Work log status",
+      "workLogDistribution": " Work log Distribution",
+      "summaryCategory": "Summary",
+      "mainCategory": "Main",
+      "otherCategory": "Other",
+      "remindTeam": "Remind team",
+      "remindTeams": "Remind members",
+      "viewDetails": "View details",
+      "totalMembers": "Total members",
+      "totalTeams": "Total teams",
+      "availableCapacity": "Total capacity",
+      "loggedTime": "Logged time",
+      "totalWorklog": "Total work log",
+      "settingsDialogTitle": "Manage work log settings",
+      "hours": "hours",
+      "days": "days"
+    },
+    "emailReminder": {
+      "title": "This will remind the whole group to log their hours. Send Notification?",
+      "customTextLabel": "Add a custom message",
+      "sectionHeading": "Following members will receive the email.",
+      "missingWorklogCategoryLabel": "Members with missing worklog",
+      "incompleteWorklogCategoryLabel": "Members with incomplete worklog",
+      "emailReminderNotice": "Add missing email addresses to ensure all members receive reminders.",
+      "defaultEmailCustomText": "This is a gentle reminder for you to complete your timesheet. Please make sure it's done by day end.",
+      "sendEmailTooltipForMultipleMembers": "Emails of selected members are missing. Please add emails to send reminders.",
+      "sendEmailTooltipForSingleMember": "Email of selected member is missing. Please add email to send reminder.",
+      "noMemberSelected": "Please select some members to send email",
+      "sendEmail": "Send email",
+      "cancel": "Cancel",
+      "addEmail": "Add email",
+      "missingEmailAddress": {
+        "title": "Add missing email addresses",
+        "updateEmail": " Update",
+        "placeHolder": "Enter email address",
+        "emailInvalidPatternError": "Enter a valid email address.",
+        "duplicateEmailErrorMessage": "This is a duplicate email address. Please enter a unique email."
+      }
+    },
+    "worklogSummary": {
+      "title": "Work log details",
+      "sendReminder": "Send reminder",
+      "viewDetails": "View details",
+      "export": "Export",
+      "exportFileName": "Team View Detail"
+    },
+    "tooTips": {
+      "worklog": "Total time logged by a team.",
+      "bug": "Total time spend on a bugs",
+      "dev": "Total time spend on a developement",
+      "qaba": "Total time spend on a QA/BA",
+      "storyDefect": "Total time spend on a story defects",
+      "others": "Click on the icon next to the team to see more details",
+      "openModal": "Click to Open Modal",
+      "teamWorklogAnalysisModal": "Click to view a detailed team view analysis by members.",
+      "multipleTeamMember": "Member of multiple teams"
+    },
+    "charts": {
+      "mainCategories": "Total Worklog Categories",
+      "others": "%s1 Categories",
+      "mainChartImagename": "main-categories-worklog-analysis",
+      "othersChartImagename": "others-worklog-analysis"
+    },
+    "cardLabels": {
+      "title": "Highlights",
+      "totalWorklog": "Cumulative Logged Time",
+      "thisMonth": "THIS MONTH",
+      "maxSpentCategory": "Issue Category with Maximum Time Spent",
+      "teamMembersRAG": "Members Work Log RAG Status",
+      "workLogTooltip": "The work log of users who are part of multiple teams is counted only once when calculating the overall average for all teams.",
+      "teamMembersRAGInfo": "Unique Members Only",
+      "teamMembersTooltip": "The work log of users who are part of multiple teams is counted only once when calculating the total work log for all teams.",
+      "refreshIconTooltip": "API response failed. Tap to reload current month's stats!",
+      "membersWithNoWorklog": "Members with No Time Log",
+      "updateTeamStructure": "Update Your Team Structure",
+      "workloggedIn": "Work Logged In",
+      "othersWorkloggedIn": "Others Work Log",
+      "thisMonthSummary": "So far this month (main vs others)",
+      "viewMembersDetail": "View Details of Members",
+      "worklogDistribution": "Work log distribution",
+      "cumulativeWorklog": "Total",
+      "mainCategories": "%s1",
+      "others": "%s1",
+      "membersWorklogRagStatus": "Members' work log RAG status",
+      "membersWorklogRagStatusSubHeading": "Below status can be used to view the count of members who need to log their work.",
+      "membersWorklogRagSubHeading": {
+        "green": "member's work log is above %s1%.",
+        "amber": "member's work log is between %s1% - %s2%.",
+        "red": "member's work log is below %s1%.",
+        "greenForMultipleMembers": "members' work log is above %s1%.",
+        "amberForMultipleMembers": "members' work log is between %s1% - %s2%.",
+        "redForMultipleMembers": "members' work log is below %s1%."
+      },
+      "teamWorklogDetails": "Team View Details",
+      "revokedUsers": "Suspended Users",
+      "updateTeams": "Update Teams"
+    },
+    "graph": {
+      "yAxisLabel": "Work Log Percentage"
+    },
+    "distByIssueType": "Distribution By Issue Type",
+    "avgTimeLog": "Average",
+    "viewTable": "View Table",
+    "viewGraph": "View Graph",
+    "clearFilter": "Clear filter"
+  },
+  "help": {
+    "tableOfContent": {
+      "burnUpDataTable": {
+        "sectionHeading": "Burnup Analysis",
+        "burnupChartSection": "Burnup Chart",
+        "burnupDataTableDetails": "Burnup Analysis Details",
+        "teamBoard": "Team Boards",
+        "releaseId": "Fix Versions",
+        "epicId": "Epic Id",
+        "issueId": "Issue Id",
+        "issueType": "Issue Type",
+        "issueStatus": "Issue Status",
+        "description": "Description",
+        "dateStarted": "Date Started",
+        "storyPoints": "Story Points",
+        "dateResolved": "Date Resolved",
+        "originalEstimates": "Issue Estimates (days)",
+        "timeSpent": "Time Spent (days)",
+        "timeRemaining": "Time Remaining (days)",
+        "overAllAverage": "Overall Average"
+      },
+      "title": "TABLE OF CONTENTS",
+      "titles": {
+        "mainTitle": "Glossary of Terms",
+        "titleStory": "Delivery Analysis",
+        "titleDelivery": "Team Analysis For Delivery",
+        "titleBug": "Bug Analysis",
+        "titleWorkLog": "Team View",
+        "reports": "Reports"
+      },
+      "storyAnalysis": {
+        "title": "Team Analysis For Stories",
+        "storyAnalysisComponent1": "Story Analysis Graph",
+        "storyAnalysisComponent2": "Story Analysis Details"
+      },
+      "epicAnalysis": {
+        "title": "Team Analysis For Epics",
+        "epicAnalysisChartComponent": "Epic Analysis Graph",
+        "epicAnalysisDataTableComponent": "Epic Analysis Details"
+      },
+      "qualityAnalysis": {
+        "qualityAnalysisComponent1": "Story Defect Analysis Graph",
+        "qualityAnalysisComponent2": "Story Defect Analysis Details"
+      },
+      "alertAnalysis": {
+        "alertAnalysisTitle": "Alerts Analysis",
+        "alertAnalysisPieChart": "Alerts Analysis Pie Chart",
+        "alertTableTitle": "Alerts Details",
+        "alertAnalysisWarnings": "Total Number of Warnings",
+        "alertAnalysisErrors": "Total Number of Errors",
+        "alertDetailsTable": "Alerts Analysis Details"
+      },
+      "velocityAnalysis": {
+        "title": "Velocity/Throughput Analysis",
+        "velocityChartTitle": "Velocity/Throughput Chart",
+        "velocityDetailsTable": "Velocity/Throughput Details",
+        "velocityAnalysisView": " (Only available for Team Board analysis)",
+        "velocityTableXaxis": "X-axis",
+        "velocityTableYaxis": "Y-axis",
+        "sprintVelocity": "Average",
+        "sprintDivision": "Time Division",
+        "showValuesCheckbox": "Show Values (Checkbox)",
+        "includeActiveSprints": "Include Active Sprints (Checkbox)",
+        "includeActiveIntervals": "Include Active Time Periods (Checkbox)",
+        "excludeInvalidSprintNote": "Note"
+      },
+      "DeliveryAnalysis": {
+        "deliveryTableBurnupchart": "Burnup Analysis",
+        "deliveryTableBurnupchartview": " (Only available for 'Analysis by Release' view)",
+        "deliveryTableXaxis": "X-axis",
+        "deliveryTableYaxis": "Y-axis",
+        "deliveryTableRedline": "Scope (story points)",
+        "deliveryTableNavyBlue": "Cumulative ideal burnup",
+        "deliveryTableLightBLue": "Cumulative banked story points",
+        "info": "For details of complete page, please click here."
+      },
+      "teamIndicators": {
+        "teamIndicatorsComponent1": "Indicators",
+        "teamIndicatorsComponent2": "Team Indicator Details",
+        "initialDescription": "All these indicators are clickable"
+      },
+      "bug": {
+        "bugDetailsComponent1": "Bug Analysis Details"
+      },
+      "workLogAnalysis": {
+        "workLogComponent1": "Work Log Details Table",
+        "loggedTimePercentageAnalysis": "Logged Time Analysis by Percentage",
+        "timelogDistributionMainPanel": "'Main Categories' Work Log Distribution",
+        "timelogDistributionOthersPanel": "'Others' Work Log Distribution"
+      },
+      "teamReports": {
+        "releaseReport": "Release Report",
+        "progressReport": "Team Progress Report",
+        "indicatorsReport": "Indicators Summary by Team",
+        "indicatorsReportTableTitle": "Indicators Summary by Team Table",
+        "indicatorsSummary": "Indicators Summary",
+        "indicatorsDetails": "Indicators Details",
+        "exportButton": "Export Button",
+        "confluenceNotConfiguredMessageOnHover": "Export to Confluence is yet to be configured."
+      },
+      "modal": {
+        "title": "Modal",
+        "tabs": {
+          "storyDetails": "Story details tab",
+          "storyComments": "Comments tab"
+        }
+      }
+    },
+    "subHeadings": {
+      "tableDetails": "Table Details",
+      "buttonDetails": "Button Details"
+    },
+    "mainPage": {
+      "tableColumns": {
+        "col1": "Term",
+        "col2": "Explanation"
+      },
+      "buttons": {
+        "columnVisibilityButtonDataTable": "Column Visibility Button",
+        "exportButtonDataTable": "Export Button",
+        "deleteButonDataTable": "Delete Button",
+        "refreshButtonDataTable": "Refresh Button",
+        "refreshButtonTitle": "Refresh Rows",
+        "enableShowHideButtonDataTable": "Show/Hide Columns",
+        "disableShowHideButtonDataTable": "No columns are available to show/hide",
+        "deleteButtonDataTableTitle": "Select table row(s) to delete",
+        "deleteButtonEnabledTitle": "Delete selected row(s)"
+      },
+      "workLogAnalysisTableRowKeys": {
+        "memberName": "Member Name (*)",
+        "othersColumn": "Others Column",
+        "totaltimeLogColumn": "Total Time Log Column",
+        "workLogColumn": "Work Log Column",
+        "worklogColumnModal": "Work Log Modal",
+        "worklogTableTooltips": "Column Details"
+      },
+      "RAGDistributionTableRowKeys": {
+        "teamName": "Team Name",
+        "workLogPercentage": "Work Log (%)",
+        "ragDistribution": "Members Work Log RAG Status"
+      },
+      "workLogPieChartKeys": {
+        "mainDistributions": "Main Categories Pie Chart",
+        "otherDistributions": "Others Pie Chart"
+      },
+      "reportsTableRowKeys": {
+        "exportTitle": "Export"
+      },
+      "storyAnalysisDetailTableKeys": {
+        "overAllAverage": "Overall Average",
+        "onTimeDelivery": "On Time",
+        "delayedDelivery": "Delayed",
+        "projectedOnTimeDelivery": "Expecting On Time",
+        "withinThresholdDelivery": "Within Threshold",
+        "projectedWithinThresholdDelivery": "Expecting Within Threshold",
+        "projectedDelayedDelivery": "Expecting Delay",
+        "extremelyDelayedDelivery": "Extreme Delayed",
+        "resolvedDelivery": "Resolved",
+        "alertError": "Errors",
+        "alertErrorR": "Errors(R)",
+        "alertWarning": "Warnings",
+        "alertWarningR": "Warnings(R)"
+      },
+      "epicAnalysisDetailTableKeys": {
+        "inheritedFixVersion": "(i)"
+      },
+      "varianceTableRowKeys": {
+        "row1": "Variance Indicator Graph",
+        "row2": "Avg Variance of Story Estimates & Story Points",
+        "row3": "Expected variance of Story Estimates & Story Points"
+      },
+      "varianceIndicatorTableRowKeys": {
+        "row1": "Variance Indicator Table",
+        "row2": "Time Spent to Story Points",
+        "row3": "Time Spent to Story Estimates"
+      },
+      "storyPointsTableRowKeys": {
+        "row1": "Story Points Pie Chart",
+        "row2": "Total Story Points"
+      },
+      "storyIndicatorsTableRowKeys": {
+        "row1": "Story Indicator Pie Chart",
+        "row2": "Total Stories"
+      },
+      "NotesAboveThreshold": "NOTE: Applies to global data.",
+      "NotesProjected": "NOTE: Do not applies to global data.",
+      "aboveThreshold": "Above Threshold (limit)",
+      "legendTotal": "Legend Total (days)"
+    }
+  },
+  "dataTables": {
+    "exportButtonToolTipNoSelectionNoVisibility": "Export all rows",
+    "exportButtonToolTipNoSelection": "Export all rows including any hidden columns",
+    "noDatatableConfigFound": "All the columns were removed from the configuration. Kindly contact support.",
+    "noIssuesAvailable": "No issues related to default tracking fields have been resolved in the current sprint.",
+    "noStoriesAvailable": "No resolved stories found in the current sprint.",
+    "exportedFilesTexts": {
+      "error": "Error Alerts",
+      "warning": "Warning Alerts",
+      "ragStatus": "RAG"
+    }
+  },
+  "adminMenuOrganization": {
+    "title": "Organisations",
+    "createNewOrganization": "Create New Organisation",
+    "save": "Save",
+    "add": "Add",
+    "edit": "Edit",
+    "cancel": "Cancel",
+    "organizationDataTablSearchInputTooltip": "Filter from all rows",
+    "unSavedChangesText": "You have unsaved changes, please click save button to keep your changes",
+    "organizationDetails": "Organisation Details",
+    "locationDetails": "Location Details",
+    "breadCrum": {
+      "organizations": "Organisations",
+      "home": "Home",
+      "organizationDetails": "Organisation Details",
+      "locationDetails": "Location Details"
+    },
+    "organizationDetailScreen": {
+      "title": "Organisation Details",
+      "organizationCode": "Organisation Code",
+      "organizationName": "Organisation Name",
+      "contactPersonName": "Contact Person Name",
+      "contactPersonEmail": "Contact Person Email",
+      "contactPersonWorkPhone": "Contact Person Work Phone",
+      "contactPersonMobilePhone": "Contact Person Mobile Phone",
+      "addNewLocation": "Add New Location",
+      "table": {
+        "id": "ID",
+        "organizationName": "Organisation Name",
+        "organizationCode": "Organisation Code",
+        "edit": "Edit",
+        "delete": "Delete"
+      }
+    },
+    "organizationLocationDetailScreen": {
+      "title": "Location Details",
+      "locationName": "Location Name",
+      "address1": "Address Line 1",
+      "address2": "Address Line 2",
+      "city": "City",
+      "state": "State",
+      "zipCode": "Zip Code/Postal Code",
+      "country": "Country",
+      "contactPersonName": "Contact Person Name",
+      "contactPersonEmail": "Contact Person Email",
+      "contactPersonWorkPhone": "Contact Person Work Phone",
+      "contactPersonMobilePhone": "Contact Person Mobile Phone",
+      "errorsInForm": "Unable to save the record since there are one or more errors on the page",
+      "table": {
+        "locationName": "Location Name",
+        "city": "City",
+        "country": "Country",
+        "edit": "Edit",
+        "delete": "Delete"
+      }
+    }
+  },
+  "adminMainMenu": {
+    "manageOrganizations": "Manage Organisations",
+    "manageMembers": "Manage Members",
+    "manageUsers": "Manage Users",
+    "manageProjects": "Manage Projects",
+    "manageBoards": "Manage Boards",
+    "manageTeams": "Manage Teams"
+  },
+  "adminMenuMemberScreen": {
+    "memberName": "Full Name",
+    "memberEmail": "Email",
+    "accountId": "Account ID",
+    "memberRole": "Role",
+    "memberOrganisation": "Owning Organisation",
+    "infoText": "*Either Email or Account ID must be provided",
+    "placeHolders": {
+      "ownOrganizationDropdown": "Select Owning Organisation",
+      "role": "Select Role"
+    },
+    "table": {
+      "columns": {
+        "columnId": "Id",
+        "columnName": "Full Name",
+        "columnEmail": "Email",
+        "columnOwningOrganisation": "Owning Organisation",
+        "columnRole": "Member Role"
+      }
+    }
+  },
+  "adminMenuTeamEdit": {
+    "teamName": "Team Name",
+    "teamOrgansiation": "Owning Organisation",
+    "placeHolders": {
+      "ownOrganizationDropdown": "Select Owning Organisation:"
+    }
+  },
+  "burnupConfig": {
+    "sideNavHeading": "Burnup Settings",
+    "trackingFieldSideNavHeading": "Tracking Field Settings",
+    "trackFieldAndIssueTypeSettingsText": "Tracking Field and Issue Types",
+    "dataReliabilityAndRagSettingsText": "RAG Values for Data Reliability",
+    "modalHeading": "Manage Tracking Field and Issue Types",
+    "modalSubHeading": "Choose the default tracking field and assign the issue types to be tracked in burnup.",
+    "modalSubHeadingGlobal": "Choose the default tracking field and assign issue types to be tracked against it.",
+    "modalTableColumnName": "Tracking Field",
+    "modalTableColumnIssueTypes": "Issue Types",
+    "editCategoryIssueTypeLabel": "Issue Type",
+    "editIssueTypeModalSubHeading": "Select Issue Types for %s1",
+    "selectIssueType": "Select an Issue Type",
+    "warningModalHeader": "Warning! Unsaved Changes",
+    "warningModalMessage": "You have unsaved changes. Do you want to save your changes before closing?",
+    "saveButtonText": "Save",
+    "cancelButtonText": "Cancel",
+    "dontSaveButtonText": "Don't Save"
+  },
+  "teamIndicatorsConfig": {
+    "settingsIconHint": "Manage the visibility of your Team Indicators.",
+    "modalHeading": "Subscribe to Indicators",
+    "modalSubHeading": "Subscribe to the indicators as per your organizational needs.",
+    "saveButtonText": "Save",
+    "warningDialog": {
+      "header": "Warning! Unsaved Changes",
+      "message": "Want to save your changes made to the settings?",
+      "acceptLabel": "Save",
+      "rejectLabel": "Don't Save"
+    }
+  },
+  "workLogConfig": {
+    "sideNavHeading": "Work Log Settings",
+    "tabHeading": "Work Log Categories",
+    "modalHeading": "Manage Work Log Categories",
+    "errorToastTitle": "Error!",
+    "errorToastSubTitle": "Issue types were not fetched. Please contact ScrumUpdate support.",
+    "modalSubHeading": "Group Issue Types into different categories.",
+    "modalTableHeading": "Manage Work Log Categories",
+    "modalTableColumnName": "Category Name",
+    "modalTableColumnIssueTypes": "Issue Types",
+    "addEditCategoryIssueTypeLabel": "Issue Type",
+    "modalNoteHeading": "Note:",
+    "modalNoteMessage": "All the uncategorized issue types will fall in “Others” category.",
+    "modalDuplicateNameError": "Category name is already taken",
+    "modalNameRequiredError": "Category name is required.",
+    "modalSummaryCountFirstPart": "Total ",
+    "modalSummaryCountLastPart": "Work Log Category(s) available.",
+    "editModalNameLabel": "Category Name",
+    "ragStatusCheckboxHeading": "Please select the RAG statuses you would like to receive notifications for.",
+    "otherCategoryRAGHeading": "'Others' Category RAG Settings",
+    "newCategoryHint": "(Click on 'New Category' to create a new Work Log Category)",
+    "invalidInput": "Invalid category name",
+    "inputToolTip": "Only 2 to 25 alphanumeric characters with spaces, hyphens (-), and forward slashes (/) are allowed. Spaces and special characters cannot be next to each other or at the start or end of input.",
+    "deleteConfirmationHeader": "Are you sure you want to delete the Category?",
+    "deleteConfirmationHeaderForMultipleCategories": "Are you sure you want to delete the Categories?",
+    "deleteConfirmation": "The issue types in this category will be moved to “Others“ category automatically.",
+    "deleteConfirmationForMultipleCategories": "The issue types in selected categories will be moved to “Others“ category automatically.",
+    "yes": "Yes",
+    "cancel": "Cancel",
+    "newButtonText": "New Category",
+    "noResultFoundMessage": "No results found",
+    "newCategoryButtonHint": "Create a new Work Log Category",
+    "deleteCategoryButtonHint": "Delete the selected categories.",
+    "editIconHint": "Edit the category",
+    "disableEditButtonTooltip": "Edit is only available if there is at least one issue type in 'Other' category.",
+    "deleteIconHint": "Delete the Category",
+    "addNewCategoryHeader": "Add New Category",
+    "editNewCategoryHeader": "Edit Category",
+    "selectIssueType": "Select an Issue Type",
+    "notificationMessage": "Some of the mapped issue types were ",
+    "setingsIconHint": "Work Log Distribution Settings",
+    "updateSetingsIconHint": "Update Work Log Distribution Settings",
+    "issueSyncMessage": "Last successful sync of Issue Types from source: ",
+    "noLastSyncTimeMessage": "Last successful sync of Issue Types with source is not available",
+    "issueSyncMessageTooltip": "Issue types are fetched from source every %s1 hours.",
+    "issueSyncFailedMessage": "Syncing of Issue Types with Jira Failed!",
+    "issueSyncFailedToolTipMessage": "Issue types from Jira were not fetched successfully.",
+    "issueTypeSyncFailedAfterLastSuccessToolTipMessageFirstPart": "Since the last successful sync, every ",
+    "issueTypeSyncFailedAfterLastSuccessToolTipMessageSecondPart": " minute(s) the sync call is being failed.",
+    "or": "or ",
+    "renamed": "renamed ",
+    "removed": "removed ",
+    "fromJira": "from source.",
+    "colorPicker": {
+      "hoverTitle": "Change the color representation of the work log category on the pie chart.",
+      "disabledSaveButtonHint": "This category color is already saved.",
+      "title": "Select a Color for your Category",
+      "save": "Save",
+      "cancel": "Cancel"
+    }
+  },
+  "subtaskConfig": {
+    "sideNavHeading": "Subtask Category Settings",
+    "tabHeading": "Subtask Categories",
+    "modalHeading": "Manage Subtask Categories",
+    "errorToastTitle": "Error!",
+    "errorToastSubTitle": "Issue types were not fetched. Please contact ScrumUpdate support.",
+    "modalSubHeading": "Group the subtask issue types into different categories.",
+    "modalTableHeading": "Manage Subtask Categories",
+    "modalTableColumnName": "Category Name",
+    "modalTableColumnSubtasks": "Subtask Issue Types",
+    "addEditCategorySubtasksLabel": "Subtask Issue Types",
+    "modalNoteHeading": "Note:",
+    "modalNoteMessage": "All the uncategorized subtask issue types will fall in “Others” category.",
+    "modalDuplicateNameError": "Category name is already taken",
+    "modalNameRequiredError": "Category name is required.",
+    "modalSummaryCountFirstPart": "Total ",
+    "modalSummaryCountLastPart": "Subtask Category(s) available.",
+    "editModalNameLabel": "Category Name",
+    "newCategoryHint": "(Click on 'New Category' to create a new Subtask Category)",
+    "invalidInput": "Invalid category name",
+    "inputToolTip": "Only 2 to 25 alphanumeric characters with spaces, hyphens (-), and forward slashes (/) are allowed. Spaces and special characters cannot be next to each other or at the start or end of input.",
+    "deleteConfirmationHeader": "Are you sure you want to delete the Category?",
+    "deleteConfirmationHeaderForMultipleCategories": "Are you sure you want to delete the Categories?",
+    "deleteConfirmation": "The subtasks in this category will be moved to “Others“ category automatically.",
+    "deleteConfirmationForMultipleCategories": "The subtasks in selected categories will be moved to “Others“ category automatically.",
+    "deletePromptForIssueDefectCategories": "This action cannot be performed as some categories are being used in Issue Defect Settings (Categories: Defect, Development). Update the Issue Defect settings to perform this action.",
+    "deletePromptForIssueDefectCategory": "This action cannot be performed as this category is used in Issue Defect Settings. Update the Issue Defect settings to perform this action.",
+    "yes": "Yes",
+    "cancel": "Cancel",
+    "newButtonText": "New Category",
+    "noResultFoundMessage": "No results found",
+    "newCategoryButtonHint": "Create a new Subtask Category",
+    "deleteCategoryButtonHint": "Delete the selected Categories.",
+    "editIconHint": "Edit the Category",
+    "deleteIconHint": "Delete the Category",
+    "addNewCategoryHeader": "Add New Category",
+    "editNewCategoryHeader": "Edit Category",
+    "selectSubtask": "Select a subtask",
+    "notificationMessage": "Some of the mapped subtask issue types were ",
+    "setingsIconHint": "Subtask Distribution Settings",
+    "updateSetingsIconHint": "Update Subtask Distribution Settings",
+    "issueSyncMessage": "Last successful sync of Issue Types from source: ",
+    "noLastSyncTimeMessage": "Last successful sync of Issue Types with source is not available",
+    "issueSyncMessageTooltip": "Issue types are fetched from source every %s1 hours.",
+    "issueSyncFailedMessage": "Syncing of Issue Types with Jira Failed!",
+    "issueSyncFailedToolTipMessage": "Issue types from Jira were not fetched successfully.",
+    "issueTypeSyncFailedAfterLastSuccessToolTipMessageFirstPart": "Since the last successful sync, every ",
+    "issueTypeSyncFailedAfterLastSuccessToolTipMessageSecondPart": " minute(s) the sync call is being failed.",
+    "or": "or ",
+    "renamed": "renamed ",
+    "removed": "removed ",
+    "fromJira": "from source."
+  },
+  "defectSettings": {
+    "issueDefectTabHeading": "Issue Defect Settings",
+    "storyDefectTabHeading": "Story Defect Settings",
+    "issueDefectHeading": "Manage Issue Defect Settings",
+    "issueDefectSubTitle": "Map your categories for the Issue Defect Analysis.",
+    "storyDefectHeading": "Manage Story Defect Settings",
+    "storyDefectSubTitle": "Map your categories for the Story Defect Analysis.",
+    "changesSavedWarningMessage": "Want to save the changes you made to the settings?",
+    "disableSaveButtonTooltip": "Required field cannot be left empty.",
+    "labels": {
+      "developmentCategory": "Development Category",
+      "defectCategory": "Defects Category*",
+      "selectCategory": "Select a Category",
+      "saveButton": "Save",
+      "cancelButton": "Cancel",
+      "yesButton": "Yes",
+      "noButton": "No",
+      "dropdownNoCategoryAvailable": "No Category Available"
+    }
+  },
+  "adminMenuUser": {
+    "Emailtitle": "User Email : ",
+    "pagetitle": "User Permission Settings",
+    "breadCrum": {
+      "home": "Home",
+      "users": "Users",
+      "userProfileSerttings": "User Profile Settings"
+    },
+    "userProfileSetting": {
+      "formElements": {
+        "emailWorkLogCheckboxName": "Email Work Log",
+        "adminCheckboxName": "Admin",
+        "allowManagementCheckboxName": "Allow Team Management",
+        "allowAllocationCheckboxName": "Allow Allocation Management"
+      }
+    },
+    "buttons": {
+      "save": "Save",
+      "cancel": "Cancel"
+    }
+  },
+  "greetings": {
+    "goodMorning": "Good Morning",
+    "goodAfternoon": "Good Afternoon",
+    "goodEvening": "Good Evening",
+    "hello": "Hello"
+  },
+  "dashboardInsights": {
+    "errorMessage": {
+      "prefix": "An error occurred while loading the details. Please click",
+      "message": "Refresh",
+      "postfix": "to try again."
+    },
+    "teamsWorkedWith": "Here is the list of your teams:",
+    "todayIs": "Today is",
+    "sortBy": "Sort By: ",
+    "searchHistory": "Search History",
+    "noTeams": {
+      "suggestionForAdmin": "It seems you are not currently associated with any teams. Join or become a supervisor of a team to start tracking progress.",
+      "suggestionForUser": "It appears you are not currently assigned to any teams. Please reach out to your admin to get assigned to a team.",
+      "manageTeamsButton": "Go to Manage Teams"
+    },
+    "projectSourceNotConfigured": {
+      "tenantAdmin": "Project source configuration is missing. Please configure it from Admin Settings.",
+      "adminOrUser": "Project source configuration is missing. Please contact your tenant admin."
+    },
+    "sortingOptions": [
+      {
+        "name": "Due Date",
+        "code": "DD"
+      },
+      {
+        "name": "Overdue Sprints",
+        "code": "OS"
+      },
+      {
+        "name": "Team Name",
+        "code": "TN"
+      },
+      {
+        "name": "Member Count",
+        "code": "MC"
+      },
+      {
+        "name": "Progress %: Low to High",
+        "code": "LTH"
+      },
+      {
+        "name": "Progress %: High to Low",
+        "code": "HTL"
+      }
+    ],
+    "sprintTemplate": {
+      "srintProgress": "Sprint Progress",
+      "tooltip": {
+        "status": "Status: ",
+        "startDate": "Start Date: ",
+        "endDate": "End Date: ",
+        "teamboard": "Team Board: ",
+        "daysRemaining": "Days Remaining: ",
+        "daysOverdue": "Days Overdue: ",
+        "overDue": "Overdue",
+        "STORY_POINTS": "<b>Sprint progress</b> indicates the completion of the sprint based on resolved story points of issue types in default tracking field.",
+        "ISSUE_ESTIMATES": "<b>Sprint progress</b> indicates the completion of the sprint based on resolved issue estimates of issue types in default tracking field."
+      }
+    }
+  },
+  "teamInsights": {
+    "date": "Date: ",
+    "storyPoints": "Story Points",
+    "issueEstimates": "Issue Estimates",
+    "issueCount": "Issue Count",
+    "backToDashboard": "Back to Dashboard",
+    "sprint": "Sprint",
+    "teamboard": "Kanban",
+    "sprintAndTeamBoard": "Sprint and Kanban",
+    "teamUpdates": "Team Updates:",
+    "scrumBoard": "Scrum Board",
+    "kanbanBoard": "Kanban Board",
+    "statusOverview": {
+      "issueStatusesDistribution": "Status Distribution"
+    }
+  },
+  "daysOfWeek": {
+    "sunday": "Sunday",
+    "monday": "Monday",
+    "tuesday": "Tuesday",
+    "wednesday": "Wednesday",
+    "thursday": "Thursday",
+    "friday": "Friday",
+    "saturday": "Saturday"
+  },
+  "monthsOfYear": {
+    "january": "January",
+    "february": "February",
+    "march": "March",
+    "april": "April",
+    "may": "May",
+    "june": "June",
+    "july": "July",
+    "august": "August",
+    "september": "September",
+    "october": "October",
+    "november": "November",
+    "december": "December"
+  },
+  "picklist": {
+    "sourceTitle": "Jira issue types (uncategorized)",
+    "targetTitle": "Create work log categories",
+    "addCategoryLabel": "New category",
+    "namePlaceholder": "Enter a category name",
+    "searchIssueTypesPlaceholder": "Search issue types",
+    "dropHereText": "Drag & drop the issue types here",
+    "nameNotAllowedText": "Category name \"{0}\" is not allowed.",
+    "nameAlreadyExistsText": "Category name already exists.",
+    "confirmDiscard": {
+      "acceptLabel": "Proceed and discard",
+      "message": "The category name is required. If you proceed, your changes will be discarded."
+    },
+    "confirmDiscardForAi": {
+      "acceptLabel": "Proceed with AI",
+      "message": "Using AI to generate categories will overwrite any previously created ones."
+    },
+    "generateCategoriesWithAI": "Let AI do it",
+    "generatingCategoriesWithAI": "Generating optimized categories with AI...",
+    "createdCategoriesWithAI": "Created with AI",
+    "reviewAIgeneratedCategories": "Please review the AI-generated outputs carefully as errors may occur."
+  },
+  "userWorkspace": {
+    "spaces": "Spaces",
+    "inviteUser": "Add user",
+    "manageApp": "Manage app",
+    "noMatchingRecordsFound": "No matching records found",
+    "noInstancesFound": "No instances found",
+    "addNewApp": "Add a new app",
+    "myApps": "My apps",
+    "appSetup": {
+      "title": "App setup",
+      "jiraUserAccountDropdownLabel": "Choose a Jira account to build connection",
+      "jiraInstancesDropdown": "Select a Jira app to integrate"
+    }
+  },
+  "logMyWork": {
+    "generateMissingWorklogWithAI": "Generate missing work log with AI for %s1",
+    "addManualWorklogForDate": "Add work log manually for %s1",
+    "or": "Or",
+    "generateWorklogUsingAI": "Generate work log using AI",
+    "addManualWorklog": "Add worklog manually",
+    "hoursToBeLogged": {
+      "dayComplete": "<b>Day complete -</b> Additional time counts as extra hours",
+      "nothingLogged": "<b>Nothing logged yet -</b> {0} hours to fill",
+      "progress": "<b>Progress -</b> {0}h logged <b>|</b> {1}h remaining"
+    },
+    "exportCsvTitle": "ai-generated-worklogs-",
+    "worklogDetails": {
+      "addEmptyWorklog": "work log entry",
+      "addEmptyWorklogPlaceholder": "Ticket id or description",
+      "emptyMessage": "No work has been logged for this week."
+    }
+  },
+  "guidedTours": {
+    "generateAiWorklog": {
+      "tourId": "generate-ai-worklog",
+      "tourStepWidth": "350",
+      "skipText": "",
+      "selector": ".tour-generate-ai-worklog",
+      "title": "",
+      "content": "Click and let AI generate your timesheet"
+    },
+    "generateAiWorklogTable": {
+      "tourId": "generate-ai-worklog-table",
+      "tourStepWidth": "711",
+      "skipText": "",
+      "selector": "khoji-generate-worklog",
+      "title": "",
+      "content": "<img src='assets/gif/edit-worklog-v1.gif' width='660px' />"
+    }
+  },
+  "worklogSettings": {
+    "categoriesSectionHeading": "Organize issue types into categories for better work log management",
+    "categoriesButtonLabel": "Configure Categories & labels",
+    "unsavedCategoriesWarningMessage": "You have unsaved changes. Do you want to continue without saving?",
+    "unsavedCategoriesDiscardMessage": "Yes",
+    "unsavedCategoriesCancelMessage": "Cancel"
+  },
+  "weeklyWorklogSummary": {
+    "generatingInsightsTitle": "Generating insights...",
+    "generatingInsightsSubTitle": "Analyzing work patterns and activities"
+  },
+  "dailyScrumUpdates": {
+    "generatingScrumUpdatesTitle": "Generating scrum updates...",
+    "generatingScrumUpdatesSubTitle": "Analyzing work patterns and activities"
+  }
+}

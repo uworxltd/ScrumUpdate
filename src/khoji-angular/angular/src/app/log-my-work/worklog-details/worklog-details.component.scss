@@ -1,0 +1,150 @@
+:host ::ng-deep .p-datatable .p-datatable-thead > tr {
+  height: 45px;
+
+  th {
+    font-size: 1rem;
+    font-weight: 500;
+    padding: 0.5rem 0.5rem;
+    background-color: #eff2f7;
+  }
+}
+
+:host ::ng-deep .p-datatable .p-datatable-tbody > tr {
+  height: 45px;
+
+  td {
+    font-size: 1rem;
+    padding: 0.5rem 0.5rem;
+    border-right-width: 0;
+    border-left-width: 0;
+  }
+}
+
+:host ::ng-deep .p-datatable .p-datatable-tfoot > tr {
+  height: 45px;
+  position: relative;
+  top: 2px;
+
+  td {
+    font-size: 1rem;
+    padding: 0.5rem 0.5rem;
+    background-color: #eff2f7;
+  }
+}
+
+:host ::ng-deep .p-datatable .p-datatable-tfoot > tr.action-row {
+  td {
+    padding: 0;
+    background-color: white;
+
+    input {
+      border: 0;
+
+      &:focus {
+        box-shadow: none;
+      }
+    }
+  }
+
+  td.editable-cell {
+    border-bottom-color: #9f9f9f;
+    border-right-width: 5px;
+    border-left-width: 5px;
+    border-right-color: transparent;
+    border-left-color: transparent;
+  }
+}
+
+:host ::ng-deep .p-datatable .p-datatable-header {
+  border-width: 1px;
+  padding: 0.5rem 1rem;
+}
+
+:host ::ng-deep .p-inputnumber-input {
+  width: 50px !important;
+  height: 35px !important;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-tbody > tr > td.editable-cell {
+  border-bottom-color: #9f9f9f;
+  border-right-width: 5px;
+  border-left-width: 5px;
+  border-right-color: transparent;
+  border-left-color: transparent;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-tbody > tr > td.last-cell {
+  border-right-width: 0;
+}
+
+td.disabled-cell {
+  background-color: #f4f4f4 !important;
+  cursor: not-allowed;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.p-button {
+  box-shadow: none !important;
+}
+
+:host ::ng-deep .p-menu {
+  width: auto;
+}
+
+:host ::ng-deep .p-datatable {
+  border-right: #e2e8f0 1px solid;
+  border-left: #e2e8f0 1px solid;
+}
+
+:host ::ng-deep .p-overlaypanel {
+  .p-overlaypanel-content {
+    padding: 0.8rem !important;
+  }
+}
+
+:host ::ng-deep .p-divider.p-divider-vertical {
+  height: 28px;
+  margin: 0 0.5rem;
+
+  &::before {
+    border-color: #d3dae3;
+    top: 0px;
+    height: 100%;
+  }
+}
+
+body {
+  :host::ng-deep {
+    table {
+      border-collapse: separate !important;
+      table-layout: fixed !important;
+    }
+  }
+}
+
+.popup-opener {
+  height: 21px;
+  position: relative;
+
+  &::after {
+    font-family: 'primeicons';
+    font-size: 8px;
+    content: '\e9d7';
+    position: absolute;
+    bottom: -7px;
+    right: 1px;
+  }
+}
+
+:host ::ng-deep {
+  .addEmptyWorklogButton {
+    .p-button-label {
+      font-weight: 600;
+      font-size: 1rem;
+    }
+    .p-button-icon {
+      font-size: 1.1rem;
+    }
+  }
+}

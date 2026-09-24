@@ -1,0 +1,102 @@
+:host ::ng-deep {
+  .ngx-slider {
+    width: 100% !important;
+  }
+
+  .ngx-slider-selection {
+    background: var(--middleColor) !important;
+  }
+
+  .ngx-slider .ngx-slider-bar-wrapper.ngx-slider-left-out-selection .ngx-slider-bar {
+    background: var(--startingColor) !important;
+  }
+
+  .ngx-slider .ngx-slider-bar-wrapper.ngx-slider-right-out-selection .ngx-slider-bar {
+    background: var(--endingColor) !important;
+  }
+
+  .ngx-slider .ngx-slider-pointer {
+    width: 20px !important;
+    height: 20px !important;
+    top: -9px !important;
+    z-index: 3 !important;
+    border-radius: 16px !important;
+  }
+
+  .ngx-slider .ngx-slider-pointer:after {
+    display: none !important;
+  }
+
+  .ngx-slider .ngx-slider-pointer-min {
+    background-color: var(--startingColor) !important;
+  }
+
+  .ngx-slider .ngx-slider-pointer-max {
+    background-color: var(--middleColor) !important;
+  }
+
+  .ngx-slider .ngx-slider-tick {
+    background: transparent !important;
+    margin-left: unset !important;
+  }
+
+  .rag-slider-loading-container {
+    height: 53px;
+    width: 492px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .rag-loading-container {
+    height: 306px;
+    width: 492px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+
+  .ngx-slider .hide-visibility {
+    visibility: hide !important;
+  }
+
+  .ngx-slider-custom-pointer-display {
+    visibility: visible !important;
+  }
+}
+
+.sub-heading {
+  color: #707070;
+  font-weight: bold;
+  font-size: 15px;
+}
+
+.green-range-label {
+  height: 58px;
+}
+
+:host ::ng-deep .error-tooltip {
+  .p-tooltip-text {
+    width: max-content;
+  }
+}
+
+
+.range-container {
+  background-color: #eff3f8;
+  padding: 5px 10px 5px 30px;
+  margin-top: 45px;
+  border-radius: 10px;
+}
+
+.range-container td {
+  font-family: "Nunito", "Helvetica Neue", Arial, "Droid Sans", sans-serif;
+  font-size: 15px;
+  color: #7f7f7f;
+  padding: 7px 8px;
+}
+
+.rag-spinner {
+  color: #5C5C5C;
+}

@@ -1,0 +1,76 @@
+<ng-container *ngIf="showSplitContainer; else onboardingCategorizationWizard">
+  <khoji-split-container class="h-full w-full">
+	<div leftContent class="flex flex-column align-items-start justify-content-start gap-4 p-4">
+		<ng-container
+		  	[ngTemplateOutlet]="onboardingCategorizationWizard"
+			[ngTemplateOutletContext]="{style: 'adjustable-height'}"
+		></ng-container>
+	</div>
+	<div rightContent class="flex h-full align-items-center z-3">
+		<img
+		src="assets/gif/create_categories_demo.gif"
+		alt="Create Issue Categorize"
+		class="max-h-full max-w-full ml-auto z-3"
+		/>
+	</div>
+  </khoji-split-container>
+</ng-container>
+
+<ng-template #onboardingCategorizationWizard let-style="style">
+<div
+	[ngClass]="{ 'container-categories': !inModal && !onboardingWizard, 'w-full': showSplitContainer }"
+	[class]="classStyle"
+>
+	<div>
+		<div class="mb-4">
+			<khoji-worklog-category-aliases-settings
+				#categoryAliasesComponent
+				(settingsUpdated)="categoryAliasesUpdated.emit()"
+				*ngIf="worklogCategoriesSettings">
+			</khoji-worklog-category-aliases-settings>
+		</div>
+		<khoji-picklist
+			#picklist
+			[items]="issueTypes"
+			[title]="pageTitle?.format(categoryAliasesComponent?.productiveAliasValidated || productiveAlias?.toLowerCase())"
+			[showTitle]="!quickSetup && !!pageTitle"
+			[categories]="categories"
+			[loading]="sourceIssueTypeLoadingState"
+			[classStyle]="style || pickListWrapperStyle"
+			[recentDays]="lastNumberOfDaysForRecentIssueTypes"
+			(newButtonClick)="captureNewButtonClick()"
+			[categoryNamesNotAllowedList]="categoryNamesNotAllowedList"
+		></khoji-picklist>
+	</div>
+	<div
+		*ngIf="!quickSetup"
+		class="flex align-items-center justify-content-end gap-2 mt-auto"
+	>
+		<!-- only showes in onboarding -->
+		<button
+			[ngClass]="{ 'hide-element': !onboardingWizard }"
+			pButton
+			pRipple
+			[label]="worklogCategoriesTranslations.doItLater"
+			class="p-button-text"
+			(click)="skipIssueCategorizeStep()"
+		></button>
+		<!-- only showes in settings -->
+		<button
+			pButton
+			*ngIf="hasChanges() && !onboardingWizard"
+			[label]="worklogCategoriesTranslations.reset"
+			class="p-button-text ml-3"
+			(click)="resetChanges()"
+		></button>
+		<!-- shows everywhere -->
+		<p-button
+			pRipple
+      		data-test="save-changes-categories"
+			[label]="showSplitContainer ? worklogCategoriesTranslations.getStarted : saveButtonLabel"
+			[disabled]="!(allowNext || (hasChanges() && !picklist?.isInValidName() && !categoryAliasesComponent?.hasErrors()))"
+			(click)="saveChanges()"
+		></p-button>
+	</div>
+</div>
+</ng-template>

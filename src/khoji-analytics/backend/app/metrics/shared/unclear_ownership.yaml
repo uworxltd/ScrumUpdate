@@ -1,0 +1,29 @@
+name: unclear_ownership
+description: Unassigned issues in In Progress status
+version: 1.0
+
+inputs:
+  sprint_id: { type: int, required: true }
+
+steps:
+  - id: unclear_query
+    type: sql
+    service: main-db
+    query: |
+      SELECT DISTINCT
+        i.issue_key AS ticket,
+        i.status AS current_status,
+        TO_CHAR(CURRENT_TIMESTAMP, 'YYYY-MM-DD HH24:MI:SS') AS checked_at
+      FROM {{ schema }}.issues i
+      INNER JOIN {{ schema }}.sprint_issues si
+        ON i.issue_key = si.issue_key
+      WHERE si.sprint_id = $1
+        AND (i.assignee_display_name IS NULL OR i.assignee_display_name = '' OR i.assignee_display_name = 'Unassigned')
+        AND i.status_category NOT IN ('To Do', 'Done')
+        AND i.status NOT IN ('To Do', 'Done')
+      ORDER BY i.issue_key
+    params:
+      - "{{ inputs.sprint_id }}"
+    output: { name: unclear_ownership_issues }
+
+return: unclear_query.unclear_ownership_issues

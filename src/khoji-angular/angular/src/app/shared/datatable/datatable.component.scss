@@ -1,0 +1,66 @@
+/*
+  Copyright 2026 UWorx Services.
+  Licensed under the Apache License, Version 2.0.
+  See LICENSE for the full license text.
+*/
+
+
+div.table-responsive {
+  height: 50vh;
+  border-bottom: 0.5px solid #dcdcdc;
+  border-right: 0.5px solid #dcdcdc;
+
+  :host ::ng-deep .table {
+    margin-bottom: 0;
+
+    tr {
+
+      &.sticky-top,
+      &.sticky-bottom {
+        z-index: 1;
+        position: sticky;
+        background-color: #f7f7f7;
+      }
+
+      th {
+        text-align: center;
+        vertical-align: bottom;
+      }
+
+      td {
+        vertical-align: middle;
+      }
+
+      th,
+      td {
+        border: 0 !important;
+        box-shadow: inset 0.5px 0.5px 0 #cacaca;
+
+        &.sticky-left,
+        &.sticky-right {
+          left: 0;
+          position: sticky;
+          background-color: #f7f7f7;
+        }
+
+        &.number {
+          text-align: right;
+        }
+      }
+    }
+  }
+
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 5px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f2f2f2;
+  }
+}

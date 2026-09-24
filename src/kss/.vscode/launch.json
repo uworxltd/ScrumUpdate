@@ -1,0 +1,79 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug FastAPI Server",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/main.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "args": [],
+            "justMyCode": true
+        },
+        {
+            "name": "Debug Celery Worker",
+            "type": "python",
+            "request": "launch",
+            "module": "celery",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "args": [
+                "-A", "tasks.worker",
+                "worker",
+                "--loglevel=debug",
+                "--pool=solo",
+                "--concurrency=1",
+                "--queues=proactive,worklogs,changelogs,comments,sprint_issues,boards,sprints,sprints_list,jql_issues,workflows,system,default"
+            ],
+            "justMyCode": true
+        },
+        {
+            "name": "Debug Celery Worker (Alternative)",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/manage.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}",
+                "CELERY_DEBUG": "1"
+            },
+            "args": ["worker"],
+            "justMyCode": false
+        },
+        {
+            "name": "Debug Job Directly (No Celery)",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/debug_main.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Debug FastAPI + Celery",
+            "configurations": [
+                "Debug FastAPI Server",
+                "Debug Celery Worker"
+            ],
+            "stopAll": true,
+            "presentation": {
+                "hidden": false,
+                "group": "debug",
+                "order": 1
+            }
+        }
+    ]
+}

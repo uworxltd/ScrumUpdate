@@ -1,0 +1,64 @@
+﻿{
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "type": "AdaptiveCard",
+  "version": "1.5",
+  "body": [
+    {
+      "type": "TextBlock",
+      "text": "📅 ${Member}'s Weekly Retro",
+      "weight": "Bolder",
+      "size": "Medium",
+      "wrap": true,
+      "spacing": "Small"
+    },
+    {
+      "type": "TextBlock",
+      "text": "Retrospective: ${DateRange}",
+      "wrap": true,
+      "weight": "Bolder",
+      "size": "Large",
+      "color": "Accent",
+      "spacing": "Medium"
+    },
+    {
+      "type": "TextBlock",
+      "text": "${WeeklySummary}",
+      "wrap": true,
+      "spacing": "Medium",
+      "fontType": "Default"
+    },
+    {
+      "type": "Container",
+      "spacing": "Small",
+      "horizontalAlignment": "Right",
+      "items": [
+        {
+          "type": "TextBlock",
+          "text": "AI-generated content, please verify important details",
+          "wrap": true,
+          "isSubtle": true,
+          "size": "Small",
+          "horizontalAlignment": "Right",
+          "spacing": "Small"
+        },
+        {
+          "type": "ActionSet",
+          "horizontalAlignment": "Right",
+          "spacing": "None",
+          "actions": [
+            {
+              "type": "Action.Submit",
+              "title": "Report issue",
+              "data": {
+                "msteams": {
+                  "type": "messageBack",
+                  "text": "x-khojicloud-reportIssue weeklyRetro"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

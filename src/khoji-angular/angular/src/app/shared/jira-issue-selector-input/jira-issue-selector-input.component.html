@@ -1,0 +1,21 @@
+<div #autoComplete>
+    <p-autoComplete
+        [suggestions]="suggestions"
+        [placeholder]="placeholder"
+        [dropdown]="false"
+        (completeMethod)="searchIssues($event)"
+        [showEmptyMessage]="true"
+        emptyMessage="No matching records found"
+        (onSelect)="selectedIssueChange.emit($event.value)"
+        styleClass="w-full"
+        field="key"
+        appendTo="body"
+        [ngModel]="selectedIssue"
+        >
+        <ng-template let-suggestion pTemplate="item">
+            <div class="w-20rem white-space-nowrap overflow-hidden text-overflow-ellipsis" >
+                <span>{{ suggestion.key }} - {{ suggestion.summary }}</span>
+            </div>
+        </ng-template>
+    </p-autoComplete>
+</div>

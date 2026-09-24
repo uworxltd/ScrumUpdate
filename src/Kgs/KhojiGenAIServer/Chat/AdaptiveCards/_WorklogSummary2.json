@@ -1,0 +1,284 @@
+﻿{
+  "$schema": "https://adaptivecards.io/schemas/adaptive-card.json",
+  "type": "AdaptiveCard",
+  "version": "1.5",
+  "body": [
+    {
+      "type": "Container",
+      "items": [
+        {
+          "type": "TextBlock",
+          "text": "Worklog Summary: ",
+          "wrap": true,
+          "id": "summaryCardTitle",
+          "size": "Large",
+          "weight": "Bolder"
+        },
+        {
+          "type": "ColumnSet",
+          "columns": [
+            {
+              "type": "Column",
+              "width": "stretch",
+              "verticalContentAlignment": "Center",
+              "items": [
+                {
+                  "type": "Container",
+                  "items": []
+                }
+              ]
+            },
+            {
+              "type": "Column",
+              "width": "stretch",
+              "items": [
+                {
+                  "type": "FactSet",
+                  "facts": [
+                    {
+                      "title": "Week:",
+                      "value": "23 Dec - 27 Dec"
+                    },
+                    {
+                      "title": "Total Capacity:",
+                      "value": "4 days"
+                    },
+                    {
+                      "title": "Logged Time:",
+                      "value": "1 day"
+                    }
+                  ]
+                }
+              ],
+              "verticalContentAlignment": "Center"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "TextBlock",
+      "text": "Worklog by Day",
+      "weight": "Bolder",
+      "separator": true
+    },
+    {
+      "type": "ColumnSet",
+      "columns": [
+        {
+          "type": "Column",
+          "width": "stretch",
+          "items": [
+            {
+              "type": "TextBlock",
+              "text": "Mon",
+              "weight": "Bolder",
+              "horizontalAlignment": "Center"
+            },
+            {
+              "type": "TextBlock",
+              "text": "4.5 hrs",
+              "weight": "Bolder",
+              "horizontalAlignment": "Center"
+            },
+            {
+              "type": "ActionSet",
+              "actions": [
+                {
+                  "type": "Action.Submit",
+                  "iconUrl": "icon:Wand",
+                  "id": "wand1"
+                }
+              ],
+              "horizontalAlignment": "Center"
+            }
+          ],
+          "verticalContentAlignment": "Center"
+        },
+        {
+          "type": "Column",
+          "width": "stretch",
+          "items": [
+            {
+              "type": "TextBlock",
+              "text": "Tue",
+              "weight": "Bolder",
+              "horizontalAlignment": "Center"
+            },
+            {
+              "type": "TextBlock",
+              "text": "7.5 hrs",
+              "weight": "Bolder",
+              "horizontalAlignment": "Center"
+            },
+            {
+              "type": "ActionSet",
+              "actions": [
+                {
+                  "type": "Action.Submit",
+                  "iconUrl": "icon:Wand",
+                  "id": "wand2"
+                }
+              ],
+              "horizontalAlignment": "Center"
+            }
+          ]
+        },
+        {
+          "type": "Column",
+          "width": "stretch",
+          "items": [
+            {
+              "type": "TextBlock",
+              "text": "Wed",
+              "weight": "Bolder",
+              "horizontalAlignment": "Center"
+            },
+            {
+              "type": "TextBlock",
+              "text": "6 hrs",
+              "weight": "Bolder",
+              "horizontalAlignment": "Center"
+            },
+            {
+              "type": "ActionSet",
+              "actions": [
+                {
+                  "type": "Action.Submit",
+                  "iconUrl": "icon:Wand",
+                  "id": "wand3"
+                }
+              ],
+              "horizontalAlignment": "Center"
+            }
+          ]
+        },
+        {
+          "type": "Column",
+          "width": "stretch",
+          "items": [
+            {
+              "type": "TextBlock",
+              "text": "Thu",
+              "weight": "Bolder",
+              "horizontalAlignment": "Center"
+            },
+            {
+              "type": "TextBlock",
+              "text": "8 hrs",
+              "weight": "Bolder",
+              "horizontalAlignment": "Center"
+            },
+            {
+              "type": "ActionSet",
+              "actions": [
+                {
+                  "type": "Action.Submit",
+                  "iconUrl": "icon:Wand",
+                  "id": "wand4"
+                }
+              ],
+              "horizontalAlignment": "Center"
+            }
+          ]
+        },
+        {
+          "type": "Column",
+          "width": "stretch",
+          "items": [
+            {
+              "type": "TextBlock",
+              "text": "Fri",
+              "weight": "Bolder",
+              "horizontalAlignment": "Center"
+            },
+            {
+              "type": "TextBlock",
+              "text": "3 hrs",
+              "weight": "Bolder",
+              "horizontalAlignment": "Center"
+            },
+            {
+              "type": "ActionSet",
+              "actions": [
+                {
+                  "type": "Action.Submit",
+                  "iconUrl": "icon:Wand",
+                  "id": "wand5"
+                }
+              ],
+              "horizontalAlignment": "Center"
+            }
+          ]
+        },
+        {
+          "type": "Column",
+          "width": "stretch",
+          "items": [
+            {
+              "type": "TextBlock",
+              "text": "Sat",
+              "weight": "Bolder",
+              "horizontalAlignment": "Center"
+            },
+            {
+              "type": "TextBlock",
+              "text": "4 hrs",
+              "weight": "Bolder",
+              "horizontalAlignment": "Center"
+            },
+            {
+              "type": "ActionSet",
+              "actions": [
+                {
+                  "type": "Action.Submit",
+                  "iconUrl": "icon:Wand",
+                  "id": "wand6",
+                  "isEnabled": false
+                }
+              ],
+              "horizontalAlignment": "Center"
+            }
+          ],
+          "separator": true
+        },
+        {
+          "type": "Column",
+          "width": "stretch",
+          "items": [
+            {
+              "type": "TextBlock",
+              "text": "Sun",
+              "weight": "Bolder",
+              "horizontalAlignment": "Center"
+            },
+            {
+              "type": "TextBlock",
+              "text": "5 hrs",
+              "color": "Default",
+              "weight": "Bolder",
+              "horizontalAlignment": "Center"
+            },
+            {
+              "type": "ActionSet",
+              "actions": [
+                {
+                  "type": "Action.Submit",
+                  "iconUrl": "icon:Wand",
+                  "id": "wand7",
+                  "isEnabled": false
+                }
+              ],
+              "horizontalAlignment": "Center"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "verticalContentAlignment": "Top",
+  "rtl": false,
+  "backgroundImage": {
+    "fillMode": "Repeat"
+  }
+}

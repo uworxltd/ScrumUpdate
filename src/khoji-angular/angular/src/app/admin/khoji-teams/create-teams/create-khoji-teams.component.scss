@@ -1,0 +1,217 @@
+/*
+  Copyright 2026 UWorx Services.
+  Licensed under the Apache License, Version 2.0.
+  See LICENSE for the full license text.
+*/
+
+@import "../khoji-teams-list/khoji-teams-list.component.scss";
+
+:host ::ng-deep {
+
+    .margin-bottom-10px div label.dd-label {
+      margin-bottom: 10px !important;
+    }
+
+
+    .organizationList .p-overlay
+    {
+      top: 42px !important;
+      left:-1px !important;
+    }
+
+    .p-datatable .p-datatable-tbody>tr>td {
+        padding: 0.15rem 0.3rem;
+    }
+
+    .dropdown-khoji {
+        min-width: 330px !important;
+        box-shadow: none;
+    }
+
+    .fa {
+        color: #495057 !important;
+    }
+
+    .modal-content {
+        border: none;
+    }
+
+    .p-dialog {
+        padding: 6px;
+        border-radius: 20px;
+        background: white;
+    }
+
+    .p-dialog .p-dialog-footer {
+        border: none;
+    }
+
+    .p-dialog .p-dialog-header {
+        border-bottom: none;
+        background: white;
+    }
+
+    .add-users .p-dialog .p-dialog-header {
+      padding-bottom: 0px;
+    }
+
+    .p-confirm-dialog-message {
+      margin: 0px !important;
+    }
+
+    .align-items-center {
+        align-items: center;
+    }
+
+    .organization .p-dropdown {
+        position: absolute;
+        top: 23px;
+        left: 5px;
+        height: 42px;
+        margin-right: 0px;
+        width: 330px;
+        border: 1px solid #dbdbdb;
+
+    }
+
+    div.form-group.col-md-12 {
+      padding-left: 3px !important;
+    }
+
+}
+
+.modal-header {
+    display: block;
+    padding: 0px;
+    border-bottom: 1px solid #e5e5e5;
+    border-bottom: none;
+}
+
+.rows-per-page-left-tag {
+  margin-top:-1px!important;
+}
+
+.rows-per-page-right-tag {
+  margin-top:-1px!important;
+}
+
+.modal-header .close {
+    margin: 0px 20px 0px 0px;
+}
+
+.p-button.p-button-icon-only {
+    margin-left: 20px !important;
+    width: 30px !important;
+    height: 30px !important;
+    box-shadow: none !important;
+}
+
+.delete-button-column {
+    width: 10%;
+}
+
+.delete-buttons-div {
+    display: flex;
+    float: right;
+}
+
+.user-name-div {
+    float: left;
+    width: 70%;
+}
+
+.user-status-div {
+    float: right;
+    background: #f65a5a;
+    padding: 2px 2px;
+    color: white;
+    border-radius: 3px;
+}
+
+.revoked-status {
+    padding: 1px 5px;
+    font-size: 10px;
+    display: flex;
+}
+
+.form-control {
+    height: 42px;
+    width: 330px;
+}
+
+.view_teams_buttons {
+    padding: 0px 0px;
+}
+
+.view_teams_buttons img {
+    height: 25px;
+}
+
+:host ::ng-deep .p-message-wrapper {
+  padding: 4px;
+}
+
+:host ::ng-deep .p-chip-text {
+  padding: 0;
+  margin: 0;
+  font-size: 13px !important;
+}
+
+:host ::ng-deep .p-message-info {
+  border: none;
+}
+
+input.ng-invalid.ng-touched {
+    border: 1px solid #e24c4c;
+}
+
+input.ng-invalid.ng-dirty {
+    border: 1px solid #e24c4c;
+}
+
+.rag-status-tooltip {
+    display: inline-block;
+    margin-left: 0px;
+    cursor: help;
+    font-size: 12px;
+    color: #666;
+}
+
+.dropdown-khoji {
+    max-width: 350px !important;
+    min-width: 350px !important;
+}
+
+.modal-body {
+    padding: 20px 0px !important;
+}
+
+.khoji-success-button {
+    margin-left: 0px !important;
+}
+
+i.pi.pi-search {
+    position: relative;
+    top: 0px;
+    left: 20px;
+    color: #848484;
+    zoom: 1.2;
+}
+
+.close-modal {
+    margin: 0px 0px;
+}
+
+.search-input {
+    height: 30px;
+    width: 170px;
+    margin-right: 8px;
+    padding-left: 1.8rem;
+}
+
+.members-heading {
+    font-weight: 500;
+    font-size: 14px;
+    margin-bottom: 20px;
+    margin-top: 10px;
+}

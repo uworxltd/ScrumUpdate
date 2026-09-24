@@ -1,0 +1,57 @@
+name: effort_without_movement
+description: Tasks with logged work but no status change
+version: 1.0
+
+inputs:
+  sprint_id: { type: int, required: true }
+
+steps:
+  - id: effort_query
+    type: sql
+    service: main-db
+    query: |
+      WITH last_status_change AS (
+          SELECT
+              c.issue_key AS issue_id,          -- numeric Jira ID
+              MAX(c.created_date) AS last_status_change_at
+          FROM changelogs c
+          WHERE c.field_name = 'status'
+          GROUP BY c.issue_key
+      ),
+      worklog_sum AS (
+          SELECT
+              w.issue_key,
+              SUM(w.time_spent_seconds) / 3600.0 AS total_worklog_hours
+          FROM worklogs w
+          GROUP BY w.issue_key
+      )
+      SELECT
+          h.issue_key,
+          h.summary AS title,
+          h.assignee_display_name AS assignee,
+          h.status AS current_status,
+          EXTRACT(DAY FROM (NOW() - lsc.last_status_change_at))::int
+              AS days_since_status_change,
+          COALESCE(i.story_points, 0)::float AS story_points,
+          h.priority,
+          ws.total_worklog_hours::float AS worklog_hours
+      FROM v_issue_hygiene_flags h
+      JOIN sprint_issues si
+          ON si.issue_key = h.issue_key
+      JOIN issues i
+          ON i.issue_key = h.issue_key
+      LEFT JOIN last_status_change lsc
+          ON lsc.issue_id = i.issue_id        -- ✅ correct join
+      LEFT JOIN worklog_sum ws
+          ON ws.issue_key = h.issue_key
+      WHERE si.sprint_id = $1
+        AND h.status_category = 'In Progress'
+        AND i.issue_type IN ('Story', 'Bug')
+        AND ws.total_worklog_hours > 0
+        AND lsc.last_status_change_at <= NOW() - INTERVAL '4 days'
+      ORDER BY days_since_status_change DESC, worklog_hours DESC
+    params:
+      - "{{ inputs.sprint_id }}"
+    output: { name: effort_without_movement_data }
+
+return: effort_query.effort_without_movement_data

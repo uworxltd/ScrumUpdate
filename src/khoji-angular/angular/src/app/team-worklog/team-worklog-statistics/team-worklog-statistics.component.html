@@ -1,0 +1,166 @@
+<p-card>
+  <ng-template pTemplate="header">
+    <div class="flex justify-content-between align-items-center custom-header-padding">
+      <div class="flex align-items-center justify-content-center">
+        <div class="khoji-headings-title margin-left mr-3 mt-1">{{ translation.timelog.workLogStatistics.title }}</div>
+        <khoji-team-worklog-selection [domWidth]="450"></khoji-team-worklog-selection>
+      </div>
+      <div
+        *ngIf="isSupervisor && showRemindTeamButton"
+        class="custom-button border-primary justify-content-center align-items-center"
+        (click)="showRemindTeamModal = true"
+      >
+        <i class="fa fa-bell"></i><span class="font-normal">{{ multiTeams ? translation.timelog.workLogStatistics.remindTeams : translation.timelog.workLogStatistics.remindTeam }}</span>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="content">
+    <div
+      class="flex-container px-2"
+      [ngClass]="{'flex-column': wrapContainer}"
+      @fadeInOut
+    >
+      <div class="flex flex-1 flex-column" style="min-width: 380px; min-height: 287px;"
+        [ngClass]="{ minStats: !isWorklogCategoryEnabled, maxStats: isWorklogCategoryEnabled }"
+      >
+        <div class="flex gap-2 align-items-center justify-content-between">
+          <div
+            style="font-weight: 500;"
+            *ngIf="!isWorklogCategoryEnabled"
+            [title]="'Work log summary'"
+          >
+            {{ translation?.timelog.workLogStatistics.summarySubTitle }}
+          </div>
+          <div
+            class="flex gap-3"
+            *ngIf="isWorklogCategoryEnabled"
+          >
+            <div
+              (click)="setCategory('Summary')"
+              [ngClass]="{ 'active-button': selectedCategory === 'Summary' }"
+              class="summary-button"
+              [textContent]="translation.timelog.workLogStatistics.summaryCategory"
+              [title]="translation.timelog.workLogStatistics.summaryCategory"
+            ></div>
+            <div
+              (click)="setCategory('Main')"
+              [ngClass]="{ 'active-button': selectedCategory === 'Main' }"
+              class="summary-button"
+              [textContent]="productiveAlias"
+              [title]="productiveAlias"
+            ></div>
+            <div
+              (click)="setCategory('Other')"
+              [ngClass]="{ 'active-button': selectedCategory === 'Other' }"
+              class="summary-button"
+              [textContent]="nonProductiveAlias"
+              [title]="nonProductiveAlias"
+            ></div>
+          </div>
+          <i 
+            *ngIf="isAdminOrTenantAdmin && workspacesLoadingState === loadingState.Done"
+            class="pi pi-cog settings-icon" 
+            [title]="translation?.timelog.workLogStatistics.settingsDialogTitle"
+            (click)="showWorklogSettings()"
+          ></i>
+        </div>
+
+        <div>
+          <khoji-team-work-logged-percentage
+            *ngIf="selectedCategory === translation.timelog.workLogStatistics.summaryCategory"
+            @fadeInOut
+          ></khoji-team-work-logged-percentage>
+          <khoji-team-worklog-distribution-analysis
+            *ngIf="selectedCategory === translation.timelog.workLogStatistics.mainCategory && isWorklogCategoryEnabled"
+            [category]="translation.timelog.workLogStatistics.mainCategory"
+            @fadeInOut
+          ></khoji-team-worklog-distribution-analysis>
+          <khoji-team-worklog-distribution-analysis
+            *ngIf="selectedCategory === translation.timelog.workLogStatistics.otherCategory && isWorklogCategoryEnabled"
+            [category]="translation.timelog.workLogStatistics.otherCategory"
+            [unassignedWorklogLegendsCount]="unassignedWorklogLegendsCount"
+            @fadeInOut
+          ></khoji-team-worklog-distribution-analysis>
+        </div>
+      </div>
+
+      <p-divider
+        [layout]="wrapContainer ? 'horizontal' : 'vertical'"
+      ></p-divider>
+
+      <div class="flex flex-1 flex-column justify-content-between worklog-status-container" style="min-width: 380px; min-height: 287px;">
+        <!-- Header section -->
+        <div class="flex justify-content-between">
+          <div>
+            <span style="font-weight: 500"
+              >{{ translation.timelog.workLogStatistics.statusSubTitle
+              }}<i
+                class="pi pi-question-circle ml-2 text-sm text-primary font-semibold"
+                [pTooltip]="tooltipContent"
+                [escape]="false"
+                tooltipPosition="right"
+              ></i
+            ></span>
+          </div>
+        </div>
+
+        <!-- Work log items section -->
+        <div class="flex flex-row gap-3">
+          <div
+            *ngFor="let item of workLogStatusItem"
+            class="flex flex-1 justify-content-center border-2 border-200 border-round worklog-status-item px-3"
+          >
+            <div class="flex flex-column justify-content-between gap-1 title">
+              <div class="flex flex-1 align-items-center justify-content-around gap-1" [ngClass]="{'flex-column': wrapWorklogStatusItem }">
+                <img
+                  [src]="item.icon"
+                  [width]="40"
+                  [height]="30"
+                />
+                <span class="text-lg md:text-md">{{ item.title }}</span>
+              </div>
+              <div class="flex align-items-center justify-content-center text-2xl font-bold">
+                {{ item.count }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer section -->
+        <div class="flex justify-content-end">
+          <span
+            class="text-lg text-primary view-details"
+            (click)="navigateToTeamWorklogDetails()"
+            >{{translation.timelog.workLogStatistics.viewDetails}}<i class="pi pi-angle-right pl-2 pr-2 large-icon"></i
+          ></span>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</p-card>
+<p-confirmPopup></p-confirmPopup>
+<p-dialog 
+    [(visible)]="displayWorklogSettings"
+    [modal]="true" 
+    [style]="{width: '90vw', height:'90vh'}" 
+    [draggable]="false"
+    [resizable]="false">
+    <ng-template pTemplate="header">
+      <div class="p-dialog-title">{{translation?.timelog.workLogStatistics.settingsDialogTitle}}</div>
+      <div class="p-dialog-header-icons p-dialog-header-icons-custom">
+        <button (click)="handleWorklogSettingsClose($event)" class="p-ripple p-element p-dialog-header-icon p-dialog-header-close p-link" tabindex="-1">
+          <span class="p-dialog-header-close-icon pi pi-times"></span>
+        </button>
+      </div>
+    </ng-template>
+    <khoji-worklog-settings 
+      *ngIf="displayWorklogSettings"
+      #worklogSettingsComponent
+      [showSkeletalLoading]="true"
+      [buttonsOnRight]="true"
+      (configUpdated)="onConfigUpdated($event)">
+    </khoji-worklog-settings>
+</p-dialog>
+
+<khoji-worklog-reminder  *ngIf="showRemindTeamModal" [(showRemindTeamModal)]="showRemindTeamModal" (modalClosed)="onModalClosed()" [supervisorId]="supervisorId"></khoji-worklog-reminder>

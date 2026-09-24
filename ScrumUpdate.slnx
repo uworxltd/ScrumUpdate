@@ -1,0 +1,36 @@
+<Solution>
+  <Folder Name="/KGS/">
+    <File Path="src/Kgs/Directory.Build.props" />
+    <File Path="src/Kgs/Dockerfile" />
+    <File Path="src/Kgs/README.md" />
+    <Project Path="src/Kgs/Uworx.Khoji.Agile/Uworx.Khoji.Agile.csproj" />
+    <Project Path="src/Kgs/Uworx.Khoji.Semantics/Uworx.Khoji.Semantics.csproj" Id="7d062b0d-c28f-4f40-b626-13718f5e51aa" />
+    <Project Path="src/Kgs/Uworx.Khoji/Uworx.Khoji.csproj" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path="devops/Local-KhojiX/docker-compose.yml" />
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/Solution Items/docs/">
+    <File Path="docs/C4-Mermaids.md" />
+    <File Path="docs/C4.md" />
+  </Folder>
+  <Folder Name="/Solution Items/testing/">
+    <File Path="devops/Jenkins/testing-stack-deployment/khoji-stack.yml.j2" />
+  </Folder>
+  <Project Path="src/Kgs/KhojiGenAIServer/KhojiGenAIServer.csproj" />
+  <Project Path="src/khoji-analytics/khoji-analytics.pyproj" Type="888888a0-9f3d-457c-b088-3a5042f75d52" Id="1874b068-3fca-45f5-b374-dd7cc0d6da83">
+    <Build Project="false" />
+  </Project>
+  <Project Path="src/khoji-angular/khoji-angular.esproj">
+    <Build />
+    <Deploy />
+  </Project>
+  <Project Path="src/kss/kss.pyproj" Type="888888a0-9f3d-457c-b088-3a5042f75d52" Id="2d78c441-bd7b-4053-9e3f-d9702c6321a0">
+    <Build Project="false" />
+  </Project>
+  <Project Path="src/M365Agent/M365Agent.atkproj" Type="a9e3f50b-275e-4af7-adce-8be12d41e305">
+    <Deploy />
+  </Project>
+  <Project Path="tests/Uworx.Khoji.Tests/Uworx.Khoji.Tests.csproj" />
+</Solution>

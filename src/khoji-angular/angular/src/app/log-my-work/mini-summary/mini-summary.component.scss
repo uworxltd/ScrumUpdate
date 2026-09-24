@@ -1,0 +1,8 @@
+
+:host ::ng-deep .p-divider-solid.p-divider-vertical {
+    height: 36px;
+    
+    &::before {
+        border-color: #b6b6b6;
+    }
+}

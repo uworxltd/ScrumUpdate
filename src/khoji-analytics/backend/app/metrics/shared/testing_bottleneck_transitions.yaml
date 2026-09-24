@@ -1,0 +1,42 @@
+name: testing_bottleneck_transitions
+description: Status transition spans for testing bottleneck analysis
+version: 1.0
+
+inputs:
+  sprint_id: { type: int, required: true }
+
+steps:
+  - id: transitions_query
+    type: sql
+    service: main-db
+    query: |
+      SELECT 
+        vss.issue_key,
+        i.summary AS title,
+        vss.status,
+        TO_CHAR(vss.from_ts, 'YYYY-MM-DD HH24:MI:SS') AS from_ts,
+        TO_CHAR(vss.to_ts, 'YYYY-MM-DD HH24:MI:SS') AS to_ts,
+        vss.duration_secs,
+        i.status AS current_status,
+        i.status_category,
+        i.assignee_display_name,
+        i.priority
+      FROM {{ schema }}.v_issue_status_spans vss
+      INNER JOIN {{ schema }}.sprint_issues si ON vss.issue_key = si.issue_key
+      INNER JOIN {{ schema }}.issues i ON vss.issue_key = i.issue_key
+      WHERE si.sprint_id = $1
+        AND i.status_category NOT IN ('Done')
+        -- Only include QA/Testing related statuses (ignore To Do, In Progress, Code Review, etc.)
+        AND (
+          vss.status ILIKE '%QA%' 
+          OR vss.status ILIKE '%test%'
+          OR vss.status ILIKE '%review%'
+          OR i.status ILIKE '%QA%'
+          OR i.status ILIKE '%test%'
+        )
+      ORDER BY vss.issue_key, vss.from_ts
+    params:
+      - "{{ inputs.sprint_id }}"
+    output: { name: testing_bottleneck_data }
+
+return: transitions_query.testing_bottleneck_data

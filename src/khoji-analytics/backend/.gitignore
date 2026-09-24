@@ -1,0 +1,66 @@
+# ─────────────────────────
+# Global
+# ─────────────────────────
+.DS_Store
+Thumbs.db
+*.log
+*.swp
+*.swo
+*.tmp
+.idea/
+.vscode/
+.env
+.env.*
+.venv
+
+# ─────────────────────────
+# Python / FastAPI
+# ─────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.egg-info/
+.Python
+.venv/
+venv/
+dist/
+build/
+coverage.*
+htmlcov/
+pytest_cache/
+.mypy_cache/
+.dmypy.json
+.pytest_cache/
+
+# ─────────────────────────
+# Node / React UI
+# ─────────────────────────
+ui/node_modules/
+ui/.eslintcache
+ui/.turbo/
+ui/.vite/
+ui/dist/
+ui/build/
+
+# ─────────────────────────
+# YAML metrics generated at runtime
+# (keep specs tracked; ignore temp/compiled)
+# ─────────────────────────
+app/metrics/*.runtime.yaml
+
+# ─────────────────────────
+# Docker / Compose artefacts
+# ─────────────────────────
+*.container.log
+docker-data/
+**/.docker-volume/
+
+# ─────────────────────────
+# OS / Editor junk
+# ─────────────────────────
+*.bak
+*~
+ehthumbs.db
+Icon?

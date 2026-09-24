@@ -1,0 +1,72 @@
+<!-- /*
+Copyright 2026 UWorx Services.
+Licensed under the Apache License, Version 2.0.
+See LICENSE for the full license text.
+*/ -->
+
+
+<div class="ml-4 mr-4">
+    <div class="flex flex-column align-items-start gap-2 justify-content-center">
+		<span class="khoji-headings">Organization working hours</span>
+		<div class="flex flex-column gap-2 w-full">
+			<span class="khoji-sub-headings">Specify your standard working hours per day</span>
+			<p-inputNumber
+				[(ngModel)]="workLogHoursPerDay"
+				(ngModelChange)="checkForErrorInWorklogDayHour($event)"
+				mode="decimal"
+				[min]="1"
+				[max]="24"
+				styleClass="lg:w-5 w-12"
+				[step]="0.1"
+				[minFractionDigits]="0"
+				[maxFractionDigits]="1"
+				[ngClass]="{ 'ng-invalid': workLogHoursPerDayInError }"
+			></p-inputNumber>
+			<small
+				*ngIf="workLogHoursPerDayInError"
+				class="p-error"
+			>
+				This field cannot be left empty.
+			</small>
+		</div>
+	</div>
+<div class="mt-5"
+>
+	<ng-container *ngTemplateOutlet="ragComponent"></ng-container>
+</div>
+
+<ng-template #ragComponent>
+	<khoji-rag-status-wrapper
+		[showSkeletalLoading]="showSkeletalLoading"
+		[ragColors]="ragColorCodes"
+		[ragThresholds]="worklogPercentageThreshold"
+		[otherRagThresholds]="otherWorklogPercentageThreshold"
+		[otherSliderConfigs]="otherWorklogRagSliderConfig"
+		[heading]="translation.ragConfig.edit"
+		[subHeading]="translation.ragConfig.subHeading"
+		[sliderConfigs]="worklogRagSliderConfig"
+		[propKey]="worklogThresholdPropKey"
+		(onClose)="hideRagStatusModal($event)"
+		(onDirtyStateChange)="handleRagDirtyStateChange($event)"
+		[ragThresholdCategory]="defaultRagThresholdCategory"
+	>
+	</khoji-rag-status-wrapper>
+</ng-template>
+    <div class="flex gap-2 w-full align-items-center justify-content-end mt-4">
+		<button
+		*ngIf="isWorklogCategoriesInDirtyState || isRagConfigInDirtyState"
+			pButton
+			pRipple
+			label="Reset"
+			class="p-button-text"
+			(click)="resetToPreviouState()"
+		></button>
+		<button
+			pButton
+			pRipple
+			label="Save changes"
+			[ngClass]="{ 'p-disabled': saveButtonDisabled() || fieldInErrorState() &&  !isRagConfigInDirtyState}"
+			(click)="onSave()"
+		></button>
+	</div>
+</div>

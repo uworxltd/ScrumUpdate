@@ -1,0 +1,94 @@
+[
+  {
+    "label": "Delivery",
+    "icon": "pi pi-box",
+    "id":"delivery-analysis",
+    "command": "present",
+    "items": [
+      {
+        "label": "Analysis by Team Board",
+        "icon": "pi pi-chart-bar",
+        "id":"analysis-by-teamboard",
+        "routerLink": "/teamboard-analysis",
+        "command": "present"
+      },
+      {
+        "label": "Analysis by Release",
+        "icon": "pi pi-chart-line",
+        "id":"analysis-by-release",
+        "routerLink": "/delivery-analysis",
+        "command": "present"
+      },
+      {
+        "label": "Analysis by Work Log",
+        "icon": "pi pi-chart-pie",
+        "id":"analysis-by-worklog",
+        "routerLink": "/team",
+        "command": "present"
+      }
+    ]
+  },
+  {
+    "label": "Work Log",
+    "icon": "pi pi-users",
+    "id":"worklog-analysis",
+    "routerLink": "/timelog",
+    "command": "present"
+  },
+  {
+    "label": "Reports",
+    "icon": "pi pi-file",
+    "id":"reports-analysis",
+    "command": "present",
+    "items": [
+      {
+        "label": "Team Progress Report",
+        "icon": "pi pi-chart-bar",
+        "routerLink": "/report-analysis",
+        "id":"team-progress-report",
+        "queryParams": {
+          "templateId": "TPR"
+        },
+        "routerLinkActiveOptions": {
+          "paths": "exact",
+          "queryParams": "subset",
+          "matrixParams": "ignored",
+          "fragment": "ignored"
+        },
+        "command": "present"
+      },
+      {
+        "label": "Release Report",
+        "icon": "pi pi-chart-line",
+        "routerLink": "/report-analysis",
+        "id":"release-report",
+        "queryParams": {
+          "templateId": "RR"
+        },
+        "routerLinkActiveOptions": {
+          "paths": "exact",
+          "queryParams": "subset",
+          "matrixParams": "ignored",
+          "fragment": "ignored"
+        },
+        "command": "present"
+      },
+      {
+        "label": "Indicators Summary by Team Board",
+        "icon": "pi pi-chart-pie",
+        "routerLink": "/report-analysis",
+        "id":"indicator-summary-by-team",
+        "queryParams": {
+          "templateId": "IST"
+        },
+        "routerLinkActiveOptions": {
+          "paths": "exact",
+          "queryParams": "subset",
+          "matrixParams": "ignored",
+          "fragment": "ignored"
+        },
+        "command": "present"
+      }
+    ]
+  }
+]

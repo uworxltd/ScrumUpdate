@@ -1,0 +1,87 @@
+name: sprint_status_changes
+description: |
+  This metric retrieves sprint status changes data for the sprint static summary card.
+  Returns status change information comparing yesterday vs today (or sprint start vs today on Day 1).
+  
+  On Day 1 of the sprint, compares sprint start state with current state (Start → Today).
+  On other days, compares yesterday's state with current state (Yesterday → Today).
+version: 1.0
+
+inputs:
+  sprint_id: { type: int, default: 1 }
+
+steps:
+  # Check if today is Day 1 of the sprint (sprint started today)
+  - id: check_day_one
+    type: sql
+    service: main-db
+    query: |
+      SELECT 
+        CASE 
+          WHEN s.start_date::date = CURRENT_DATE THEN true
+          ELSE false
+        END AS is_day_one
+      FROM {{ schema }}.sprints s
+      WHERE s.sprint_id = $1::int
+    params:
+      - "{{ inputs.sprint_id }}"
+    output: { name: day_one_check }
+
+  - id: yesterday_status
+    type: pipeline
+    metric: shared/status_snapshot_yesterday
+    inputs:
+      sprint_id: "{{ inputs.sprint_id }}"
+    output: { name: yesterday_counts }
+
+  - id: current_status
+    type: pipeline
+    metric: shared/status_counts_now
+    inputs:
+      sprint_id: "{{ inputs.sprint_id }}"
+    output: { name: current_counts }
+
+  - id: status_tickets
+    type: pipeline
+    metric: shared/status_categories_tickets
+    inputs:
+      sprint_id: "{{ inputs.sprint_id }}"
+    output: { name: status_categories }
+
+  # Get yesterday's tickets (used when NOT Day 1)
+  - id: status_tickets_yesterday
+    type: pipeline
+    metric: shared/status_categories_tickets_yesterday
+    inputs:
+      sprint_id: "{{ inputs.sprint_id }}"
+    output: { name: status_categories_yesterday }
+
+  # Get sprint start tickets (used when Day 1)
+  - id: status_tickets_sprint_start
+    type: pipeline
+    metric: shared/status_categories_tickets_sprint_start
+    inputs:
+      sprint_id: "{{ inputs.sprint_id }}"
+    output: { name: status_categories_sprint_start }
+
+  - id: status_flow
+    type: pipeline
+    metric: shared/status_flow_analysis
+    inputs:
+      sprint_id: "{{ inputs.sprint_id }}"
+    output: { name: flow_analysis }
+
+  - id: transform
+    type: function
+    function: app.processors.sprint_cards.extract_status_changes
+    inputs:
+      yesterday_counts: "{{ steps.yesterday_status.outputs.yesterday_counts }}"
+      current_counts: "{{ steps.current_status.outputs.current_counts }}"
+      status_ticket_data: "{{ steps.status_tickets.outputs.status_categories }}"
+      status_ticket_data_yesterday: "{{ steps.status_tickets_yesterday.outputs.status_categories_yesterday }}"
+      status_ticket_data_sprint_start: "{{ steps.status_tickets_sprint_start.outputs.status_categories_sprint_start }}"
+      is_day_one: "{{ steps.check_day_one.outputs.day_one_check }}"
+      status_flow_data: "{{ steps.status_flow.outputs.flow_analysis }}"
+    output: { name: status_changes }
+
+return: "transform.status_changes"

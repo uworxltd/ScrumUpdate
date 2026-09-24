@@ -1,0 +1,162 @@
+name: epic_insights
+description: Get AI-powered insights for a specific epic including progress analysis, risks, and recommendations
+version: 1.0
+
+inputs:
+  epic_key: { type: string, required: true }
+  sprint_id: { type: int, required: true }
+
+steps:
+  # Step 1: Get epic data with tickets in sprint
+  - id: get_epic_data
+    type: sql
+    service: main-db
+    query: |
+      WITH epic_tickets AS (
+        SELECT
+          i.issue_key,
+          i.summary,
+          i.status,
+          i.status_category,
+          i.status_category_change_date,
+          i.story_points,
+          i.assignee_display_name
+        FROM {{ schema }}.issues i
+        JOIN {{ schema }}.sprint_issues si
+          ON si.issue_key = i.issue_key
+        WHERE si.sprint_id = $2::int
+          AND i.parent_issue_key = $1
+      ),
+      epic_metrics AS (
+        SELECT
+          $1 AS epic_key,
+          (SELECT summary FROM {{ schema }}.issues WHERE issue_key = $1) AS epic_name,
+          $2 AS sprint_id,
+          json_build_object(
+            'completed', COALESCE(SUM(CASE WHEN status_category = 'Done' THEN story_points END), 0),
+            'total', COALESCE(SUM(story_points), 0),
+            'percentage', CASE
+              WHEN SUM(story_points) > 0
+              THEN ROUND(
+                COALESCE(SUM(CASE WHEN status_category = 'Done' THEN story_points END), 0) * 100.0 / SUM(story_points),
+                2
+              )
+              ELSE 0
+            END
+          ) AS story_points,
+          COALESCE(json_agg(
+            json_build_object(
+              'key', issue_key,
+              'summary', summary,
+              'status', status,
+              'storyPoints', story_points,
+              'assignee', assignee_display_name
+            )
+            ORDER BY status_category DESC, issue_key
+          ), '[]'::json) AS tickets,
+          ROUND(
+            (
+              (
+                COUNT(assignee_display_name)::numeric / NULLIF(COUNT(*), 0)
+                +
+                COUNT(CASE WHEN story_points > 0 THEN 1 END)::numeric / NULLIF(COUNT(*), 0)
+              ) / 2
+            ) * 100,
+            2
+          ) AS ticket_hygiene_percentage,
+          ROUND(
+            COUNT(CASE WHEN status_category = 'Done' THEN 1 END)::numeric / NULLIF(COUNT(*), 0) * 100,
+            2
+          ) AS delivery_health_percentage,
+          CASE
+            WHEN COUNT(*) = 0 THEN 0
+            WHEN COUNT(CASE WHEN status_category = 'Done' THEN 1 END)::numeric / COUNT(*) >= 0.8 THEN 95
+            WHEN COUNT(CASE WHEN status_category = 'Done' THEN 1 END)::numeric / COUNT(*) >= 0.6 THEN 75
+            WHEN COUNT(CASE WHEN status_category = 'Done' THEN 1 END)::numeric / COUNT(*) >= 0.4 THEN 55
+            ELSE 30
+          END AS delivery_confidence_percentage
+        FROM epic_tickets
+      ),
+      epic_progress_timeline AS (
+        SELECT
+          COALESCE(
+            json_agg(
+              json_build_object(
+                'daysAgo', ROUND(EXTRACT(EPOCH FROM (NOW() - status_category_change_date)) / 86400)::int,
+                'description', issue_key || ' moved to ' || status,
+                'type', 'status'
+              )
+              ORDER BY status_category_change_date DESC
+            ),
+            '[]'::json
+          ) AS timeline_highlights
+        FROM (
+          SELECT
+            issue_key,
+            status,
+            status_category_change_date
+          FROM epic_tickets
+          WHERE status_category <> 'To Do'
+            AND status_category_change_date IS NOT NULL
+          ORDER BY status_category_change_date DESC
+          LIMIT 4
+        ) t
+      )
+      SELECT
+        em.epic_key,
+        em.epic_name,
+        em.sprint_id,
+        em.story_points,
+        em.tickets,
+        em.ticket_hygiene_percentage,
+        em.delivery_health_percentage,
+        em.delivery_confidence_percentage,
+        ept.timeline_highlights
+      FROM epic_metrics em
+      CROSS JOIN epic_progress_timeline ept
+    params:
+      - "{{ inputs.epic_key }}"
+      - "{{ inputs.sprint_id }}"
+    output: { name: epic_data }
+
+  # Step 1b: Get epic activity timeline (deprecated - timeline now included in epic_data)
+  - id: get_epic_timeline
+    type: sql
+    service: main-db
+    query: |
+      SELECT '[]'::json AS timelineHighlights
+    output: { name: timeline_data }
+
+  # Step 2: Call LLM for AI insights
+  - id: llm_epic_insights
+    type: http_ai
+    service: llm
+    headers:
+      Content-Type: "application/json"
+    body:
+      instance: "{{ tenant_id }}"
+      llm: "claude-haiku"
+      prompt: "EpicInsights"
+      data: "{{ steps.get_epic_data.outputs.epic_data }}"
+    cache: 8640000 # Cache for 24x100 hours
+    output: { name: llm_response }
+
+  # Step 3: Parse LLM response
+  - id: parse_insights
+    type: function
+    function: app.processors.llm.extract_reply_json
+    inputs:
+      response: "{{ steps.llm_epic_insights.outputs.llm_response }}"
+    cache: 8640000 # Cache for 24x100 hours
+    output: { name: parsed_insights }
+
+  # Step 4: Merge epic data with AI insights and timeline
+  - id: merge_data
+    type: function
+    function: app.processors.sprint_cards.merge_epic_with_insights
+    inputs:
+      epic_data: "{{ steps.get_epic_data.outputs.epic_data }}"
+      ai_insights: "{{ steps.parse_insights.outputs.parsed_insights }}"
+    output: { name: final_data }
+
+return: merge_data.final_data

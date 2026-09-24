@@ -1,0 +1,432 @@
+<p-blockUI [target]="this" [blocked]="blockUI">
+  <i class="pi pi-spin pi-spinner" style="font-size: 3rem"></i>
+</p-blockUI>
+
+<div>
+  <ng-container
+    #outlet
+    [ngTemplateOutlet]="content"
+  >
+  </ng-container>
+</div>
+
+<ng-template #content>
+  <khoji-invite-user-dialog [(showModal)]="showInviteModal"></khoji-invite-user-dialog>
+  <khoji-bulk-invite-user-dialog
+    [(showModal)]="showInviteBulkModal"
+    header="Bulk add users from Jira"
+  ></khoji-bulk-invite-user-dialog>
+  <khoji-bulk-role-allocation-dialog [(showModal)]="showBulkRoleAllocationModal"></khoji-bulk-role-allocation-dialog>
+
+  <div>
+    <!--Ptoolbar to show total rows tags and search bar-->
+
+    <p-toolbar styleClass="surface-ground mb-1 border-noround">
+      <div class="p-toolbar-group-left">
+        <div
+          class="max-w-max khoji-success-button flex align-items-center"
+          [pTooltip]="limitReached ? translation?.viewUser?.button.addJiraUserDisabledTooltip : ''"
+          tooltipPosition="right"
+          tooltipStyleClass="carousel-tooltip"
+        >
+          <p-splitButton
+            label="Add Jira user"
+            [ngClass]="{ 'p-disabled': limitReached }"
+            [icon]="limitReached ? 'pi pi-lock' : 'pi pi-plus'"
+            (onClick)="openInviteModal()"
+            [model]="this.inviteButtonItems"
+            styleClass="table-button"
+          >
+          </p-splitButton>
+        </div>
+        <button
+          pButton
+          pRipple
+          label="Assign role to the users"
+          icon="pi pi-users"
+          class="p-button-text ml-2"
+          styleClass="table-button"
+          (click)="openBulkRoleAllocationModal()"
+        ></button>
+      </div>
+      <div class="p-toolbar-group-right">
+        <div *ngIf="showNoDataAvailableAfterLoadingIsDone">
+          <span class="khoji-limit-chip"> {{ translation?.viewUser?.usersAdded }}{{ getUsersAddedLength() }}/{{ userLimit }} </span>
+        </div>
+        <label
+          title="{{ constants.DATA_TABLE_SEARCH_INPUT_TOOLTIP }}"
+          class="p-input-icon-left"
+        >
+          <i class="pi pi-search"></i>
+          <input
+            type="search"
+            pInputText
+            size="50"
+            [placeholder]="translation?.viewUser?.searchBar?.searchBarPlaceHolder"
+            (input)="dt.filterGlobal($event.target.value, 'contains')"
+            class="search-input"
+          />
+        </label>
+      </div>
+    </p-toolbar>
+
+    <div>
+      <p-table
+        [value]="usersList"
+        #dt
+        [rowsPerPageOptions]="[10, 25, 50, 100]"
+        [rows]="constants.INITIAL_ROWS_PER_PAGE"
+        [totalRecords]="usersList.length"
+        [paginator]="true"
+        editMode="row"
+        dataKey="id"
+        [globalFilterFields]="['member.fullName', 'email', 'member.role.name', 'currentStatus', 'accessLevel']"
+        sortField="member.fullName"
+        [sortOrder]="1"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th
+              style="width: 17%"
+              [pSortableColumn]="'member.fullName'"
+            >
+              <p-columnFilter
+                type="text"
+                field="member.fullName"
+                class="hidden"
+                display="none"
+              ></p-columnFilter>
+              {{ translation?.viewUser?.tableHeaders?.name }}
+              <p-sortIcon field="member.fullName"></p-sortIcon>
+            </th>
+            <th style="width: 17%">
+              <p-columnFilter
+                type="text"
+                field="email"
+                class="hidden"
+                display="none"
+              ></p-columnFilter>
+              {{ translation?.viewUser?.tableHeaders?.email }}
+            </th>
+            <th
+              style="width: 17%"
+              [pSortableColumn]="'member.role.name'"
+            >
+              <p-columnFilter
+                type="text"
+                field="member.role.name"
+                class="hidden"
+                display="none"
+              ></p-columnFilter>
+              {{ translation?.viewUser?.tableHeaders?.role }}
+              <p-sortIcon field="member.role.name"></p-sortIcon>
+            </th>
+            <th
+              style="width: 17%"
+              [pSortableColumn]="'accessLevel'"
+            >
+              <p-columnFilter
+                type="text"
+                field="accessLevel"
+                class="hidden"
+                display="none"
+              ></p-columnFilter>
+              {{ translation?.viewUser?.tableHeaders?.accessLevel }}
+              <p-sortIcon field="accessLevel"></p-sortIcon>
+            </th>
+            <th
+              style="width: 12%"
+              [pSortableColumn]="'lastSeen'"
+            >
+              <p-columnFilter
+                type="text"
+                field="lastSeen"
+                class="hidden"
+                display="none"
+              ></p-columnFilter>
+              {{ translation?.viewUser?.tableHeaders?.lastSeen }}
+              <p-sortIcon field="lastSeen"></p-sortIcon>
+            </th>
+            <th style="width: 10%">
+              <p-columnFilter
+                type="text"
+                field="currentStatus"
+                class="hidden"
+                display="none"
+              ></p-columnFilter>
+              {{ translation?.viewUser?.tableHeaders?.status }}
+            </th>
+            <th style="width: 10%">
+              <span class="flex align-items-center justify-content-center"> Actions </span>
+            </th>
+          </tr>
+        </ng-template>
+
+        <ng-template
+          pTemplate="body"
+          let-rowData
+          let-editing="editing"
+          let-index="rowIndex"
+        >
+          <tr
+            [pEditableRow]="rowData"
+            [ngClass]="{ disabled: index === editingUserIndex && savingEditUsersState === loadingStates.Loading }"
+            style="min-height: 71px"
+          >
+            <ng-container *ngIf="rowData.loading !== 2; else rowContent">
+              <td
+                *ngFor="let _ of [].constructor(6)"
+                class="border-none"
+              >
+                <p-skeleton
+                  class="w-9"
+                  height="2.5rem"
+                ></p-skeleton>
+              </td>
+            </ng-container>
+            <ng-template #rowContent>
+              <ng-container *ngIf="validateEmail(rowData.email) as emailValidation">
+              <td class="border-none">
+                <div class="flex gap-3 align-items-center ml-2">
+                  <img
+                    [src]="rowData.avatarURL ? rowData.avatarURL : 'assets/images/bullet.svg'"
+                    class="w-2rem h-2rem border-circle"
+                    alt="profile image"
+                  />
+                  <span>{{ rowData.member?.fullName }}</span>
+                </div>
+              </td>
+              <td class="border-none">
+                <p-cellEditor>
+                  <ng-template pTemplate="input">
+                    <input
+                      [placeholder]="'Enter an email address'"
+                      pattern="{{ constants.KHOJI_EMAIL_REGX }}"
+                      [(ngModel)]="rowData.email"
+                      (ngModelChange)="updateUserInmodifiedUsersList(rowData, 'email')"
+                      pInputText
+                      type="email"
+                      class="w-full"
+                      [required]="rowData.currentStatus === 'PENDING'"
+                      [disabled]="rowData.currentStatus === 'JOINED'"
+                      [title]="rowData.currentStatus === 'JOINED' ? translation?.viewUser.tooltip.emailFieldDisabled : (rowData.currentStatus === 'PENDING' && !rowData.email.trim()) ? translation?.viewUser.tooltip.emailRequiredForPending : ''"
+                      [ngClass]="{ 'ng-invalid ng-dirty': (rowData.currentStatus === 'PENDING' && !rowData.email.trim()) || emailValidation.error }"
+                    />
+                    <span *ngIf="emailValidation.error === 'DUPLICATE'" class="error-message">{{translation?.viewUser.errors.duplicateEmail}}</span>
+                  </ng-template>
+                  <ng-template pTemplate="output">
+                    {{ rowData.email }}
+                  </ng-template>
+                </p-cellEditor>
+              </td>
+              <td class="border-none">
+                <p-cellEditor>
+                  <ng-template pTemplate="input">
+                    <p-dropdown
+                      [(ngModel)]="rowData.roleCode"
+                      (ngModelChange)="updateUserInmodifiedUsersList(rowData, 'roleCode')"
+                      [options]="roles"
+                      optionLabel="name"
+                      optionValue="code"
+                      styleClass="w-full"
+                      [appendTo]="'body'"
+                    ></p-dropdown>
+                  </ng-template>
+                  <ng-template pTemplate="output">
+                    {{ rowData.member?.role.name }}
+                  </ng-template>
+                </p-cellEditor>
+              </td>
+              <td class="border-none">
+                <p-cellEditor>
+                  <ng-template pTemplate="input">
+                    <p-dropdown
+                      [disabled]="rowData.member.memberEmail === currentMemberId"
+                      [title]="rowData.member.memberEmail === currentMemberId ? translation?.viewUser?.tooltip?.accessLevelFieldDisabled : ''"
+                      [(ngModel)]="rowData.accessLevel"
+                      (ngModelChange)="updateUserInmodifiedUsersList(rowData, 'accessLevel')"
+                      [options]="accessLevels"
+                      [appendTo]="'body'"
+                      styleClass="w-full"
+                      optionLabel="name"
+                      optionValue="code"
+                    ></p-dropdown>
+                  </ng-template>
+                  <ng-template pTemplate="output">
+                    {{ translation?.viewUser?.accessLevels[rowData.accessLevel] }}
+                  </ng-template>
+                </p-cellEditor>
+              </td>
+              <td class="border-none">
+                {{ getDateInBetterFormat(rowData.lastSeen) }}
+              </td>
+              <td
+                *ngIf="rowData.currentStatus as status"
+                class="border-none"
+              >
+                <div
+                  class="khoji-user-status"
+                  [class.bg-joined]="status === 'JOINED'"
+                  [class.bg-pending]="status === 'PENDING'"
+                  [class.bg-revoked]="status === 'REVOKED'"
+                  [class.bg-incomplete]="status === 'INCOMPLETE'"
+                >
+                  <span class="khoji-user-status-text"> {{ status == 'REVOKED' ? 'SUSPENDED' : status }}</span>
+                </div>
+              </td>
+              <!--Edit button-->
+              <td class="border-none btn-colmn-width">
+                <div
+                  *ngIf="!editing"
+                  class="btn-position-center"
+                >
+                  <span [title]="rowData.currentStatus === 'REVOKED' ? translation?.viewUser?.tooltip?.editUserDisabledForRevokedUser : translation?.viewUser?.tooltip?.editUser">
+                    <button
+                      type="button"
+                      pButton
+                      icon="pi pi-pencil"
+                      class="p-button-rounded p-button-outlined p-button-icon-only border-0"
+                      [disabled]="rowData.currentStatus === 'REVOKED'"
+                      (click)="editUser(rowData, index)"
+                      pInitEditableRow
+                    ></button>
+                  </span>
+                  <span [title]="rowData.member.memberEmail === currentMemberId ? translation?.viewUser?.tooltip?.suspendAccessDisabledForLoggedInUser : translation?.viewUser?.tooltip?.suspendAccess">
+                  <button
+                    *ngIf="rowData.currentStatus !== 'REVOKED'"
+                    [disabled]="rowData.member.memberEmail === currentMemberId"
+                    type="button"
+                    pButton
+                    icon="pi pi-lock"
+                    class="p-button-rounded p-button-outlined p-button-icon-only border-0"
+                    (click)="handleRevokeUserAccess($event, rowData)"
+                  ></button>
+                  </span>
+                  <button
+                    *ngIf="rowData.currentStatus === 'REVOKED'"
+                    type="button"
+                    pButton
+                    icon="pi pi-lock-open"
+                    class="p-button-rounded p-button-outlined p-button-icon-only border-0"
+                    [title]="translation?.viewUser?.tooltip?.inviteUserAgainAfterRevoked"
+                    (click)="handleInviteUserAgainAfterRevoked(rowData)"
+                  ></button>
+                </div>
+                <div
+                  *ngIf="editing"
+                  class="btn-position-center"
+                >
+                  <span [title]="(rowData.currentStatus === 'PENDING' && !rowData.email.trim()) || (rowData.email && emailValidation.error) ? '' : translation?.viewUser?.tooltip?.saveUser">
+                    <button
+                      type="button"
+                      pButton
+                      icon="pi pi-check"
+                      class="p-button-rounded p-button-outlined p-button-icon-only border-0 btn-check-green"
+                      [disabled]="(rowData.currentStatus === 'PENDING' && !rowData.email.trim()) || (rowData.email && emailValidation.error)"
+                      (click)="saveEditUser(rowData, index)"
+                      pSaveEditableRow
+                    ></button>
+                  </span>
+                  <button
+                    type="button"
+                    pButton
+                    icon="pi pi-times"
+                    class="p-button-rounded p-button-outlined p-button-icon-only border-0 btn-times-red"
+                    [title]="translation?.viewUser?.tooltip?.cancelEditUser"
+                    (click)="cancelEditUser(rowData, index)"
+                    pCancelEditableRow
+                  ></button>
+                </div>
+              </td>
+            </ng-container>
+            </ng-template>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage">
+          <tr *ngIf="showNoDataAvailableAfterLoadingIsDone">
+            <td
+              [attr.colspan]="5"
+              style="text-align: center"
+              class="border-none"
+            >
+              <span>{{ displayEmptyMessage() }}</span>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #pageDropdown>
+  <div class="page-dropdown-container">
+    <span>{{ translation?.viewUser.dropdown.pageDropdownTitle }} </span
+    ><select
+      [disabled]="disablePaginationDropdown"
+      data-test="khoji-users-pagination-dropdown"
+      [(ngModel)]="pageLength"
+      #pageIntervalDropdown
+      class="custom-select page-interval"
+      (change)="changePageInterval(pageIntervalDropdown.value); $event.stopPropagation()"
+    >
+      <option
+        *ngFor="let interval of itemsPerPageList"
+        [value]="interval"
+      >
+        {{ interval === -1 ? 'All' : interval }}
+      </option></select
+    ><span data-test="khoji-users-pagination-label"> of {{ usersList.length }}</span>
+  </div>
+</ng-template>
+
+<p-dialog
+  [closeOnEscape]="true"
+  [resizable]="false"
+  [draggable]="false"
+  [(visible)]="showEditUserModal"
+  [style]="{ width: '40vw' }"
+  [modal]="true"
+>
+  <ng-template pTemplate="header">
+    <h4 class="khoji-headings-title">Edit {{ selectedUser.member.fullName }}</h4>
+  </ng-template>
+  <ng-template pTemplate="content">
+    <khoji-edit-user-modal
+      [selectedUser]="selectedUser"
+      [disableEmailField]="selectedUser.currentStatus === 'JOINED'"
+      (onClose)="closeEditUserModal($event)"
+    >
+    </khoji-edit-user-modal>
+  </ng-template>
+</p-dialog>
+
+<p-confirmDialog
+  [key]="confirmPopupKey"
+  [closable]="false"
+  [style]="{ width: '30vw' }"
+  #cd
+>
+  <ng-template pTemplate="footer">
+    <button
+      type="button"
+      pButton
+      pRipple
+      label="Cancel"
+      class="p-button-text"
+      (click)="cd.reject()"
+    ></button>
+    <button
+      type="button"
+      class="p-button-danger"
+      pButton
+      pRipple
+      label="Suspend access"
+      (click)="cd.accept()"
+    ></button>
+  </ng-template>
+</p-confirmDialog>
+
+<ng-template #noColsAvailable>
+  {{ translation?.dataTables.noDatatableConfigFound }}
+</ng-template>

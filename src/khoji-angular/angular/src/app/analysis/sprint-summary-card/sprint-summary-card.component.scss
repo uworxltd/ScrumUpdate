@@ -1,0 +1,33 @@
+:host {
+    ::ng-deep {
+        .p-carousel-item .p-card {
+            box-shadow: none;
+        }
+
+        .p-progressbar {
+            height: 1.2rem;
+        }
+    }
+
+  /* Match carousel cards: fixed height and internal scrolling */
+  .static-card-wrapper {
+    height: 400px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+    position: relative;
+  }
+
+  .summary-body {
+    height: 100%;
+    overflow-y: auto;
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+    -webkit-overflow-scrolling: touch; /* smooth scrolling on iOS */
+    padding: 0.5rem;
+  }
+  .summary-body::-webkit-scrollbar {
+    display: none; /* Safari and Chrome */
+    width: 0;
+    height: 0;
+  }
+}

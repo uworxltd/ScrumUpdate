@@ -1,0 +1,32 @@
+name: workload_imbalance
+description: Team members with 3+ active issues
+version: 1.0
+
+inputs:
+  sprint_id: { type: int, required: true }
+
+steps:
+  - id: workload_query
+    type: sql
+    service: main-db
+    query: |
+      SELECT
+        i.assignee_display_name AS assignee_name,
+        COUNT(*) AS active_issue_count,
+        STRING_AGG(i.issue_key, ', ' ORDER BY i.issue_key) AS active_issues
+      FROM {{ schema }}.issues i
+      JOIN {{ schema }}.sprint_issues si
+        ON i.issue_key = si.issue_key
+      WHERE
+        si.sprint_id = $1
+        AND i.status_category = 'In Progress'
+        AND i.assignee_display_name IS NOT NULL
+        AND i.assignee_display_name != ''
+      GROUP BY i.assignee_display_name
+      HAVING COUNT(*) >= 3
+      ORDER BY active_issue_count DESC
+    params:
+      - "{{ inputs.sprint_id }}"
+    output: { name: workload_imbalance_data }
+
+return: workload_query.workload_imbalance_data

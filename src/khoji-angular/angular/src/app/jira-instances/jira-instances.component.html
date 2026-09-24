@@ -1,0 +1,249 @@
+<div class="card flex flex-column justify-content-between w-8">
+  <ng-container *ngTemplateOutlet="header"></ng-container>
+  <div style="max-height: 350px; min-height: 350px">
+    <ng-container *ngTemplateOutlet="content"></ng-container>
+  </div>
+  <ng-container *ngTemplateOutlet="footer"></ng-container>
+</div>
+<ng-template #header>
+  <p-messages
+    *ngIf="validateUserLoadingState === loadingStates.Error"
+    [(value)]="userAccessError"
+    [enableService]="false"
+    [escape]="false"
+  >
+  </p-messages>
+  <div class="flex justify-content-between align-items-center flex-wrap w-full pr-6 pl-8 pt-3">
+    <div>
+      <img
+        src="assets/images/scrumupdate-logo-v1.svg"
+        alt="ScrumUpdate Logo"
+        width="42"
+        height="35"
+      />
+    </div>
+    <div>
+      <button
+        pButton
+        pRipple
+        label="Log out"
+        icon="pi pi-power-off"
+        class="p-button-text"
+        (click)="logout()"
+        styleClass="p-button-sm"
+      ></button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #content>
+  <div class="flex flex-column py-1 px-4 h-full">
+    <h3 class="text-center">Integrate Jira app with ScrumUpdate</h3>
+
+    <div class="flex flex-auto flex-column align-items-center">
+      <p-progressSpinner
+        class="flex flex-1 align-items-center"
+        *ngIf="isLoading"
+        [style]="{ width: '40px', height: '35px' }"
+      ></p-progressSpinner>
+
+      <p-tabView
+        *ngIf="!isLoading"
+        [(activeIndex)]="activeIndex"
+      >
+        <p-tabPanel>
+          <ng-template pTemplate="header"> Available Jira apps </ng-template>
+
+          <ng-template pTemplate="content">
+            <div
+              class="flex flex-column gap-3 align-items-center justify-content-center"
+              *ngIf="!isLoading"
+            >
+              <p-scrollPanel
+                [style]="{ width: '400px', height: accessibleResources?.jiraInstances?.length > 2 ? '200px' : accessibleResources?.jiraInstances?.length * 75 + 'px' }"
+                *ngIf="accessibleResources?.jiraInstances?.length > 0"
+              >
+                <ng-container *ngFor="let accessibleResource of accessibleResources.jiraInstances">
+                  <div class="flex align-items-center justify-content-between p-2 surface-card w-full border-round-lg main mt-2 h-4rem">
+                    <div class="flex align-items-center gap-3">
+                      <div class="flex flex-row justify-content-center gap-3">
+                        <div>
+                          <img
+                            [src]="'assets/images/jira-transparent-logo.svg'"
+                            alt="App Logo"
+                            width="20"
+                            height="20"
+                          />
+                        </div>
+
+                        <div class="flex justify-content-center align-items-center gap-2">
+                          <span class="font-bold w-12rem white-space-nowrap overflow-hidden text-overflow-ellipsis flex-1">{{ accessibleResource?.name }}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <p-button
+                      *ngIf="!accessibleResource?.alreadyRegistered"
+                      attr.data-test="{{ accessibleResource?.name }}-integrate-button"
+                      type="button"
+                      label="Integrate"
+                      (click)="selectResource(accessibleResource)"
+                      class="p-button-primary p-button-sm"
+                    ></p-button>
+
+                    <p-chip
+                      *ngIf="accessibleResource?.alreadyRegistered"
+                      [label]="'Already Connected'"
+                      styleClass="custom-chip border-round-md text-sm font-medium"
+                    ></p-chip>
+                  </div>
+                </ng-container>
+              </p-scrollPanel>
+
+              <div class="text-500 text-center flex flex-column align-items-center gap-1">
+                <span>Want to choose another account?</span>
+                <a
+                  (click)="navigateToJira()"
+                  class="text-primary cursor-pointer hover:underline font-semibold"
+                >
+                  Switch Account
+                </a>
+              </div>
+            </div>
+          </ng-template>
+        </p-tabPanel>
+
+        <p-tabPanel *ngIf="teamViewFeaturesEnabled?.length">
+          <ng-template pTemplate="header">
+            <div class="flex gap-2">
+              <span>Invitations</span>
+              <p-badge [value]="invitedInstances?.length"></p-badge>
+            </div>
+          </ng-template>
+
+          <ng-template pTemplate="content">
+            <div
+              class="flex flex-column gap-3 align-items-center justify-content-center"
+              *ngIf="!isLoading"
+            >
+              <p-scrollPanel
+                [style]="{ width: '400px', height: invitedInstances?.length > 2 ? '200px' : invitedInstances?.length * 75 + 'px' }"
+                *ngIf="invitedInstances?.length > 0"
+              >
+                <ng-container *ngFor="let invitedInstance of invitedInstances">
+                  <div class="flex align-items-center justify-content-between p-2 surface-card w-full border-round-lg main mt-2 h-4rem">
+                    <div class="flex align-items-center gap-3">
+                      <div class="flex flex-row justify-content-center gap-3">
+                        <div>
+                          <img
+                            [src]="'assets/images/jira-transparent-logo.svg'"
+                            alt="App Logo"
+                            width="20"
+                            height="20"
+                          />
+                        </div>
+
+                        <div class="flex justify-content-center align-items-center gap-2">
+                          <span class="font-bold w-6rem white-space-nowrap overflow-hidden text-overflow-ellipsis flex-1">{{ invitedInstance?.name }}</span>
+                        </div>
+                      </div>
+
+                      <div class="flex flex-row justify-content-center gap-3">
+                        <img
+                          [src]="invitedInstance.instanceOwner.avatarUrl"
+                          alt="App Logo"
+                          width="20"
+                          height="20"
+                          style="border-radius: 50%"
+                        />
+                      </div>
+                      <div class="flex justify-content-center align-items-center gap-2">
+                        <span class="font-bold w-10rem white-space-nowrap overflow-hidden text-overflow-ellipsis flex-1">{{ invitedInstance?.instanceOwner.name }}</span>
+                      </div>
+                    </div>
+                    <button
+                      pButton
+                      [icon]="acceptClicked && acceptedInstanceInviteId === invitedInstance.instanceId ? 'pi pi-spin pi-spinner' : 'pi pi-check'"
+                      [disabled]="acceptClicked"
+                      class="p-button-text p-button-rounded"
+                      (click)="acceptInvite(invitedInstance)"
+                    ></button>
+                  </div>
+                </ng-container>
+              </p-scrollPanel>
+              <span
+                *ngIf="invitedInstances?.length === 0"
+                style="width: 400px"
+              >
+                There are no invitations against your account.
+              </span>
+            </div>
+          </ng-template>
+        </p-tabPanel>
+      </p-tabView>
+    </div>
+
+    <h5
+      *ngIf="false"
+      class="mt-4 text-center"
+    >
+      Join an existing app
+    </h5>
+    <div
+      *ngIf="false"
+      class="flex flex-column gap-3 align-items-center"
+    >
+      <ng-container *ngFor="let app of jiraApps">
+        <div class="flex align-items-center justify-content-between p-2 surface-card border-round-md shadow-1 w-5">
+          <div class="flex align-items-center gap-3">
+            <img
+              [src]="app.logo"
+              alt="App Logo"
+              width="40"
+              height="40"
+            />
+            <div class="flex flex-column">
+              <div>
+                <span class="font-bold">{{ app.name }}</span>
+                <i class="pi pi-user"></i>
+                <span>{{ app.member }}</span>
+                <p-chip
+                  label="Invited"
+                  styleClass="mr-2"
+                ></p-chip>
+              </div>
+              <div class="flex align-items-center gap-2">
+                <img
+                  [src]="app.invitee.image"
+                  alt="Invitee"
+                  width="25"
+                  height="25"
+                  class="border-circle"
+                />
+                <span>{{ app.invitee.name }}</span>
+              </div>
+            </div>
+          </div>
+          <button
+            pButton
+            type="button"
+            label="{{ app.buttonLabel }}"
+            class="p-button-primary p-button-sm"
+          ></button>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #footer>
+  <div class="flex justify-content-start pl-6 my-5">
+    <button
+      pButton
+      *ngIf="anyExistingResource"
+      label="Back"
+      icon="pi pi-arrow-left"
+      (click)="navigateToBackPage()"
+      class="p-button-outlined mt-0"
+    ></button>
+  </div>
+</ng-template>

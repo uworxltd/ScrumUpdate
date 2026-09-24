@@ -1,0 +1,36 @@
+{
+    "copyButton": {
+        "extend": "copyHtml5",
+        "footer": false
+    },
+    "excelButton": {
+        "extend": "excelHtml5",
+        "customize": null,
+        "footer": false
+    },
+    "csvButton": {
+        "extend": "csv",
+        "charset": "utf-8",
+        "extension": ".csv",
+        "fieldSeparator": ";",
+        "fieldBoundary": "",
+        "bom": "true"
+    },
+    "visibilityButton": {
+        "extend": "colvis",
+        "text": "<i class='fa fa-eye-slash'></i>",
+        "columns": ".visibilityDropdownColumn"
+    },
+    "exportButton": {
+        "extend": "collection",
+        "autoClose": true,
+        "text": "<i class='fa fa-file-excel-o'></i>"
+    },
+    "refreshButton": {
+        "text": "<i class='fa fa-refresh'></i>"
+    },
+    "deleteButton": {
+        "text": "<i class='fa fa-trash'></i>"
+    }
+    
+}

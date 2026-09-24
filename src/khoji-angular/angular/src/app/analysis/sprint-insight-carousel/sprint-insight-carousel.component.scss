@@ -1,0 +1,169 @@
+:host {
+  ::ng-deep {
+    .p-card {
+      .p-card-body {
+        padding: 1.25rem 0 0.5rem;
+      }
+    }
+    .p-carousel {
+      .p-carousel-indicators {
+        padding: 0;
+
+        .p-carousel-indicator {
+          button {
+            width: 1rem;
+            height: 1rem;
+            border-radius: 50%;
+          }
+        }
+      }
+    }
+  }
+
+  .insight-body {
+    height: 390px;
+    overflow-y: auto;
+  }
+
+  .insight-card-wrapper {
+    position: relative;
+    background: white;
+    border-radius: 0.375rem;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    height: 390px;
+    overflow: hidden;
+
+    .insight-title-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      //border-top: 1px solid var(--surface-border);
+      flex-shrink: 0;
+
+      .insight-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--text-color);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        .ai-badge {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          width: 1.5rem;
+          height: 1.5rem;
+          background-color: #f59e0b;
+          color: white;
+          font-weight: 700;
+          font-size: 0.75rem;
+          border-radius: 0.375rem;
+          flex-shrink: 0;
+        }
+      }
+    }
+
+    .insight-body {
+      flex: 1;
+      max-height: 380px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 1rem;
+      margin: 0;
+      scrollbar-gutter: stable;
+    }
+
+    .insight-actions {
+      display: flex;
+      flex-direction: row;
+      gap: 0.5rem;
+      background: transparent;
+      padding: 0;
+
+      .export-action-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.25rem;
+        height: 2.25rem;
+        border-radius: 50%;
+        cursor: pointer;
+        color: #ffffff;
+        background-color: var(--primary-color);
+        transition: all 0.2s ease;
+        border: none;
+        box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3);
+        font-size: 1rem;
+
+        &:hover {
+          background-color: #1d4ed8;
+          box-shadow: 0 4px 12px rgba(37, 99, 235, 0.5);
+          transform: translateY(-2px);
+        }
+
+        &:active {
+          transform: translateY(0);
+          box-shadow: 0 1px 3px rgba(37, 99, 235, 0.3);
+        }
+
+        &:focus-visible {
+          outline: 2px solid #ffffff;
+          outline-offset: 2px;
+        }
+
+        i {
+          color: #ffffff;
+          font-size: 1rem;
+        }
+      }
+    }
+  }
+
+  .static-card-wrapper {
+    height: 390px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+    position: relative;
+  }
+
+  .team-pulse-card-wrapper {
+    height: 390px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+    position: relative;
+  }
+
+  .velocity-burndown-card-wrapper {
+    height: 390px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+    position: relative;
+  }
+
+  .overlay-spinner {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 6px;
+    z-index: 10;
+  }
+
+  .spinner-size {
+    width: 60px;
+    height: 60px;
+  }
+
+  .ai-blockers-card-wrapper {
+    height: 390px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+    position: relative;
+  }
+}

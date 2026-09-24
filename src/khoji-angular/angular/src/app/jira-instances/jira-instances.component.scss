@@ -1,0 +1,98 @@
+:host ::ng-deep .p-scrollpanel .p-scrollpanel-bar {
+  opacity: 1;
+  background: #f2f2f2;
+  width: 3px;
+}
+
+:host ::ng-deep .p-scrollpanel:hover .p-scrollpanel-bar {
+  background: #cccccc;
+  width: 3px;
+}
+
+:host {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  opacity: 0;
+  transition: opacity 0.3s ease-in;
+}
+
+:host.loaded {
+  opacity: 1;
+}
+
+:host ::ng-deep .p-card {
+  border-radius: 20px;
+  padding: 0 !important;
+  height: 100%;
+}
+
+.main {
+  border: 2px solid #dbdbdb;
+}
+
+.custom-label {
+  background: #78b3ff;
+  border-radius: 4px;
+}
+
+.custom-text {
+  padding: 0.21rem 0.6rem;
+  color: #ffffff;
+}
+
+.logo-card {
+  background: #dbdbdb;
+  width: 3.3rem;
+  height: 3.3rem;
+  border: 1px solid #b7b7b7;
+  border-radius: 5px;
+  align-items: center;
+}
+
+.logo-img {
+  padding: 5px 2px;
+}
+
+:host ::ng-deep .p-card-body,
+:host ::ng-deep .p-card-content {
+  padding: 0 !important;
+}
+
+:host ::ng-deep .p-chip.custom-chip {
+  background: var(--green-600);
+  color: var(--primary-color-text);
+}
+
+.p-button-outlined {
+  margin-top: 19rem;
+}
+
+.footer-padding {
+  padding: 3rem 0;
+}
+
+:host ::ng-deep p-message {
+  display: flex;
+  justify-content: center;
+}
+
+:host ::ng-deep .p-tabview .p-tabview-nav li .p-tabview-nav-link:not(.p-disabled):focus {
+  box-shadow: none;
+}
+
+:host ::ng-deep .p-tabview .p-tabview-nav {
+  border: none;
+}
+
+:host ::ng-deep {
+  .p-message {
+    margin: 0;
+  }
+
+  .p-message .p-message-wrapper {
+    padding: 1rem;
+  }
+}

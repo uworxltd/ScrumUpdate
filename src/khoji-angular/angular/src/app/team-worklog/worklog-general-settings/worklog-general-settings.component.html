@@ -1,0 +1,76 @@
+<div *ngIf="instanceFeaturesStatus?.isMyWorkEnabled" class="mb-4">
+  <khoji-leave-ticket-settings
+    #leaveTicketSettingsComponent
+  ></khoji-leave-ticket-settings>
+</div>
+
+
+<div class="h-full">
+
+  <div class="flex flex-column align-items-start gap-2 justify-content-center">
+    <span class="khoji-headings">Organization working hours</span>
+    <div class="flex flex-column gap-2 w-full">
+      <span class="khoji-sub-headings">Specify your standard working hours per day</span>
+      <div>
+        <span tooltipPosition="top" [pTooltip]="accessLevelsStatus.hasAdminAccess ? '' : translation?.error.adminAccessRequired">
+          <p-inputNumber
+            mode="decimal"
+            [(ngModel)]="workLogHoursPerDay"
+            (ngModelChange)="checkForErrorInWorklogDayHour($event)"
+            [step]="0.1"
+            [minFractionDigits]="0"
+            [maxFractionDigits]="2"
+            [ngClass]="{ 'disabled': !accessLevelsStatus.hasAdminAccess, 'ng-invalid': workLogHoursPerDayInError }"
+          >
+          </p-inputNumber>
+        </span>
+
+
+        <i
+          class="pi pi-info-circle ml-2 text-600"
+          pTooltip="Set daily work hours to match your organization’s practice."
+          tooltipPosition="bottom"
+          tooltipStyleClass="tooltip-width"
+        ></i>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="isCategorizationAndTeamRemainderEnabled" class="mt-4">
+
+    <div class="flex flex-column align-items-start gap-2 justify-content-center">
+      <span class="khoji-headings">Email notification</span>
+      <div class="flex flex-column gap-2 w-full">
+        <span class="khoji-sub-headings">Notify the teams' supervisor when uncategorized work log exceeds the threshold below</span>
+        <div>
+          <span tooltipPosition="top" [pTooltip]="accessLevelsStatus.hasAdminAccess ? '' : translation?.error.adminAccessRequired">
+            <p-inputNumber
+              [(ngModel)]="othersWorklogEmailSubscriptionThreshold"
+              styleClass="lg:w-5 w-12"
+              (ngModelChange)="checkForErrorInPercentage($event)"
+              [ngClass]="{ 'disabled': !accessLevelsStatus.hasAdminAccess, 'ng-invalid': othersWorklogEmailSubscriptionThresholdInError }"
+            ></p-inputNumber> %
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="gap-2 w-full align-items-center justify-content-start mt-4" [ngClass]="{ 'hidden': !showSaveAndResetButtons, 'flex': showSaveAndResetButtons }">
+    <button
+      pButton
+      pRipple
+      label="Save changes"
+      [ngClass]="{ 'p-disabled': saveButtonDisabledStateFunc() }"
+      (click)="handleSaveChanges()"
+    ></button>
+    <button
+      pButton
+      *ngIf="resetButtonVisible()"
+      pRipple
+      label="Reset"
+      (click)="resetToPreviousState()"
+      class="p-button-text"
+    ></button>
+  </div>
+</div>

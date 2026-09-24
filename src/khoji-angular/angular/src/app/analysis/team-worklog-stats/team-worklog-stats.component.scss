@@ -1,0 +1,70 @@
+/*
+  Copyright 2026 UWorx Services.
+  Licensed under the Apache License, Version 2.0.
+  See LICENSE for the full license text.
+*/
+
+
+.control-box {
+  position: absolute;
+  top: 23px;
+  right: 49px;
+  display: flex;
+  align-items: center;
+}
+
+:host ::ng-deep .circle {
+  height: 10px;
+  width: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 4px;
+}
+
+:host ::ng-deep .tooltipValue {
+  display: inline-block;
+}
+
+.tabs-container {
+  position: relative;
+
+  .khoji-admin-icon {
+    position: absolute;
+    right: 0px;
+    top: 5px;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}
+
+.custom-width {
+  width: 72%;
+}
+
+/* Apply styles to the button to ensure no border or underline */
+:host ::ng-deep .settings-button {
+  border: none !important;
+  background: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  text-decoration: none !important;
+}
+
+/* Ensure the icon is bold */
+:host ::ng-deep .settings-button .pi {
+  font-weight: bold !important;
+}
+
+/* Ensure the label is bold */
+:host ::ng-deep .settings-button .p-button-label {
+  font-weight: bold !important;
+  text-decoration: none !important;
+}
+
+.worklog-header {
+  margin-left: 1.5rem;
+  font-size: 20px;
+  font-weight: 700;
+}

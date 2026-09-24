@@ -1,0 +1,30 @@
+name: blockers_list
+description: |
+  Shared metric: Retrieves list of unique blocker issue keys for the current sprint.
+  Uses v_sprint_blockers_open view to get all open blockers in the sprint.
+  
+  Returns a deduplicated list of blocker issue keys (other_key) that are blocking 
+  issues in the sprint. Ensures blockers are not in Done status.
+  This is a base/shared metric to reduce duplication across sprint cards.
+version: 1.0
+
+inputs:
+  sprint_id: { type: int, default: 1 }
+
+steps:
+  - id: get_blocker_tickets
+    type: sql
+    service: main-db
+    query: |
+      SELECT DISTINCT
+        b.issue_key
+      FROM {{ schema }}.v_sprint_blockers_open b
+      INNER JOIN {{ schema }}.issues i ON b.issue_key = i.issue_key
+      WHERE b.sprint_id = $1
+        AND i.status_category != 'Done'
+      ORDER BY b.issue_key
+    params:
+      - "{{ inputs.sprint_id }}"
+    output: { name: blockers }
+
+return: "get_blocker_tickets.blockers"

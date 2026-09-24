@@ -1,0 +1,22 @@
+<!-- /*
+Copyright 2026 UWorx Services.
+Licensed under the Apache License, Version 2.0.
+See LICENSE for the full license text.
+*/ -->
+
+<nav class="layout-breadcrumb">
+    <ol class="justify-content-between">
+        <ng-template ngFor let-item let-last="last" [ngForOf]="breadcrumbs$ | async">
+            <li class="khoji-headings-title">{{item.label}}</li>
+            <li *ngIf="!last" class="layout-breadcrumb-chevron"> / </li>
+        </ng-template>
+        <div class="lg:hidden" *ngIf="showFilterButton" >
+            <p-button
+                styleClass="p-button-text"
+                [icon]="showRequestPanel ? 'pi pi-filter-slash' : 'pi pi-filter'"
+                [label]="showRequestPanel ? 'Hide filters' : 'Show filters'"
+                (onClick)="setVisibility()" data-test="show-filters-button"
+            ></p-button>
+        </div>
+    </ol>
+</nav>

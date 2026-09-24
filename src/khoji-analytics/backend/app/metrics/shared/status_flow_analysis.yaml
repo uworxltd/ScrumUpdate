@@ -1,0 +1,201 @@
+name: status_flow_analysis
+description: |
+  Shared metric: Analyzes actual ticket status transitions to calculate progress/regression.
+  
+  IMPORTANT: Compares yesterday's end-of-day status category with current status category.
+  This matches the delta calculation used in status counts (e.g., Done: 13→16 = +3).
+  
+  Example:
+  - Yesterday EOD: Ticket was "In Progress" 
+  - Today: Ticket is "Done"
+  - Result: progressed_completed = 1
+  
+  Uses yesterday's status from changelogs + current status from issues table.
+  
+version: 1.0
+
+inputs:
+  sprint_id: { type: int, default: 1 }
+
+steps:
+  - id: analyze_transitions
+    type: sql
+    service: main-db
+    query: |
+      WITH sprint_membership AS (
+        SELECT 
+          si.sprint_id,
+          si.issue_key
+        FROM {{ schema }}.sprint_issues si
+        WHERE si.sprint_id = $1::int
+      ),
+      yesterday_timestamp AS (
+        SELECT CURRENT_DATE - (
+          CASE
+            WHEN EXTRACT(ISODOW FROM CURRENT_DATE) = 1 THEN INTERVAL '3 day' -- Monday looks at Friday
+            WHEN EXTRACT(ISODOW FROM CURRENT_DATE) = 7 THEN INTERVAL '2 day' -- Sunday looks at Friday
+            ELSE INTERVAL '1 day' -- Other days look at previous day
+          END
+        ) AS ts
+      ),
+      -- Get all possible status to category mappings from current issues table
+      status_category_map AS (
+        SELECT DISTINCT 
+          i.status,
+          i.status_category
+        FROM {{ schema }}.issues i
+        WHERE i.status IS NOT NULL
+          AND i.status_category IS NOT NULL
+      ),
+      -- Get earliest status change for each ticket (for tickets with recent changes)
+      earliest_status AS (
+        SELECT DISTINCT ON (i.issue_key)
+          i.issue_key,
+          cl.from_display_value as initial_status,
+          COALESCE(
+            scm.status_category,
+            CASE 
+              WHEN LOWER(cl.from_display_value) IN ('to do') THEN 'To Do'
+              WHEN LOWER(cl.from_display_value) IN ('done') THEN 'Done'
+              ELSE 'In Progress'
+            END
+          ) AS initial_status_category
+        FROM {{ schema }}.changelogs cl
+        INNER JOIN {{ schema }}.issues i ON cl.issue_key = i.issue_id::text
+        INNER JOIN sprint_membership sm ON sm.issue_key = i.issue_key
+        LEFT JOIN status_category_map scm ON scm.status = cl.from_display_value
+        WHERE cl.field_name = 'status'
+        ORDER BY i.issue_key, cl.created_date ASC  -- Earliest first
+      ),
+      yesterday_status AS (
+        -- Get status from yesterday using changelog
+        SELECT DISTINCT ON (i.issue_key)
+          i.issue_key,
+          cl.to_display_value as status,
+          -- Look up the status category from the mapping table with hardcoded fallback
+          COALESCE(
+            scm.status_category,
+            CASE 
+              WHEN LOWER(cl.to_display_value) IN ('to do', 'open', 'backlog', 'new', 'todo') THEN 'To Do'
+              WHEN LOWER(cl.to_display_value) IN ('in progress', 'inprogress', 'in development', 'dev in progress', 'in review', 'code review') THEN 'In Progress'
+              WHEN LOWER(cl.to_display_value) IN ('done', 'closed', 'resolved', 'complete', 'completed', 'finished') THEN 'Done'
+              ELSE 'To Do'
+            END
+          ) AS status_category
+        FROM {{ schema }}.changelogs cl
+        INNER JOIN {{ schema }}.issues i ON cl.issue_key = i.issue_id::text
+        INNER JOIN sprint_membership sm ON sm.issue_key = i.issue_key
+        CROSS JOIN yesterday_timestamp yt
+        LEFT JOIN status_category_map scm ON scm.status = cl.to_display_value
+        WHERE cl.field_name = 'status'
+          AND cl.created_date < yt.ts
+        ORDER BY i.issue_key, cl.created_date DESC
+      ),
+      current_status AS (
+        SELECT 
+          i.issue_key,
+          i.status,
+          i.status_category
+        FROM {{ schema }}.issues i
+        INNER JOIN sprint_membership sm ON sm.issue_key = i.issue_key
+      ),
+      -- Compare yesterday EOD status with current status
+      transitions AS (
+        SELECT 
+          cs.issue_key,
+          -- Determine yesterday's status category:
+          -- 1. If changelog exists before cutoff, use it
+          -- 2. Else if ticket has ANY changelog, use the initial status (from_display_value of earliest change)
+          -- 3. Else assume ticket was always in current status (no changes ever)
+          COALESCE(ys.status_category, es.initial_status_category, cs.status_category) as from_category,
+          cs.status_category as to_category,
+          -- Determine if this is forward or backward movement
+          CASE 
+            -- Forward progress: To Do → In Progress
+            WHEN COALESCE(ys.status_category, es.initial_status_category, cs.status_category) = 'To Do' 
+                 AND cs.status_category = 'In Progress' THEN 'progressed_started'
+            -- Forward progress: To Do → Done (skipped In Progress)
+            WHEN COALESCE(ys.status_category, es.initial_status_category, cs.status_category) = 'To Do' 
+                 AND cs.status_category = 'Done' THEN 'progressed_completed'
+            -- Forward progress: In Progress → Done
+            WHEN COALESCE(ys.status_category, es.initial_status_category, cs.status_category) = 'In Progress' 
+                 AND cs.status_category = 'Done' THEN 'progressed_completed'
+            -- Backward regression: Done → In Progress
+            WHEN COALESCE(ys.status_category, es.initial_status_category, cs.status_category) = 'Done' 
+                 AND cs.status_category = 'In Progress' THEN 'regressed_reopened'
+            -- Backward regression: Done → To Do
+            WHEN COALESCE(ys.status_category, es.initial_status_category, cs.status_category) = 'Done' 
+                 AND cs.status_category = 'To Do' THEN 'regressed_reopened'
+            -- Backward regression: In Progress → To Do
+            WHEN COALESCE(ys.status_category, es.initial_status_category, cs.status_category) = 'In Progress' 
+                 AND cs.status_category = 'To Do' THEN 'regressed_moved_back'
+            -- No change
+            ELSE 'no_change'
+          END AS transition_type
+        FROM current_status cs
+        LEFT JOIN yesterday_status ys ON ys.issue_key = cs.issue_key
+        LEFT JOIN earliest_status es ON es.issue_key = cs.issue_key
+        WHERE COALESCE(ys.status_category, es.initial_status_category, cs.status_category) != cs.status_category  -- Only include tickets that changed
+      )
+      SELECT jsonb_build_object(
+        -- Progress counts
+        'progressed_count', 
+        COUNT(*) FILTER (WHERE transition_type LIKE 'progressed%'),
+        'progressed_started_count',
+        COUNT(*) FILTER (WHERE transition_type = 'progressed_started'),
+        'progressed_completed_count',
+        COUNT(*) FILTER (WHERE transition_type = 'progressed_completed'),
+        
+        -- Regression counts
+        'regressed_count',
+        COUNT(*) FILTER (WHERE transition_type LIKE 'regressed%'),
+        'regressed_reopened_count',
+        COUNT(*) FILTER (WHERE transition_type = 'regressed_reopened'),
+        'regressed_moved_back_count',
+        COUNT(*) FILTER (WHERE transition_type = 'regressed_moved_back'),
+        
+        -- Net change
+        'net_change',
+        COUNT(*) FILTER (WHERE transition_type LIKE 'progressed%') - 
+        COUNT(*) FILTER (WHERE transition_type LIKE 'regressed%'),
+        
+        -- Ticket IDs for each type
+        'progressed_tickets',
+        COALESCE(jsonb_agg(issue_key) FILTER (WHERE transition_type LIKE 'progressed%'), '[]'::jsonb),
+        'progressed_started_tickets',
+        COALESCE(jsonb_agg(issue_key) FILTER (WHERE transition_type = 'progressed_started'), '[]'::jsonb),
+        'progressed_completed_tickets',
+        COALESCE(jsonb_agg(issue_key) FILTER (WHERE transition_type = 'progressed_completed'), '[]'::jsonb),
+        
+        'regressed_tickets',
+        COALESCE(jsonb_agg(issue_key) FILTER (WHERE transition_type LIKE 'regressed%'), '[]'::jsonb),
+        'regressed_reopened_tickets',
+        COALESCE(jsonb_agg(issue_key) FILTER (WHERE transition_type = 'regressed_reopened'), '[]'::jsonb),
+        'regressed_moved_back_tickets',
+        COALESCE(jsonb_agg(issue_key) FILTER (WHERE transition_type = 'regressed_moved_back'), '[]'::jsonb),
+        
+        -- Current status distribution
+        'current_todo_tickets',
+        COALESCE(jsonb_agg(issue_key) FILTER (WHERE to_category = 'To Do'), '[]'::jsonb),
+        'current_inprogress_tickets',
+        COALESCE(jsonb_agg(issue_key) FILTER (WHERE to_category = 'In Progress'), '[]'::jsonb),
+        'current_done_tickets',
+        COALESCE(jsonb_agg(issue_key) FILTER (WHERE to_category = 'Done'), '[]'::jsonb),
+        
+        -- Transition details (for debugging/transparency)
+        'transitions',
+        jsonb_agg(
+          jsonb_build_object(
+            'issue_key', issue_key,
+            'from', from_category,
+            'to', to_category,
+            'type', transition_type
+          )
+        )
+      ) AS flow_analysis
+      FROM transitions
+    params:
+      - "{{ inputs.sprint_id }}"
+    output: { name: analysis }
+
+return: "analyze_transitions.analysis"

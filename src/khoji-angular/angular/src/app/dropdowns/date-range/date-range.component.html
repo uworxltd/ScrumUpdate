@@ -1,0 +1,33 @@
+<div [ngClass]="{'p-disabled':isDisabled}" (click)="showOverlay(!overlayVisible, $event)">
+  <!-- <label data-test="daterange-title">{{translation.filter.dateRange}}</label> -->
+  <div class="khoji-daterange dropdown-khoji">
+    <i class="fa fa-calendar"></i>
+    <span class="hide-date-part">{{_dateRangeText}}</span>
+    <i class="fa fa-caret-down dropdown-icon hide-date-part"> </i>
+  </div>
+  <p-overlayPanel #overlayPanel [styleClass]="'khoji-daterange'">
+    <div>
+      <div class="flex">
+        <div class="date-labels">
+          <div class="date-label" [ngClass]="{'date-label-selected':selectedDateLabel===range.label}"
+            *ngFor="let range of dateRanges" (click)="onLabelSelect(range.label)">
+            {{range.label}}
+          </div>
+          <div class="date-label" [ngClass]="{'date-label-selected':selectedDateLabel==='Custom Range'}"
+            (click)="onLabelSelect('Custom Range')">Custom Range</div>
+        </div>
+        <p-calendar *ngIf="calendarVisible" [(ngModel)]="selectedDateRange" selectionMode="range" [inline]="true"
+          [numberOfMonths]="2" (onSelect)="onRangeSelect()" [firstDayOfWeek]="1" [maxDate]="_maxDate"
+          [minDate]="_minDate" [disabled]="isDisabled" />
+      </div>
+    </div>
+    <div class="flex justify-content-between align-items-center footer" *ngIf="calendarVisible">
+      <div>{{selectedDateRangeText}}</div>
+      <div></div>
+      <div class="flex gap-2">
+        <button class="p-button p-button-sm p-button-text" (click)="cancel()">Cancel</button>
+        <button class="p-button p-button-sm" [ngClass]="{'p-disabled':!selectedDateRange[1]}" (click)="dispatch()">Apply</button>
+      </div>
+    </div>
+  </p-overlayPanel>
+</div>

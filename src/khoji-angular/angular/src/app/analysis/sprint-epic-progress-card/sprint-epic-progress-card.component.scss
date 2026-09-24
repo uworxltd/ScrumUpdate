@@ -1,0 +1,874 @@
+/*
+  Copyright 2026 UWorx Services.
+  Licensed under the Apache License, Version 2.0.
+  See LICENSE for the full license text.
+*/
+
+
+.sprint-epics-container {
+  height: 380px;
+}
+
+::ng-deep {
+  .sprint-epics-container .p-card {
+    height: 100%;
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    border-radius: 0 !important;
+  }
+
+  .sprint-epics-container .p-card-header,
+  .sprint-epics-container .p-card-body,
+  .sprint-epics-container .p-card-content {
+    padding: 0 !important;
+  }
+
+  .sprint-epics-container .p-card-body .surface-card,
+  .sprint-epics-container .p-card-body .surface-section,
+  .sprint-epics-container .p-card-body .border-round {
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+  }
+
+  .ticket-insights-dialog .p-dialog-header {
+    padding: 1.5rem;
+    background-color: #fafbfc;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .ticket-insights-dialog .p-dialog-header-icons {
+    margin-left: 3px;
+  }
+
+  .ticket-insights-dialog .p-dialog-content {
+    padding: 1.5rem;
+  }
+
+  .ticket-insights-dialog .p-dialog-header-close {
+    width: auto;
+    height: auto;
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    color: #9ca3af;
+    transition: color 0.2s ease;
+    margin-right: 1rem;
+
+    &:hover {
+      background: transparent !important;
+      color: #374151 !important;
+    }
+
+    .p-icon {
+      font-size: 1.25rem;
+    }
+    .p-ripple {
+      display: none !important;
+    }
+  }
+
+  .epic-summary-section {
+    background-color: #f0f9ff;
+    border-left: 4px solid #2563eb;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border-radius: 4px;
+  }
+
+  .epic-summary-text {
+    color: #1f2937;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  //   // Custom tooltip styling for ticket tooltips
+  //   .ticket-tooltip {
+  //     max-width: 250px !important;
+
+  //     .p-tooltip-text {
+  //       padding: 0.4rem 0.5rem !important;
+  //     }
+
+  //     .ticket-tooltip-content {
+  //       .tooltip-line {
+  //         margin-bottom: 0.15rem;
+  //         line-height: 1.1;
+
+  //         strong {
+  //           font-weight: 500;
+  //         }
+  //       }
+
+  //       .tooltip-summary {
+  //         word-wrap: break-word;
+  //         white-space: normal;
+  //         line-height: 1.2;
+  //       }
+  //     }
+  //   }
+}
+
+.sprint-epics-card {
+  padding-right: 0.95rem !important;
+}
+
+.epics-list {
+  max-height: 320px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: var(--surface-300);
+    border-radius: 2px;
+    &:hover {
+      background: var(--surface-400);
+    }
+  }
+  scrollbar-width: thin;
+  scrollbar-color: var(--surface-300);
+}
+
+.epic-item {
+  border-left: none;
+  transition: none;
+  background-color: transparent;
+  border-bottom: 1px solid var(--surface-border);
+  padding: 1rem 0 !important;
+
+  &:last-child {
+    border-bottom: none;
+  }
+  &:hover {
+    background-color: transparent;
+    border-left-color: transparent;
+    padding-left: 0 !important;
+  }
+
+  .ticket-insights-dialog .export-action-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 9999px;
+    cursor: pointer;
+    color: var(--text-color-secondary);
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: var(--text-color);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--surface-400);
+      outline-offset: 2px;
+    }
+  }
+}
+
+.details-btn,
+.explain-btn {
+  padding: 0.25rem 0.625rem;
+  border-radius: var(--border-radius);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.details-btn {
+  background: transparent;
+  border: 1px solid var(--primary-color);
+  color: var(--primary-color);
+  &:hover {
+    background: var(--primary-color);
+    color: white;
+  }
+}
+
+.jira-btn {
+  background: transparent;
+  border: none;
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+  color: var(--text-color-secondary);
+  transition: color 0.2s;
+  font-size: 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--border-radius);
+
+  &:hover {
+    color: var(--primary-color);
+  }
+}
+
+.explain-btn {
+  background: var(--surface-100);
+  border: 1px solid var(--surface-border);
+  color: var(--text-color-secondary);
+  margin-left: 0.75rem;
+  &:hover {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+  }
+}
+
+.ticket-link {
+  color: var(--primary-color);
+  text-decoration: none;
+  cursor: pointer;
+  font-size: 0.75rem;
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.ticket-link-tag {
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+  &:hover {
+    opacity: 0.8;
+  }
+  ::ng-deep .p-tag {
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    &:hover {
+      transform: translateY(-2px);
+    }
+  }
+}
+
+.ai-badge {
+  display: inline-block;
+  padding: 0.35rem 0.6rem;
+  background-color: #fbbf24;
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 700;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+  cursor: help;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.epic-body,
+.epic-footer {
+  animation: slideDown 0.3s ease;
+}
+
+.explanation-content {
+  line-height: 1.8;
+  color: var(--text-color);
+  font-size: 0.9375rem;
+
+  ::ng-deep {
+    p {
+      margin: 0 0 0.75rem 0;
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+    ul,
+    ol {
+      margin: 0.5rem 0;
+      padding-left: 1.5rem;
+    }
+    li {
+      margin-bottom: 0.5rem;
+      line-height: 1.6;
+    }
+    strong {
+      font-weight: 600;
+    }
+  }
+}
+
+.epic-insights {
+  background-color: #f3f4f6;
+  border-radius: 4px;
+
+  .insights-list {
+    list-style: disc;
+    padding-left: 1.5rem;
+    margin: 0;
+
+    li {
+      font-size: 0.875rem;
+      color: #6b7280;
+      margin-bottom: 0.5rem;
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+}
+
+.mt-4 {
+  margin-top: 0rem !important;
+}
+
+.ticket-insights-modal-content {
+  padding: 0;
+}
+
+.insights-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2.5rem;
+}
+
+.insights-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.timeline-column {
+  border-left: 2px solid #e5e7eb;
+  padding-left: 2rem;
+}
+
+.ticket-key-link {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #3b82f6;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.2s;
+  &:hover {
+    color: #1d4ed8;
+    text-decoration: none;
+  }
+}
+
+.ticket-summary {
+  font-size: 0.875rem;
+  color: #6b7280;
+  line-height: 1.4;
+  font-weight: 400;
+}
+
+.ai-disclaimer-modern {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  background-color: #fef3c7;
+  border-left: 4px solid #f59e0b;
+  border-radius: 6px;
+  margin-bottom: 1.5rem;
+  font-size: 0.8125rem;
+  color: #78350f;
+
+  i {
+    color: #f59e0b;
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+  span {
+    line-height: 1.5;
+  }
+}
+
+.status-text {
+  font-size: 0.875rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.days-badge-modern {
+  display: inline-block;
+  padding: 0.35rem 0.75rem;
+  background-color: #64748b;
+  color: white;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  min-width: 50px;
+  text-align: center;
+}
+
+.insights-section-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0 0 1rem 0;
+  letter-spacing: -0.01em;
+}
+
+.issues-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.issue-list,
+.issue-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  font-size: 0.875rem;
+  color: #4b5563;
+  line-height: 1.5;
+
+  i {
+    color: #ef4444;
+    font-size: 0.875rem;
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+
+  span {
+    flex: 1;
+  }
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.issue-list {
+  margin-bottom: 0.75rem;
+}
+
+.root-cause-text {
+  margin: 1.25rem 0 0 0;
+  font-size: 0.875rem;
+  color: #6b7280;
+  padding-left: 1.5rem;
+  line-height: 1.5;
+}
+
+.actions-section-full-width {
+  margin-top: 1.75rem;
+  padding-top: 1.75rem;
+  border-top: 1px solid #e5e7eb;
+  grid-column: 1 / -1;
+}
+
+.action-now-container {
+  background-color: #f3f4f6;
+  border-radius: 6px;
+  padding: 1.25rem 1.5rem;
+}
+
+.actions-list-full-width {
+  list-style: disc inside;
+  margin: 0;
+  padding: 0 0 0 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  background-color: transparent;
+  border-radius: 0;
+}
+
+.action-item {
+  display: list-item;
+  font-size: 0.875rem;
+  color: #4b5563;
+  line-height: 1.5;
+  margin-left: 0;
+
+  i {
+    display: none;
+  }
+  span {
+    display: inline;
+  }
+}
+
+.timeline-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.timeline-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  position: relative;
+}
+
+.timeline-marker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background-color: #f3f4f6;
+  border-radius: 50%;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 2;
+}
+
+.timeline-event-icon {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.timeline-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding-top: 0.25rem;
+}
+
+.timeline-days {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #6b7280;
+  letter-spacing: 0.05em;
+}
+
+.timeline-description {
+  font-size: 0.875rem;
+  color: #4b5563;
+  line-height: 1.5;
+}
+
+.timeline-line {
+  position: absolute;
+  left: 11.5px;
+  top: 24px;
+  width: 1px;
+  height: calc(100% + 1.5rem);
+  background-color: #e5e7eb;
+  z-index: 1;
+}
+// Epic modal styles
+.epic-title-link {
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+
+  &:hover {
+    color: #0891b2;
+  }
+}
+
+.epic-insights-content {
+  padding-right: 0.5rem;
+}
+
+.section-container {
+  padding: 1.25rem;
+  background-color: #fafbfc;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  min-height: 150px;
+  display: flex;
+  flex-direction: column;
+
+  .insights-section-title {
+    margin-bottom: 1rem;
+  }
+
+  .insights-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+      font-size: 0.875rem;
+      color: var(--text-color);
+      line-height: 1.4;
+
+      i {
+        flex-shrink: 0;
+        margin-top: 0.15rem;
+        color: #059669;
+      }
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-top: 1rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+
+  .metric-card {
+    .metric-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      border-radius: 0.5rem;
+      border: 2px solid;
+      min-height: 120px;
+
+      &.hygiene-excellent {
+        border-color: #059669;
+        background-color: #ecfdf5;
+      }
+
+      &.hygiene-good {
+        border-color: #0891b2;
+        background-color: #ecf5ff;
+      }
+
+      &.hygiene-fair {
+        border-color: #ca8a04;
+        background-color: #fefce8;
+      }
+
+      &.hygiene-poor {
+        border-color: #dc2626;
+        background-color: #fef2f2;
+      }
+
+      .metric-value {
+        font-size: 2.25rem;
+        font-weight: 700;
+        color: var(--text-color);
+      }
+
+      .metric-label {
+        font-size: 0.875rem;
+        color: #6b7280;
+        margin-top: 0.5rem;
+        text-align: center;
+      }
+    }
+  }
+}
+
+.action-now-container {
+  background-color: #f3f4f6;
+  border-radius: 6px;
+  padding: 1.25rem 1.5rem;
+
+  .insights-section-title {
+    margin-bottom: 1rem;
+  }
+
+  .action-items-list {
+    list-style: disc inside;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    li {
+      font-size: 0.875rem;
+      color: #4b5563;
+      line-height: 1.5;
+    }
+  }
+}
+
+.insights-section-full-width {
+  margin-top: 2rem;
+  padding-bottom: 1.5rem;
+
+  &:first-of-type {
+    margin-top: 0;
+  }
+
+  .insights-section-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin: 0 0 1rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .insights-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+      font-size: 0.875rem;
+      color: var(--text-color);
+      line-height: 1.4;
+
+      i {
+        flex-shrink: 0;
+        margin-top: 0.15rem;
+        color: #059669;
+      }
+    }
+  }
+}
+
+.insights-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2.5rem;
+  margin-top: 1.5rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+
+  .insights-column {
+    &.timeline-column {
+      padding-left: 1rem;
+    }
+  }
+}
+
+.sprint-tickets-container {
+  .tickets-grid-wrapper {
+    max-height: 150px;
+    overflow-y: auto;
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+    padding: 0.5rem;
+    background-color: #fafbfc;
+  }
+
+  .tickets-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+    justify-items: center;
+
+    &:has(> :only-child) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .ticket-item-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+  }
+
+  .ticket-badge {
+    background-color: var(--primary-color);
+    border: none;
+    border-radius: 16px;
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.25s ease;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+    &:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+  }
+
+  .ticket-actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+  }
+
+  .ticket-action-btn {
+    background: transparent;
+    border: 1px solid var(--surface-border);
+    padding: 0.35rem 0.5rem;
+    cursor: pointer;
+    color: var(--text-color-secondary);
+    transition: all 0.2s;
+    font-size: 0.85rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+
+    &:hover {
+      color: var(--primary-color);
+      border-color: var(--primary-color);
+      background: rgba(13, 80, 137, 0.05);
+    }
+  }
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.confirmation-dialog .p-dialog-header {
+  padding: 1.5rem;
+  background-color: #fafbfc;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.confirmation-dialog .p-dialog-content {
+  padding: 2rem 1.5rem;
+}
+
+.confirmation-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+
+  i {
+    margin-bottom: 1rem;
+  }
+
+  p {
+    color: var(--text-color-secondary);
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+  }
+}

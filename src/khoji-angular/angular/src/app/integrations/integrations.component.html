@@ -1,0 +1,36 @@
+<!-- /*
+Copyright 2026 UWorx Services.
+Licensed under the Apache License, Version 2.0.
+See LICENSE for the full license text.
+*/ -->
+
+
+<div>
+  <div class="flex flex-column align-items-start gap-2 justify-content-center">
+    <span class="khoji-headings">
+      {{ (translation$ | async)?.userProfile.manageIntegrations.title }}
+    </span>
+    <div class="flex flex-column gap-2 w-full">
+      <span class="khoji-sub-headings">
+        {{ (translation$ | async)?.userProfile.manageIntegrations.subTitle }}
+      </span>
+      <div>
+        <ul>
+          <li class="khoji-sub-headings">
+            Navigate to
+            <a
+              href="https://myapplications.microsoft.com/"
+              target="_blank"
+              >My Apps Dashboard</a
+            >
+            for your Microsoft account.
+          </li>
+          <li class="khoji-sub-headings">Search for "ScrumUpdate".</li>
+          <li class="khoji-sub-headings">Click on &#8942; &#8594; Manage your application.</li>
+          <li class="khoji-sub-headings">On the manage page, click on "Revoke Consent" button to revoke consent for ScrumUpdate.</li>
+          <li class="khoji-sub-headings">ScrumUpdate will update your Outlook Calendar Integration status within 10 minutes.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

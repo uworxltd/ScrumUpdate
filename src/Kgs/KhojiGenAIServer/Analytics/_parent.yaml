@@ -1,0 +1,11 @@
+name: parent_workflow
+version: 1.0
+inputs:
+  sprint_id: { type: int, default: 0 }
+steps:
+  - id: get_sprint_info
+    type: workflow
+    workflow: simple_query
+    inputs:
+      sprint_id: "{sprint_id}"
+    output: sprint_result

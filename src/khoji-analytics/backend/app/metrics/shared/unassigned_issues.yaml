@@ -1,0 +1,38 @@
+name: unassigned_issues
+description: Issues without assignees in the sprint
+version: 1.0
+
+inputs:
+  sprint_id: { type: int, required: true }
+
+steps:
+  - id: unassigned_query
+    type: sql
+    service: main-db
+    query: |
+      SELECT 
+        i.issue_key,
+        i.summary AS title,
+        i.status AS current_status,
+        i.priority,
+        EXTRACT(DAY FROM (CURRENT_TIMESTAMP - i.created_date))::int AS age_days,
+        COALESCE(i.story_points, 0)::float AS story_points
+      FROM {{ schema }}.issues i
+      INNER JOIN {{ schema }}.sprint_issues si ON i.issue_key = si.issue_key
+      WHERE si.sprint_id = $1
+        AND (i.assignee_display_name IS NULL OR i.assignee_display_name = '' OR i.assignee_display_name = 'Unassigned')
+        AND i.status_category NOT IN ('Done')
+      ORDER BY 
+        CASE i.priority 
+          WHEN 'Highest' THEN 1
+          WHEN 'High' THEN 2
+          WHEN 'Medium' THEN 3
+          WHEN 'Low' THEN 4
+          ELSE 5
+        END,
+        i.created_date DESC
+    params:
+      - "{{ inputs.sprint_id }}"
+    output: { name: unassigned_issues }
+
+return: unassigned_query.unassigned_issues

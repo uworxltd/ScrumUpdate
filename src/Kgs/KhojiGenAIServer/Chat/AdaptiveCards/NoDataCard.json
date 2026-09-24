@@ -1,0 +1,62 @@
+﻿{
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "type": "AdaptiveCard",
+  "version": "1.5",
+  "body": [
+    {
+      "type": "TextBlock",
+      "text": "📭 No Activity Found of ${Member}",
+      "weight": "Bolder",
+      "size": "Large",
+      "color": "Warning",
+      "wrap": true,
+      "spacing": "Medium"
+    },
+    {
+      "type": "TextBlock",
+      "text": "We couldn't find any activity data from the source.",
+      "wrap": true,
+      "spacing": "Small"
+    },
+    {
+      "type": "TextBlock",
+      "text": "Text back after doing some activity 😉",
+      "wrap": true,
+      "isSubtle": true,
+      "spacing": "Small"
+    },
+    {
+      "type": "Container",
+      "spacing": "Small",
+      "horizontalAlignment": "Right",
+      "items": [
+        {
+          "type": "TextBlock",
+          "text": "AI-generated content, please verify important details",
+          "wrap": true,
+          "isSubtle": true,
+          "size": "Small",
+          "horizontalAlignment": "Right",
+          "spacing": "Small"
+        },
+        {
+          "type": "ActionSet",
+          "horizontalAlignment": "Right",
+          "spacing": "None",
+          "actions": [
+            {
+              "type": "Action.Submit",
+              "title": "Report issue",
+              "data": {
+                "msteams": {
+                  "type": "messageBack",
+                  "text": "x-khojicloud-reportIssue scrumUpdate"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

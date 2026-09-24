@@ -1,0 +1,21 @@
+[
+  {
+      "operation": "shift",
+      "spec": {
+          "values": {
+              "*": {
+                  "id": "[&1].boardID",
+                  "name": "[&1].boardName",
+                  "type": "[&1].type",
+                  "location": {
+                      "projectId": "[&2].project.projectID",
+                      "projectKey": "[&2].project.projectKey",
+                      "projectName": "[&2].project.name"
+                  }
+              }
+          }
+      }
+  }
+]
+
+

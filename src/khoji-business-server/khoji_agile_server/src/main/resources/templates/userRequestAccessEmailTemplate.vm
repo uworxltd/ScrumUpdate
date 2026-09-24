@@ -1,0 +1,47 @@
+#set($support= "${support}" )
+<html>
+
+<head>
+</head>
+
+<body style="max-width: 2000px !important;">
+    <div style="padding:20px; background: #EBEBEB">
+        <div style="border-radius: 10px;
+                  background: white;
+                  padding: 40px;
+                  box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;">
+            <div style="display: block;">
+                <div style="display: inline-block;">
+                    <h2>$requestedUserFullName has requested to join ScrumUpdate</h2>
+                    <p><a href="$profileUrl">$requestedUserFullName</a> from your organization has requested to join
+                        ScrumUpdate. To grant access, please manage the user's access in ScrumUpdate.</p>
+                </div>
+                <img src="cid:$logoWithoutText" height="60" style="float: right;">
+            </div>
+
+            <div>
+                <center>
+                    <a href="$enableAccessForUserUrl" target="_blank">
+                        <button style="background-color: #12576C;
+                     border: 0;
+                     padding: 12px;
+                     border-radius: 9px;
+                     color: white;
+                     font-size: .9em;
+                     font-weight: bold;
+                     margin-top: 15px;
+                     font-family: inherit;
+                     cursor: pointer;">Manage User
+                        </button>
+                    </a>
+                    <div style="color: #666565; margin-top: 10px; font-size: 12px;">
+                        <span>Questions? Contact ScrumUpdate Support at</span>
+                        <a style="font-weight: bold; color: #15c;" href="mailto:$support">$support</a>
+                    </div>
+                </center>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,51 @@
+{
+  "profiles": {
+    // Debug project within Microsoft 365 Agents Playground
+    "Microsoft 365 Agents Playground": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "applicationUrl": "http://localhost:5130",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Playground",
+        "TEAMSFX_NOTIFICATION_STORE_FILENAME": ".notification.playgroundstore.json",
+        "UPDATE_TEAMS_APP": "false",
+
+        "ConnectionStrings__DefaultConnection": "Host=localhost;Port=5432;Username=khoji-admin;Password=khoji;Database=khoji",
+        "KHOJIX_BASE_URL": "http://localhost:5200",
+
+        "KHOJIX_BUSINESS_SERVER_URL": "http://localhost:4243", // should be according to docker compose kbs
+
+        "KHOJI_BASICAUTHUSERNAME": "khoji@scrumupdate.local",
+        "KHOJI_BASICAUTHUSERPASSWORD": "khoji",
+
+        "DEBUGGING": "TRUE"
+        // Uncomment this for LLM Integration endpoint "KGS-LLM": "ENABLED"
+        // Uncomment this for LLM Integration endpoint "KGS-AGENTS": "ENABLED"
+      },
+      "hotReloadProfile": "aspnetcore"
+    },
+    // Debug project within Teams
+    "Debug within Teams": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "applicationUrl": "http://localhost:5130",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ConnectionStrings__DefaultConnection": "Host=localhost;Port=5435;Username=khoji-admin;Password=khoji;Database=khoji",
+        "TEAMS_APP_ID": "d59ce5b2-50ef-4178-bfbb-441d94e61c88", // change to your Teams app ID
+        "KHOJIX_BASE_URL": "http://localhost:4241",
+        "KHOJIX_BUSINESS_SERVER_URL": "http://localhost:4243",
+        "LLM_API": "claude",
+        "CLAUDE_MODEL": "claude-haiku-4-5-20251001",
+        "CLAUDE_API_KEY": "", //super secret dont commit
+        "OPENAI_MODEL": "meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo",
+        "OPENAI_API_URL": "https://api.together.xyz/v1",
+        "OPENAI_API_KEY": "", //super secret dont commit
+        "MCP_ATLASSIAN_URL": "http://localhost:7010/mcp/",
+        "KHOJI_BASICAUTHUSERNAME": "khoji@scrumupdate.local",
+        "KHOJI_BASICAUTHUSERPASSWORD": "khoji"
+      },
+      "hotReloadProfile": "aspnetcore"
+    }
+  }
+}

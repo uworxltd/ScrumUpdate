@@ -1,0 +1,32 @@
+name: status_categories_tickets
+description: |
+  Shared metric that returns ticket IDs for each status category (To Do, In Progress, Done).
+  
+  Queries base tables directly (sprint_issues + issues).
+
+version: 1.0
+
+inputs:
+  sprint_id: { type: int, default: 1 }
+
+steps:
+  - id: get_tickets_by_status
+    type: sql
+    service: main-db
+    query: |
+      SELECT jsonb_build_object(
+        'todo_tickets',
+        COALESCE(jsonb_agg(i.issue_key ORDER BY i.issue_key) FILTER (WHERE i.status_category = 'To Do'), '[]'::jsonb),
+        'inprogress_tickets',
+        COALESCE(jsonb_agg(i.issue_key ORDER BY i.issue_key) FILTER (WHERE i.status_category = 'In Progress'), '[]'::jsonb),
+        'done_tickets',
+        COALESCE(jsonb_agg(i.issue_key ORDER BY i.issue_key) FILTER (WHERE i.status_category = 'Done'), '[]'::jsonb)
+      ) AS status_categories
+      FROM {{ schema }}.sprint_issues si
+      INNER JOIN {{ schema }}.issues i ON si.issue_key = i.issue_key
+      WHERE si.sprint_id = $1::int
+    params:
+      - "{{ inputs.sprint_id }}"
+    output: { name: status_tickets }
+
+return: "get_tickets_by_status.status_tickets"

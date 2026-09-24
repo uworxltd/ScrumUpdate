@@ -1,0 +1,57 @@
+<!-- hidden to add it in network cache -->
+<img
+	src="assets/gif/create_categories_demo.gif"
+	alt="Create Issue Categorize"
+	class="hidden"
+/>
+
+<div class="flex h-full w-full surface-ground">
+
+	<khoji-split-container class="h-full w-full">
+		<ng-container leftContent>
+			<div
+				class="flex flex-column w-12 h-full responsive-container-onboarding"
+				[ngSwitch]="currentStep"
+			>
+				<khoji-team-onboarding
+					*ngSwitchCase="0"
+					class="h-full"
+					[initComponent]="initTeamOnboarding"
+					(nextButtonClicked)="this.isWorklogCategoryEnabled ? nextButtonClicked() : nextButtonClickForTeamOnboardingOnly()"
+					(_teamName)="initializeTeamName($event)"
+				></khoji-team-onboarding>
+				<khoji-worklog-categories 
+					*ngSwitchCase="isWorklogCategoryEnabled ? 1 : -1"
+					[pageTitle]="translation.title"
+					[saveButtonLabel]="translation?.getStarted"
+					(categoriesUpdated)="nextButtonClicked()"
+					[allowNext]="true"
+					[showToast]="false"
+					[onboardingWizard]="true"
+					class="h-full"
+					classStyle="flex flex-column h-full align-content-between"
+					pickListWrapperStyle="adjustable-height"
+				></khoji-worklog-categories>
+			</div>
+		</ng-container>
+		<ng-container rightContent>
+			<div
+				[ngSwitch]="currentStep"
+				class="flex h-full align-items-center z-3"
+			>
+				<img
+					*ngSwitchCase="0"
+					src="assets/images/team-onboarding.png"
+					alt="Build Your Team"
+					class="max-h-full max-w-full ml-auto z-3 shadow-4 border-round-left-3xl"
+				/>
+				<img
+					*ngSwitchCase="isWorklogCategoryEnabled ? 1 : -1"
+					src="assets/gif/create_categories_demo.gif"
+					alt="Create Issue Categorize"
+					class="max-h-full max-w-full ml-auto z-3"
+				/>
+			</div>
+		</ng-container>
+	</khoji-split-container>
+</div>

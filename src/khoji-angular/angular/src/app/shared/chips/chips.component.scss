@@ -1,0 +1,18 @@
+:host ::ng-deep .chip-tooltip {
+  .p-tooltip-text {
+    background: white !important;
+    color: black;
+    width: max-content;
+  }
+
+  .p-tooltip-arrow {
+    border-bottom-color: white !important;
+  }
+}
+
+:host ::ng-deep {
+  .selected-chip-background .p-chip {
+    color: #fff;
+    background-color: var(--khoji-color-primary);
+  }
+}

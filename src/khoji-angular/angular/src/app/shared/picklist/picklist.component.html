@@ -1,0 +1,311 @@
+<p-confirmPopup></p-confirmPopup>
+<div class="flex justify-content-between align-items-center">
+	<span class="khoji-headings" *ngIf="showTitle && title">{{ title }}</span>
+	<div *ngIf="categories.length" class="flex justify-content-end mt-2">
+		<div *ngIf="aiLoading === loadingState.Done" class="generated-with-ai flex gap-2 align-items-center border-round p-2">
+			<img [src]="constants.AI_ICON" />
+			{{ translation?.picklist.createdCategoriesWithAI }}
+			<span
+			class="pi pi-info-circle text-lg ml-1 cursor-pointer"
+			[pTooltip]="translation?.picklist.reviewAIgeneratedCategories"
+			[tooltipPosition]="'bottom'"
+			></span>
+		</div>
+		<div class="btn-animated-border-container" *ngIf="aiLoading !== loadingState.Done">
+			<p-button (onClick)="regenerateCategoriesWithAi($event)" styleClass="p-button-text ai-button" [disabled]="loading === loadingState.Loading">
+				<img [attr.alt]="translation?.picklist.generateCategoriesWithAI" [src]="constants.WAND_ICON_AI" style="width: 1.5rem"/>
+				<span class="ml-2">{{ translation?.picklist.generateCategoriesWithAI }}</span>
+			</p-button>
+		</div>
+	</div>
+</div>
+<div
+	class="wrapper"
+	[ngClass]="classStyle"
+>
+	<div class="source">
+		<p class="text-md">{{ translation?.picklist.sourceTitle }}</p>
+		<input
+			#search
+			type="search"
+			[placeholder]="translation?.picklist.searchIssueTypesPlaceholder"
+			(input)="searchTerm = search.value.trim().toLowerCase(); expandGroups()"
+		/>
+		<div
+			*ngIf="loading === loadingState.Done"
+			class="group-wrapper mini-scrollbars"
+			(drop)="drop($event)"
+			(dragover)="allowDrop($event)"
+		>
+			<div
+				*ngFor="let group of groups"
+				class="group-dropdown"
+			>
+				<div
+					*ngIf="group.recentlyUsed"
+					class="group-header"
+				>
+					<i class="pi pi-star-fill"></i>
+					<div class="group-name text-teal-900">{{ group.name }}</div>
+					<i
+						class="pi pi-info-circle text-teal-900 ml-2"
+						[pTooltip]="'Based on work logged in last 7 days'"
+						[tooltipPosition]="'bottom'"
+						tooltipStyleClass="custom-tooltip"
+					></i>
+				</div>
+				<div
+					*ngIf="!group.recentlyUsed"
+					class="group-header"
+					(click)="group.collapsed = !group.collapsed"
+				>
+					<i
+						class="pi"
+						[ngClass]="{ 'pi-chevron-right': group.collapsed, 'pi-chevron-down': !group.collapsed }"
+					></i>
+					<div class="group-name">{{ group.name }}</div>
+				</div>
+				<div
+					*ngIf="!group.collapsed"
+					class="group-body"
+				>
+					<div
+						*ngFor="let item of group.items.filter(searchFilter)"
+						[attr.id]="'item-' + item.id"
+						class="group-item"
+						[ngClass]="{ selected: item.selected }"
+						draggable="true"
+						(dragstart)="drag($event)"
+						(click)="item.selected = !item.selected"
+					>
+						{{ item.name }}
+					</div>
+				</div>
+			</div>
+		</div>
+		<div
+			*ngIf="loading === loadingState.Loading"
+			class="group-wrapper mini-scrollbars"
+		>
+			<div
+				*ngFor="let group of groups"
+				class="group-dropdown"
+			>
+				<div
+					*ngIf="loading != loadingState.Loading"
+					class="group-header"
+				>
+					<i class="pi pi-chevron-right"></i>
+					<div class="group-name">{{ group.name }}</div>
+				</div>
+				<div
+					*ngIf="loading === loadingState.Loading"
+					class="group-header"
+				>
+					<p-skeleton
+						width="100px"
+						height="25px"
+					></p-skeleton>
+				</div>
+				<p-skeleton
+					width="100%"
+					height="100px"
+				></p-skeleton>
+			</div>
+		</div>
+	</div>
+	<div class="controls">
+		<i
+			class="pi pi-chevron-right"
+      data-test="assign-category-button"
+			(click)="assignCategory(assignCategoryItems, selectedCategory)"
+			[ngClass]="{ disabled: !assignCategoryItems.length || !selectedCategory }"
+		></i>
+		<i
+			class="pi pi-chevron-left"
+			(click)="unassignCategory(unassignCategoryItems)"
+			[ngClass]="{ disabled: !unassignCategoryItems.length }"
+		></i>
+	</div>
+	<div class="target">
+		<div class="target-header">
+			<p class="text-md">{{ translation?.picklist.targetTitle }}</p>
+			<ng-container
+				[ngTemplateOutlet]="addButton"
+				[ngTemplateOutletContext]="{ hidden: !categories.length }"
+			></ng-container>
+		</div>
+		<div
+			class="category-wrapper mini-scrollbars"
+			[ngClass]="{ empty: !categories.length || aiLoading === loadingState.Loading }"
+		>
+			<div class="flex flex-column" *ngIf="aiLoading !== loadingState.Loading && !categories.length">
+				<ng-container
+					[ngTemplateOutlet]="addButton"
+  				[ngTemplateOutletContext]="{ main: '-main' }"
+				></ng-container>
+				<p-divider align="center">Or</p-divider>
+				<div class="btn-animated-border-container">
+					<p-button (onClick)="generateCategoriesWithAi()" styleClass="p-button-text ai-button w-full" class="m-auto" [disabled]="loading === loadingState.Loading">
+						<img [attr.alt]="translation?.picklist.generateCategoriesWithAI" [src]="constants.WAND_ICON_AI" style="width: 1.5rem"/>
+						<span class="ml-2">{{ translation?.picklist.generateCategoriesWithAI }}</span>
+					</p-button>
+				</div>
+			</div>
+			<div class="flex flex-column align-items-center" *ngIf="aiLoading === loadingState.Loading">
+				<p-progressSpinner></p-progressSpinner>
+				<p>{{ translation?.picklist.generatingCategoriesWithAI }}</p>
+			</div>
+			<p-skeleton
+				*ngIf="loading === loadingState.Loading"
+				width="100%"
+				height="300px"
+			></p-skeleton>
+			<ng-container *ngIf="loading === loadingState.Done && aiLoading !== loadingState.Loading">
+				<div
+					*ngFor="let category of categories; let catIndex = index"
+					class="category-dropdown"
+					[ngClass]="{ open: !category.collapsed }"
+				>
+					<ng-container *ngIf="!category.collapsed">
+						<div class="category-header">
+							<div class="header-box">
+								<i
+									class="pi"
+									[ngClass]="{ 'pi-chevron-right': category.collapsed, 'pi-chevron-down': !category.collapsed, disabled: selectedCategoryName() === '' || isInValidName() }"
+									(click)="toggleCategory(category)"
+								></i>
+								<ng-container
+									[ngTemplateOutlet]="colorPicker"
+									[ngTemplateOutletContext]="{ category: category }"
+								></ng-container>
+								<input
+									#input
+                  data-test="category-name-input"
+									[value]="category.name"
+									maxlength="20"
+									(input)="category.name = input.value"
+									[placeholder]="translation?.picklist.namePlaceholder"
+								/>
+							</div>
+							<i
+								class="fa fa-check"
+                data-test="save-category-button"
+								[ngClass]="{ disabled: selectedCategoryName() === '' || isInValidName() }"
+								(click)="toggleCategory(category)"
+							></i>
+							<i
+								class="pi pi-trash"
+								(click)="removeCategory(catIndex, category, input)"
+							></i>
+						</div>
+						<div
+							class="message"
+							[ngClass]="{ error: isInValidName() }"
+						>
+							{{ isInValidName() }}
+						</div>
+						<div
+							class="category-body"
+							[ngClass]="{ empty: !selectedCategory.items.length }"
+							(drop)="drop($event)"
+							(dragover)="allowDrop($event)"
+						>
+							<div
+								*ngFor="let item of category.items"
+								[attr.id]="'item-' + item.id"
+								class="category-item"
+								[ngClass]="{ selected: item.selected }"
+								draggable="true"
+								(dragstart)="drag($event)"
+								(click)="item.selected = !item.selected"
+							>
+								{{ item.name }}
+							</div>
+							<div
+								*ngIf="!category.items.length"
+								class="category-item message"
+							>
+								{{ translation?.picklist.dropHereText }}
+							</div>
+						</div>
+					</ng-container>
+					<ng-container *ngIf="category.collapsed">
+						<div class="category-header collapsed">
+							<div
+								class="header-box"
+								[attr.id]="'category-' + category.id"
+								(drop)="drop($event)"
+								(dragover)="allowDrop($event)"
+							>
+								<i
+									class="pi"
+									[ngClass]="{ 'pi-chevron-right': category.collapsed, 'pi-chevron-down': !category.collapsed, disabled: isInValidName() }"
+									(click)="handleToggleCategory(category)"
+								></i>
+								<ng-container
+									[ngTemplateOutlet]="colorPicker"
+									[ngTemplateOutletContext]="{ category: category }"
+								></ng-container>
+								<div
+									class="category-name"
+									#categoryName
+								>
+									{{ category.name }}
+								</div>
+								<div class="count">{{ category.items.length }}</div>
+								<div class="spacer"></div>
+							</div>
+							<i
+								class="pi pi-trash"
+								(click)="removeCategory(catIndex, category, categoryName); $event.stopPropagation()"
+							></i>
+						</div>
+					</ng-container>
+				</div>
+			</ng-container>
+		</div>
+	</div>
+</div>
+
+<ng-template
+	#addButton
+	let-hidden="hidden"
+  let-main="main"
+>
+	<button
+    [attr.data-test]="'add-category-button' + main"
+		[hidden]="hidden"
+		[ngClass]="{
+			'p-disabled': selectedCategoryName() === '' || isInValidName() || loading === loadingState.Loading,
+			'add-new-category-button': !categories.length
+		}"
+		(click)="handleAddCategory()"
+		(drop)="drop($event)"
+		(dragover)="allowDrop($event)"
+		class="p-button p-button-outlined p-button-sm border-0"
+	>
+		<i
+			class="pi pi-plus mr-1"
+			[ngClass]="{ disabled: selectedCategoryName() === '' || isInValidName() || loading === loadingState.Loading }"
+		></i>
+		<b>{{ translation?.picklist.addCategoryLabel }}</b>
+	</button>
+</ng-template>
+
+<ng-template
+	#colorPicker
+	let-category="category"
+>
+	<khoji-color-picker
+		class="color-picker"
+		(selectedColorChange)="handleColorChange($event, category)"
+		[colorPalette]="constants?.COLOR_PICKER_PALETTE"
+		[selectedColor]="category.color"
+		[title]="translation?.workLogConfig.colorPicker.title"
+		[hoverTitle]="translation?.workLogConfig.colorPicker.hoverTitle"
+		[disabledSaveButtonHint]="translation?.workLogConfig.colorPicker.disabledSaveButtonHint"
+		[radius]="constants?.COLOR_PICKER_RADIUS"
+	>
+	</khoji-color-picker>
+</ng-template>

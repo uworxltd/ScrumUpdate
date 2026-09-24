@@ -1,0 +1,333 @@
+<!-- /*
+Copyright 2026 UWorx Services.
+Licensed under the Apache License, Version 2.0.
+See LICENSE for the full license text.
+*/ -->
+
+
+<div [ngClass]="{ 'container-khoji': isNewTenantAdminDashboardEnabled }">
+  <div class="card-container khoji-work-log-config-table">
+    <!-- ----------------------------------------- Notification for update ----------------------------------------- -->
+    <div class="justify-content-center notification-div">
+      <div *ngIf="isConfigOnSourceUpdated && sourceIssueTypeLoadingState==2" class="user-info-wrapper justify-content-between" data-test="config-update-message">
+        <p [title]="
+          translation?.workLogConfig.notificationMessage +
+          translation?.workLogConfig.renamed +
+          translation?.workLogConfig.or +
+          translation?.workLogConfig.removed +
+          translation?.workLogConfig.fromJira
+        " class="user-info-text">
+          <img src="assets/images/info-circle.svg" class="mr-2 icon" alt="info icon" />{{
+          translation?.workLogConfig.notificationMessage
+          }}<span class="khoji-color-secondary font-weight-bold">{{
+          translation?.workLogConfig.renamed
+          }}</span>
+          <span>{{ translation?.workLogConfig.or }}</span>
+          <span class="deleted-issue-types font-weight-bold">{{
+            translation?.workLogConfig.removed
+            }}</span>
+            <span>{{ translation?.workLogConfig.fromJira }}</span>
+        </p>
+        <button type="button" pButton class="p-button-text notification-button" [label]="'Update'"
+                (click)="updateWorklogConfig()"  data-test="update-config-button"></button>
+      </div>
+    </div>
+
+    <!-- Modal content -->
+
+    <h1 class="khoji-modal-heading font-semibold mb-1" data-test="worklogConfig-modal-title">{{translation?.workLogConfig.modalHeading}}</h1>
+    <p class="khoji-modal-sub-heading text-gray-600" data-test="worklogConfig-modal-sub-title">{{translation?.workLogConfig.modalSubHeading}}</p>
+    <!-- ----------------------------------------- Sub Heading and Issue Sync Information ----------------------------------------- -->
+    <div class="d-flex justify-bw hidden">
+      <p class="khoji-sync font-italic khoji-sysource-issue-type-sync.json
+      nc text-gray-600" data-test="worklogConfig-timestamp-message">{{syncTimeStamp}}
+        <khoji-tooltip-icon [tooltipText]="toolTipText" [inheritColor]="true" [toolTipPosition]="'bottom'">
+        </khoji-tooltip-icon>
+      </p>
+    </div>
+
+
+    <p-toolbar>
+      <!-- ------------------------------------- New and Delete button -------------------------- -->
+      <div class="flex flex-column w-full">
+        <div class="flex flex-row justify-content-between">
+          <div class="p-toolbar-group-left">
+            <button title="{{translation?.workLogConfig.newCategoryButtonHint}}" data-test="worklogConfig-new-category-button" pButton pRipple
+                    label="{{translation?.workLogConfig.newButtonText}}" icon="pi pi-plus" class="khoji-success-button"
+                    (click)="newWorklogCategory()"
+                    [disabled]="sourceIssueTypeLoadingState==1"
+                    ></button>
+            <button title="{{translation?.workLogConfig.deleteCategoryButtonHint}}" data-test="worklogConfig-delete-selectedcategory-button" pButton pRipple icon="pi pi-trash"
+                    class="p-button-danger khoji-delete-button" (click)="deleteSelectedCategories()"
+                    [disabled]="!selectedWorklogCategories.length"></button>
+          </div>
+          <div class="p-toolbar-group-right">
+              <span class="p-input-icon-left">
+                <i class="pi pi-search"></i>
+                <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')"
+                       placeholder="Search" data-test="worklogConfig-search-text" />
+              </span>
+          </div>
+        </div>
+        <div class="new-category-hint">
+          <p *ngIf="showAddNewHint" class="m-0" data-test="worklogConfig-AddNewHint-message">{{translation?.workLogConfig.newCategoryHint}}</p>
+        </div>
+      </div>
+    </p-toolbar>
+
+
+    <p-table data-test="worklogConfig-categories-table" #table [style]="{height:'350px'}" #dt [value]="workLogCategories" [scrollable]="true" scrollHeight="350px"
+             [paginator]="false" [globalFilterFields]="['name','includedIssueTypes']" [rowHover]="true" dataKey="name"
+             currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" sortField="name"
+             (sortFunction)="customSort($event)" [customSort]="true" [(selection)]="selectedWorklogCategories"
+             [loading]="sourceIssueTypeLoadingState==1" [showLoader]="false"
+             >
+      <!-- ----------------------------------------- CAPTION ----------------------------------------- -->
+      <ng-template pTemplate="caption">
+        <!-- Table heading and search bar-->
+        <!-- <div class="d-flex justify-content-between">
+          <h5 class="khoji-modal-table-heading"><strong>{{translation?.workLogConfig.modalTableHeading}}</strong></h5>
+          <span class="p-input-icon-left">
+            <i class="pi pi-search"></i>
+            <input pInputText data-test="worklogConfig-search-text" type="text" (input)="dt.filterGlobal($event.target.value, 'contains')"
+              placeholder="Search" />
+          </span>
+        </div> -->
+
+      </ng-template>
+
+      <!-- ----------------------------------------- Header ----------------------------------------- -->
+      <ng-template pTemplate="header">
+        <tr>
+          <th class="khoji-table-header" style="width: 5%;">
+            <!-- This header check box is commented because of defect KFA-13400 -->
+            <!-- <p-tableHeaderCheckbox [disabled]="!showAddNewHint" ></p-tableHeaderCheckbox> -->
+          </th>
+          <th class="khoji-table-header" style="width: 30%;" pSortableColumn="name"  data-test="worklogConfig-categoryName-column">
+            {{translation?.workLogConfig.modalTableColumnName}}<p-sortIcon field="name" data-test="worklogConfig-categories-sort-icon">
+          </p-sortIcon>
+          </th>
+          <th class="khoji-table-header" style="width: 50%;" field="issue">
+            {{translation?.workLogConfig.modalTableColumnIssueTypes}}</th>
+          <th class="khoji-table-header" style="width: 15%;"></th>
+        </tr>
+      </ng-template>
+
+      <!-- ----------------------------------------- Body ----------------------------------------- -->
+      <ng-template pTemplate="body" let-worklogCategory>
+        <tr>
+          <td style="width: 5%">
+            <p-tableCheckbox *ngIf="worklogCategory.name!=worklogOthersRow" [value]="worklogCategory" attr.data-test="catagory-{{worklogCategory.name}}-clickable-checkbox"></p-tableCheckbox>
+          </td>
+          <td class="khoji-category-names" attr.data-test="category-name-{{worklogCategory.name}}-text">
+            <khoji-color-picker (selectedColorChange)="onColorSelected($event, worklogCategory.name)"
+                                [colorPalette]="constants?.COLOR_PICKER_PALETTE" [selectedColor]="worklogCategory.color"
+                                [title]="translation?.workLogConfig.colorPicker.title"
+                                [hoverTitle]="translation?.workLogConfig.colorPicker.hoverTitle"
+                                [disabledSaveButtonHint]="translation?.workLogConfig.colorPicker.disabledSaveButtonHint"
+                                [radius]="constants?.COLOR_PICKER_RADIUS">
+            </khoji-color-picker>
+            <span class="ml-2"> {{worklogCategory.name}}</span>
+
+          </td>
+
+          <td style="width: 50%;max-width: 0;" [title]="getMappedIssueTypesToName(worklogCategory.includedIssueTypes) | escape"
+              attr.data-test="{{worklogCategory.name}}-issue-types-text">
+            <p class="khoji-issue-types">
+            <span *ngFor="
+              let issueType of worklogCategory.includedIssueTypes;
+              index as index
+            " [ngClass]="{
+              'deleted-issue-types': deletedIssues.includes(issueType.id),
+              'khoji-color-secondary': editedIssues.includes(issueType.id)
+            }">
+              {{issueType?.name +(index < worklogCategory.includedIssueTypes.length - 1 ? ", " : "" ) }}</span>
+            </p>
+          </td>
+          <!-- ----------------------------------Buttons to edit and delete in table --------------------------------- -->
+          <td style="width: 15%; text-align: right">
+            <button
+              *ngIf="otherCategoryShowHide(worklogCategory)"
+              [title]="!setEditButtonState(worklogCategory) ? translation?.workLogConfig.editIconHint : translation?.workLogConfig.disableEditButtonTooltip"
+              attr.data-test="category-{{worklogCategory.name}}-edit-button"
+              style="margin: 0 5px"
+              class="p-mr-2 custom-buttons"
+              [ngClass]="{'opacity-40':setEditButtonState(worklogCategory)}"
+              (click)="worklogCategory.name !== worklogOthersRow ? editWorklogCategory(worklogCategory) : editOtherCategory(worklogCategory)"
+              [disabled]="setEditButtonState(worklogCategory)"
+            >
+              <img src="assets/images/Edit icon of prime ng.svg" />
+            </button>
+
+              <!-- Making visibility of others delete button to hidden because need to align others category edit button with other buttons
+              By adding this button will exist in DOM, but will not be visibile to user -->
+            <button title="{{translation?.workLogConfig.deleteIconHint}}"
+                    class="custom-buttons" (click)="worklogCategory.name !== worklogOthersRow ? deleteWorklogCategory(worklogCategory) : null"
+                    attr.data-test="category-{{worklogCategory.name}}-delete-button" [ngStyle]="{'visibility':worklogCategory.name == worklogOthersRow ? 'hidden' : ''}"> <img
+              src="assets/images/delete icon of prime ng.svg" /></button>
+
+          </td>
+        </tr>
+      </ng-template>
+      <!-- ----------------------------------------- Show No result found ----------------------------------------- -->
+      <ng-template pTemplate="emptymessage" let-worklogCategory>
+        <tr *ngIf="sourceIssueTypeLoadingState==2">
+          <td [attr.colspan]="8" class="text-center" data-test="worklogConfig-no-Data-found-message">
+            {{translation?.workLogConfig.noResultFoundMessage}}
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="loadingbody" let-worklogCategory>
+        <tr>
+          <td  [attr.colspan]="8" class="text-center">{{translation?.quickSearch.loadingMessage}}</td>
+        </tr>
+      </ng-template>
+
+      <!-- ----------------------------------------- Summary ----------------------------------------- -->
+      <ng-template pTemplate="summary">
+        <div class="d-flex justify-content-between">
+          <div>
+            <p class="font-italic text-gray-600" data-test="worklogConfig-footer-note-message"><strong>{{translation?.workLogConfig.modalNoteHeading}}
+            </strong>{{translation?.workLogConfig.modalNoteMessage}}</p>
+          </div>
+          <div>
+            <p style="color: black" data-test="worklogConfig-categories-count-message">{{translation?.workLogConfig.modalSummaryCountFirstPart+ (workLogCategories ?
+              workLogCategories.length : 0) + " " +translation?.workLogConfig.modalSummaryCountLastPart}} </p>
+          </div>
+        </div>
+      </ng-template>
+    </p-table>
+  </div>
+</div>
+  <!-- ----------------------------------------- Edit Modal ----------------------------------------- -->
+  <p-dialog [closable]="false" [draggable]="false" [(visible)]="worklogDialogVisible" [style]="{width: '500px'}" data-test="worklog-detail-dialog"
+            header="{{workLogSubModalHeading}}" [modal]="true" styleClass="p-fluid">
+    <ng-template pTemplate="content">
+      <div class="p-field" style="height: 80px;">
+        <label for="name">{{translation?.workLogConfig.editModalNameLabel}}</label>
+        <!-- ------------------------------------Tool tip ------------------------------------------- -->
+        <span class='small' style="margin-left: 5px;">
+        <div class="rag-status-tooltip tooltip-font-family glyphicon-question-sign" >
+          <i class="fa fa-question-circle" aria-hidden="true" data-test="input-tooltip-icon"></i>
+          <div>
+            <span class="tooltiptext" data-test="input-tooltip-text">
+              <div>
+                {{translation?.workLogConfig.inputToolTip}}
+              </div>
+            </span>
+          </div>
+        </div>
+      </span>
+        <!-- ------------------------------------Input ------------------------------------------- -->
+        <input data-test="category-name-text" style="margin-top: 3px;" type="text" pInputText id="name" autofocus
+               [formControl]="worklogCategoryForm.controls['name']" maxlength={{constants.CATEGORY_MAX_LENGTH+1}} autocomplete="off"/>
+        <small class="p-error" *ngIf="categoryNameError()" data-test="category-name-error-text">{{categoryNameError()}}</small>
+      </div>
+      <!-- ------------------------------------Dropdown ------------------------------------------- -->
+      <div class="p-field" style="margin-bottom:300px; margin-top: 25px;">
+        <khoji-multiselect [items]="dropdownIssueTypes" (selectionChange)="updateCategoryIssueTypes($event.selected)" data-test="issuetypes-dropdown"
+                           [label]="translation?.workLogConfig.addEditCategoryIssueTypeLabel"
+                           [text]="translation?.workLogConfig.selectIssueType">
+        </khoji-multiselect>
+      </div>
+    </ng-template>
+    <!-- ---------------------------------- Details modal buttons ---------------------------------- -->
+    <ng-template pTemplate="footer">
+      <button pButton pRipple label="Save" class="khoji-success-button" data-test="category-save-button"
+              [disabled]="worklogCategoryForm.invalid || !worklogCategoryForm.dirty" (click)="accept()"></button>
+      <button pButton pRipple label="Cancel" class="p-button-outlined" (click)="hideDialog()" data-test="category-cancel-button"></button>
+    </ng-template>
+  </p-dialog>
+
+  <!-- ---------------------------------- Warning modal while editing or adding new --------------------------- -->
+  <p-confirmDialog [style]="{width: '450px'}" data-test="save-changes-confirm-dialog">
+    <ng-template pTemplate="footer">
+      <button type="button" pButton class="p-button" data-test="save-changes-button" label="Save" (click)="accept()"></button>
+      <button type="button" pButton class="p-button p-button-text" data-test="dontSave-changes-button" label="Don't Save" (click)="reject()"></button>
+    </ng-template>
+  </p-confirmDialog>
+
+  <!-- ---------------------------------- Warning modal while delete --------------------------- -->
+  <p-confirmDialog #cd [style]="{width: '450px'}" [key]="'delete'" data-test="delete-confirm-dialog">
+    <ng-template pTemplate="footer">
+      <button type="button" pButton class="p-button" [label]="cd.acceptButtonLabel"
+              (click)="cd.accept()" data-test="delete-confirm-button"></button>
+      <button type="button" pButton class="p-button p-button-text" [label]="cd.rejectButtonLabel"
+              (click)="cd.reject()" data-test="delete-cancel-button"></button>
+    </ng-template>
+  </p-confirmDialog>
+
+<!-- ----------------------------------------- Other Category Edit Modal ----------------------------------------- -->
+<p-dialog [closable]="false" [draggable]="false" [(visible)]="otherCategoryDialogVisible" class="w-30rem"
+  data-test="other-worklog-detail-dialog" header="{{workLogSubModalHeading}}" [modal]="true" styleClass="p-fluid">
+  <ng-template pTemplate="content">
+    <div class="p-field" class="h-5rem">
+      <label for="name">{{translation?.workLogConfig.editModalNameLabel}}</label>
+      <!-- ------------------------------------ Input ------------------------------------------- -->
+      <input data-test="other-category-name-text"  class="mb-1 mt-1" type="text" pInputText
+        [value]="otherCategoryName" [disabled]="true" /><!--style="margin-bottom: 10px; margin-top: 3px;"-->
+    </div>
+    <!-- ------------------------------------Dropdown ------------------------------------------- -->
+    <div class="p-field" class="mb-3 mt-4">
+      <khoji-multiselect [items]="dropdownIssueTypes" (selectionChange)="updateCategoryIssueTypes($event.selected)"
+        data-test="other-issuetypes-dropdown" [label]="translation?.workLogConfig.modalTableColumnIssueTypes"
+        [text]="translation?.workLogConfig.selectIssueType" [isDisabled]="true" [pTooltip]="showTooltipOnDropdown(dropdownIssueTypes)" [tooltipPosition]="'bottom'">
+      </khoji-multiselect>
+    </div>
+    <!-- ------------------------------------RAG status component--------------------------------------------->
+     <div class="p-field" class="mb-3 mt-4">
+      <khoji-rag-status
+        [ragColors]="ragColorCodes"
+        [ragThresholds]="modifyRAGThresholdValue(otherRagThresholdConfig)"
+        [sliderConfigs]="otherRagSliderConfig"
+        [ragStatusHeading]="translation?.workLogConfig.otherCategoryRAGHeading"
+        [showRangeContainer]="false"
+        [showSpinner]="showSpinner"
+        (sliderValueChanges)="sliderValueChanged($event)"
+      >
+      </khoji-rag-status>
+    </div>
+    <!--------------------------------------RAG status Checkboxes--------------------------------------------->
+    <div class="p-field bg-blue-50 p-2 pt-4 mb-3 mt-7" >
+      <h6 class="text-sm"> {{translation?.workLogConfig.ragStatusCheckboxHeading}}</h6>
+
+      <div class="flex gap-8">
+        <div *ngFor="let category of ragThresholdCategories" class="flex align-items-center gap-1">
+            <p-checkbox name="group" [value]="category" [(ngModel)]="selectedRagThreshold" (onChange)="changeThresholdCategoryValue()"  [inputId]="category.key"></p-checkbox>
+            <label [for]="category.key">{{category.name}}</label>
+        </div>
+    </div>
+
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+    <button pButton pRipple label="Save" class="khoji-success-button" data-test="other-category-save-button"
+      [disabled]="!enableSubmitButton()" (click)="saveOtherCategoryData()"></button>
+
+    <button pButton pRipple label="Cancel" class="p-button-outlined" (click)="closeOtherCategoryModal()"
+      data-test="other-category-cancel-button"></button>
+  </ng-template>
+</p-dialog>
+
+<!---------------------------------------------------Other Category Warning modal ---------------------->
+<p-confirmDialog  class="w-28rem" [key]="'otherCategoryConfirm'" data-test="other-confirmation-dialog">
+  <ng-template pTemplate="header">
+      <span class="p-dialog-title">{{ translation.ragConfig.warningDialog.header }}</span>
+      <div class="p-dialog-header-icons">
+          <button type="button" class="p-dialog-header-icon p-dialog-header-close p-link"
+              (click)="tabSwitchCloseIconClick()">
+              <span class="pi pi-times"></span>
+          </button>
+      </div>
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+      <button type="button" pRipple pButton class="khoji-success-button"  [label]="cd.acceptButtonLabel"
+          (click)="onTabSwitchConfirm()"></button>
+      <button type="button" pButton pRipple class="p-element p-ripple p-button-text p-button p-component p-button-height" [label]="cd.rejectButtonLabel"
+          (click)="onTabSwitchReject()"></button>
+  </ng-template>
+</p-confirmDialog>
+

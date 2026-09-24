@@ -1,0 +1,127 @@
+name: sprint_velocity
+description: Sprint velocity calculation with burndown data
+version: 1.0
+
+inputs:
+  sprint_id: { type: int, required: true }
+
+steps:
+  - id: velocity_calc
+    type: sql
+    service: main-db
+    query: |
+      WITH sprint_info AS (
+          SELECT 
+              sprint_id,
+              name,
+              start_date::date as start_at,
+              COALESCE(complete_date, end_date)::date as end_at,
+              (COALESCE(complete_date, end_date)::date - start_date::date) + 1 as days_total,
+              GREATEST(0, COALESCE(complete_date, end_date)::date - CURRENT_DATE) as days_remaining,
+              CURRENT_DATE - start_date::date + 1 as days_elapsed
+          FROM {{ schema }}.sprints
+          WHERE sprint_id = $1::int
+      ),
+      days AS (
+          SELECT si.sprint_id, d::date AS day
+          FROM sprint_info si
+          CROSS JOIN LATERAL generate_series(si.start_at, si.end_at, '1 day') AS d
+      ),
+      mem AS (
+          SELECT si.sprint_id, si.issue_key
+          FROM {{ schema }}.sprint_issues si
+          WHERE si.sprint_id = $1::int
+      ),
+      issue_points AS (
+          SELECT i.issue_key, COALESCE(i.story_points, 0)::numeric AS sp
+          FROM {{ schema }}.issues i
+      ),
+      done AS (
+          SELECT d.issue_key, d.done_at
+          FROM {{ schema }}.v_issue_done_at d
+      ),
+      base AS (
+          SELECT
+              d.sprint_id,
+              d.day,
+              SUM(COALESCE(ip.sp, 0))::numeric AS scope_points,
+              SUM(CASE
+                  WHEN dn.done_at IS NOT NULL
+                      AND dn.done_at <= (d.day + INTERVAL '1 day' - INTERVAL '1 second')
+                  THEN COALESCE(ip.sp, 0) ELSE 0
+              END)::numeric AS done_points
+          FROM days d
+          JOIN mem m ON m.sprint_id = d.sprint_id
+          LEFT JOIN issue_points ip ON ip.issue_key = m.issue_key
+          LEFT JOIN done dn ON dn.issue_key = m.issue_key
+          GROUP BY d.sprint_id, d.day
+      ),
+      burndown_data AS (
+          SELECT
+              sprint_id,
+              day,
+              scope_points,
+              done_points,
+              GREATEST(scope_points - done_points, 0)::numeric AS remaining_points,
+              ROW_NUMBER() OVER (ORDER BY day) as day_number
+          FROM base
+          WHERE sprint_id = $1::int
+          ORDER BY day
+      ),
+      first_scope AS (
+          SELECT scope_points as committed_scope
+          FROM burndown_data
+          ORDER BY day_number
+          LIMIT 1
+      ),
+      current_progress AS (
+          SELECT 
+              done_points,
+              remaining_points,
+              day
+          FROM burndown_data
+          WHERE day <= CURRENT_DATE
+          ORDER BY day_number DESC
+          LIMIT 1
+      ),
+      velocity_calc AS (
+          SELECT 
+              si.days_elapsed,
+              si.days_remaining,
+              si.days_total,
+              CASE 
+                  WHEN si.days_elapsed > 0 THEN cp.done_points / si.days_elapsed 
+                  ELSE 0 
+              END as current_velocity,
+              CASE 
+                  WHEN si.days_remaining > 0 THEN cp.remaining_points / si.days_remaining 
+                  ELSE 0 
+              END as required_velocity,
+              (cp.done_points + cp.remaining_points) as current_scope,
+              fs.committed_scope,
+              cp.done_points as completed_points,
+              cp.remaining_points
+          FROM sprint_info si
+          CROSS JOIN current_progress cp
+          CROSS JOIN first_scope fs
+      )
+
+      SELECT 
+          (SELECT sprint_id FROM sprint_info) as sprint_id,
+          (SELECT name FROM sprint_info) as sprint_name,
+          vc.days_elapsed,
+          vc.days_remaining,
+          vc.days_total,
+          vc.completed_points,
+          vc.current_scope as total_points,
+          0 AS total_issues,
+          0 AS completed_issues,
+          ROUND(vc.committed_scope * 0.8, 0) AS target_points,
+          vc.current_velocity,
+          vc.required_velocity
+      FROM velocity_calc vc
+    params:
+      - "{{ inputs.sprint_id }}"
+    output: { name: velocity_data }
+
+return: velocity_calc.velocity_data

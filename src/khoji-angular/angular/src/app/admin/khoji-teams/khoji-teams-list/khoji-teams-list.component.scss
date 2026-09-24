@@ -1,0 +1,384 @@
+/*
+  Copyright 2026 UWorx Services.
+  Licensed under the Apache License, Version 2.0.
+  See LICENSE for the full license text.
+*/
+
+
+ :host ::ng-deep .carousel-tooltip {
+  .p-tooltip-text {
+    width: max-content;
+  }
+}
+
+:host ::ng-deep {
+  .datatable .p-sortable-column.p-highlight {
+    background-color: #f4f4f4 !important;
+  }
+
+  .p-dropdown .p-dropdown-trigger {
+    display: flex;
+    margin-top: 0px;
+  }
+
+  .p-paginator {
+    justify-content: right;
+    background: transparent;
+    border: none;
+    margin-top: 4px !important;
+  }
+
+  .header_font {
+    font-size: 13px;
+    font-weight: 400;
+    color: #333333;
+  }
+
+  .data-bold {
+    font-weight: 600;
+  }
+
+  .prime-ng-table-checkbox {
+    width: 2rem
+  }
+
+  tr {
+    border-bottom: 1px solid silver;
+  }
+
+  .selected_rows_text {
+    position: absolute;
+    left: 23px;
+    margin-top: 9px;
+    color: #848484;
+  }
+
+  .p-datatable .p-datatable-thead>tr>td,
+  .p-datatable .p-datatable-thead>tr>th {
+    padding: 10px 13px !important;
+    border: none;
+    background-color: #eff3f8;
+  }
+
+  .p-datatable .p-datatable-tbody>tr>td {
+    color: #808080 !important;
+    padding: 13px !important;
+  }
+
+
+  .align_checkbox_center {
+    display: flex;
+    justify-content: center
+  }
+
+  .p-checkbox {
+    display: flex;
+    justify-content: center;
+
+    .p-checkbox-box {
+      width: 15px;
+      height: 15px;
+    }
+
+    .p-checkbox-box {
+      margin-left: 0px;
+    }
+
+    .p-checkbox-icon {
+      font-size: 10px;
+    }
+  }
+
+  .p-datatable .p-sortable-column:focus {
+    box-shadow: none;
+  }
+
+  .p-datatable-scrollable-header-box,
+  .p-datatable-scrollable-footer-box {
+    padding-right: 10px !important;
+  }
+
+  .p-datatable-footer {
+    padding: 0;
+  }
+
+  .p-datatable .p-datatable-header {
+    background: white;
+    color: white;
+    border: 1px solid white;
+    padding: 0;
+  }
+
+  .p-datatable .p-sortable-column.p-highlight {
+    // background: #f4f4f4;
+    color: black;
+  }
+
+  .vertical_header {
+    display: flex;
+  }
+
+  .p-button-danger {
+    height: 34px;
+  }
+
+  .pi {
+    font-size: 1em;
+  }
+
+  .p-datatable .p-datatable-tbody>tr:hover {
+    background-color: #e5e4e2;
+  }
+
+  .p-datatable .p-datatable-tbody>tr {
+    cursor: pointer;
+  }
+
+  .p-toolbar {
+    border: none;
+    border-top: 1px solid lightgray;
+    border-bottom: 1px solid lightgray;
+  }
+
+  .table-button {
+    box-shadow: none;
+    height: 2.5rem;
+  }
+
+  .p-datatable .p-datatable-tbody>tr.p-highlight {
+    background-color: #d6d6d6 !important;
+    color: black;
+  }
+
+  .table-caption {
+    float: right;
+    margin-top: -44px;
+  }
+
+  .body_data_ellipsis {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .body_data_ellipsis .td-truncate {
+    display: unset;
+  }
+
+  .p-toolbar-group-left {
+    background-color: #d6d6d6;
+  }
+
+  .p-toolbar-group-left {
+    background-color: transparent;
+  }
+
+  .p-datatable .p-sortable-column.p-highlight .p-sortable-column-icon {
+    color: black !important;
+    margin-bottom: 3px;
+  }
+
+
+  .p-dialog {
+    padding: 6px;
+    border-radius: 20px;
+    background: white;
+  }
+
+  .p-dialog .p-dialog-footer {
+    border: none;
+  }
+
+  .p-dialog .p-dialog-header {
+    border-bottom: none;
+    background: white;
+  }
+  
+  .p-confirm-dialog-message {
+    margin: 0px !important;
+  }
+
+  .p-toolbar {
+    padding: 8px 0px;
+  }
+
+}
+
+.new-team-message {
+  opacity: 0.5;
+}
+
+.pi-plus {
+  font-size: 10px;
+  padding-right: 7px;
+}
+
+.container-khoji {
+  border-radius: 10px;
+  background: white;
+  padding: 20px;
+  max-width: 100%;
+}
+
+.paginator .p-paginator-pages .p-paginator-page .p-highlight {
+  background-color: #89CFF0 !important;
+  border-radius: 50% !important;
+}
+
+.header-no-border {
+  border-right: none;
+  border-left: none;
+}
+
+h5 {
+  font-weight: bolder;
+  font-family: system-ui;
+}
+
+h4 {
+  font-size: 18px;
+  font-weight: bolder;
+}
+
+a {
+  text-decoration: none;
+  color: #256477;
+  font-size: 13px;
+  font-weight: normal;
+}
+
+.khoji-success-button {
+  margin-right: 10px;
+  margin-left: 15px;
+}
+
+.assign-supervisor-button {
+  background-color: #707070;
+  height: 34px;
+  border-radius: 5px;
+  margin-right: 10px;
+  border: none;
+  &:hover {
+    background-color: #707070;
+    border: none;
+  }
+}
+
+.rows-per-page-right-tag {
+  margin-left: 57px;
+  font-weight: 600;
+  margin-top:4px;
+}
+
+.iframe-loading {
+  height: 0%;
+  position: absolute;
+   left: 50%;
+   top: 50%;
+   transform: translate(-50%, -50%);
+}
+.btn-khoji-primary {
+  background-color: #f6501c;
+  color: white;
+}
+
+.rows-per-page-left-tag {
+  margin-left: 15px;
+  font-weight: 600;
+  margin-top:4px;
+}
+
+.paginator .p-paginator-pages .p-paginator-page.p-highlight {
+  border-radius: 50%;
+}
+
+.p-paginator {
+  border-color: transparent !important;
+  background-color: transparent !important;
+}
+
+.view_teams_buttons {
+  border-style: none;
+  background: transparent
+}
+
+.border-none {
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+}
+
+i.pi.pi-search {
+  left: 0.429rem;
+  color: #848484;
+  zoom: 1.2;
+  top: 17px;
+}
+
+.search-input {
+  height: 39px;
+  width: 207px;
+  margin-right: 8px;
+  padding-left: 1.8rem;
+  margin-top: 0px;
+  border: 2px solid #dfe1e6;
+  border-radius: 5px;
+}
+
+.search-input:focus,
+.search-input:active {
+  outline: none;
+}
+
+.title {
+  display: flex;
+  justify-content: space-between;
+  font-size: 18px;
+  font-weight: bolder;
+}
+
+.khoji-header {
+  margin-bottom: 1%;
+}
+
+.khojiTableHeading
+{
+  margin-top: 10px;
+  margin-right: 15px;
+}
+
+.subtitle {
+  margin-bottom: 10px;
+}
+
+.btn-size {
+  height: 25px;
+}
+
+.btn-colmn-width {
+  width: 7%;
+}
+
+.popup-reject-btn {
+  border: none;
+  background-color: transparent;
+  color: #256477;
+}
+
+.popup-reject-btn:hover {
+  border: none;
+  background-color: transparent;
+  color: #256477;
+}
+
+.btn-position-center {
+  display: flex;
+  align-content: center;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.p-button-height {
+  height: 34px;
+}

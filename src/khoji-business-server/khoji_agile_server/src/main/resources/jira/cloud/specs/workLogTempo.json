@@ -1,0 +1,22 @@
+[
+  {
+    "operation": "shift",
+    "spec": {
+      "results": {
+        "*": {
+          "tempoWorklogId": "[&1].workLogId",
+          "issue": {
+            "key": "[&2].issueId"
+          },
+          "startDate": "[&1].started",
+          "createdAt": "[&1].created",
+          "updatedAt": "[&1].updated",
+          "timeSpentSeconds": "[&1].timeSpentSeconds",
+          "author": {
+            "accountId": "[&2].author.accountId"
+          }
+        }
+      }
+    }
+  }
+]
