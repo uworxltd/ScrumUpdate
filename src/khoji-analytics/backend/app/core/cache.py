@@ -5,31 +5,13 @@
 ##############################################################################
 
 # app/core/cache.py
-# Configurable cache backend selected at CALL TIME (fixes stale env issue)
-import os, time, orjson, decimal, datetime, uuid
+# Postgres-only cache. Rows live in the tenant schema's cache_meta table
+# (search_path). There is no process-local store: a shared dict ignores schema
+# and can serve one tenant's cached AI result to another.
+import os, orjson
 from typing import Optional
 
 from app.helpers import json_helpers
-
-# -------------------- helpers --------------------
-def _backend() -> str:
-    # read fresh every call so .env changes or load order don't lock to "memory"
-    return (os.getenv("CACHE_BACKEND") or "memory").lower()
-
-# -------------------- MEMORY BACKEND --------------------
-_cache: dict[str, tuple[float, bytes]] = {}
-
-def _memory_get(key: str, ttl: Optional[int]) -> Optional[dict]:
-    exp, blob = _cache.get(key, (0, b""))
-    if exp > time.time():
-        print(f"[CACHE HIT][MEM] {key}", flush=True)
-        return orjson.loads(blob)
-    print(f"[CACHE MISS][MEM] {key}", flush=True)
-    return None
-
-def _memory_set(key: str, value, seconds: int):
-    _cache[key] = (time.time() + (seconds or 0), orjson.dumps(value, default=json_helpers.orjson_default))
-    print(f"[CACHE SET][MEM] {key} ttl={seconds}s", flush=True)
 
 # -------------------- POSTGRES BACKEND --------------------
 _psycopg = None
@@ -91,17 +73,22 @@ def _pg_set(key: str, value, seconds: int, schema: str):
 
 # -------------------- PUBLIC API --------------------
 def get(key: str, ttl: Optional[int] = None, schema: Optional[str] = None):
-    if _backend() == "postgres":
-        if not schema:
-            print(f"[CACHE WARN][PG] schema required for key={key}", flush=True)
-            return None
+    if not schema:
+        print(f"[CACHE WARN][PG] schema required for key={key}", flush=True)
+        return None
+    try:
         return _pg_get(key, ttl, schema)
-    return _memory_get(key, ttl)
+    except Exception as exc:
+        # A cache outage must not fail the metric. Miss and recompute.
+        print(f"[CACHE ERROR][PG] get failed key={key} schema={schema}: {exc}", flush=True)
+        return None
 
 def set(key: str, value, seconds: int = 300, schema: Optional[str] = None):
-    if _backend() == "postgres":
-        if not schema:
-            print(f"[CACHE WARN][PG] schema required for key={key}", flush=True)
-            return
+    if not schema:
+        print(f"[CACHE WARN][PG] schema required for key={key}", flush=True)
+        return
+    try:
         return _pg_set(key, value, seconds, schema)
-    return _memory_set(key, value, seconds)
+    except Exception as exc:
+        print(f"[CACHE ERROR][PG] set failed key={key} schema={schema}: {exc}", flush=True)
+        return
