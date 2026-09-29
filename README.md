@@ -5,6 +5,10 @@
 **ScrumUpdate** is an AI-driven productivity and analytics platform designed to streamline workflows for **software engineering scrum teams** and their **team leaders/managers**.  
 By integrating seamlessly with **Jira** and **Microsoft 365 (Outlook Calendar)**, ScrumUpdate simplifies worklog management, enhances sprint visibility, and automates scrum reporting — all powered by a robust analytics and AI engine.
 
+## Get started
+
+Run the full stack locally with Docker. AI features need a `CLAUDE_API_KEY` before you start. See [Getting started](docs/GETTINGSTARTED.md).
+
 ## 👥 User Categories & Features
 
 ### 1. For Scrum Team Members
