@@ -143,6 +143,24 @@ services:
       unleash:
         condition: service_healthy
 
+  # ── Keystore init — one-shot JCEKS for tenant token encryption ─
+  # Short-lived container that writes secrets/khoji-keystore.jck on first
+  # up when missing (KeystoreFiles). Same lifecycle as unleash-init: part of
+  # `docker compose up`, no host-side JDK/Maven step. Key bytes are random and
+  # stay gitignored. Local passwords use Compose defaults (not the old leaked
+  # khoji123 / apitoken123). Init needs a read-write mount; KBS stays read-only.
+  keystore-init:
+    build:
+      context: src/khoji-business-server
+      dockerfile: Dockerfile.keystore-init
+    environment:
+      KEY_STORE_PATH: /run/secrets/khoji-keystore.jck
+      KEY_STORE_PASSWORD: ${KEY_STORE_PASSWORD:-khoji}
+      KEY_PASSWORD: ${KEY_PASSWORD:-khoji}
+    volumes:
+      - ./secrets:/run/secrets
+    restart: "no"
+
   # ── KBS — Java Business Server ────────────────────────────────
   kbs:
     build:
@@ -187,10 +205,12 @@ services:
       KHOJI_BASICAUTHUSERPASSWORD: ${KHOJI_BASICAUTHUSERPASSWORD:-khoji}
       # Container path only. The host directory is the bind mount below, not this value.
       # Mount the directory, not the file: a missing file bind becomes a directory.
-      # Passwords have no secret fallback; KBS fails startup when they are blank.
+      # Local Compose defaults match keystore-init (not the old leaked passwords).
+      # Outside Compose / non-dev deployments must supply real passwords; KBS
+      # fails startup when they are blank or the file is missing.
       KEY_STORE_PATH: /run/secrets/khoji-keystore.jck
-      KEY_STORE_PASSWORD: ${KEY_STORE_PASSWORD:-}
-      KEY_PASSWORD: ${KEY_PASSWORD:-}
+      KEY_STORE_PASSWORD: ${KEY_STORE_PASSWORD:-khoji}
+      KEY_PASSWORD: ${KEY_PASSWORD:-khoji}
       KEY_STORE_MIGRATE: ${KEY_STORE_MIGRATE:-}
       OLD_KEY_STORE_PATH: ${OLD_KEY_STORE_PATH:-}
       OLD_KEY_STORE_PASSWORD: ${OLD_KEY_STORE_PASSWORD:-}
@@ -200,6 +220,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      keystore-init:
+        condition: service_completed_successfully
 
   # ── Angular Dashboard + Express BFF ───────────────────────────
   angular:

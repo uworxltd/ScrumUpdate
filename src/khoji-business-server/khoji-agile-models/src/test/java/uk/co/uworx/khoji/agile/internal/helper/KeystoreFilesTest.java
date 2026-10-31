@@ -89,4 +89,29 @@ public class KeystoreFilesTest
     assertTrue(error.getMessage().contains("KEY_STORE_PASSWORD"));
     assertFalse(error.getMessage().contains(KEY_PASSWORD));
   }
+
+  @Test
+  void ensureCreatedIsIdempotentWhenFileExists()
+  {
+    Path keystore = tempDir.resolve("once.jck");
+    assertTrue(KeystoreFiles.ensureCreated(keystore, STORE_PASSWORD, KEY_PASSWORD));
+    assertTrue(Files.isRegularFile(keystore));
+
+    assertFalse(KeystoreFiles.ensureCreated(keystore, STORE_PASSWORD, KEY_PASSWORD));
+    assertTrue(Files.isRegularFile(keystore));
+  }
+
+  @Test
+  void ensureCreatedRejectsNonFilePath() throws Exception
+  {
+    Path directory = tempDir.resolve("not-a-file.jck");
+    Files.createDirectory(directory);
+
+    IllegalStateException error = assertThrows(
+        IllegalStateException.class,
+        () -> KeystoreFiles.ensureCreated(directory, STORE_PASSWORD, KEY_PASSWORD));
+
+    assertTrue(error.getMessage().contains("KEY_STORE_PATH"));
+    assertFalse(error.getMessage().contains(STORE_PASSWORD));
+  }
 }

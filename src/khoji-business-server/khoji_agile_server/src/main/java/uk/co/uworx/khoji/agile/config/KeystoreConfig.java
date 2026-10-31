@@ -15,6 +15,8 @@ import uk.co.uworx.khoji.agile.internal.helper.EncryptionHelper;
 
 /**
  * Fail-closed keystore settings. Applies in every profile, including dev.
+ * Compose local stacks get passwords via defaults and the file from
+ * keystore-init; there is no fallback to the old leaked passwords.
  * Messages name the missing setting and never include secret values.
  */
 @Component

@@ -31,7 +31,12 @@ public final class KeystoreFiles
   {
   }
 
-  public static void create(Path path, String storePassword, String keyPassword)
+  /**
+   * Creates a new JCEKS keystore. Refuses to overwrite an existing path.
+   *
+   * @return {@code true} when a new file was written
+   */
+  public static boolean create(Path path, String storePassword, String keyPassword)
   {
     if (path == null)
     {
@@ -45,9 +50,14 @@ public final class KeystoreFiles
     {
       throw new IllegalStateException("KEY_PASSWORD is not configured.");
     }
-    if (Files.exists(path))
+    if (Files.isRegularFile(path))
     {
       throw new IllegalStateException("Keystore already exists at KEY_STORE_PATH. Refusing to overwrite.");
+    }
+    if (Files.exists(path))
+    {
+      throw new IllegalStateException(
+          "KEY_STORE_PATH exists but is not a regular file. Remove it and retry.");
     }
 
     try
@@ -62,6 +72,7 @@ public final class KeystoreFiles
       store.setKeyEntry(ENCRYPT_KEY_ALIAS, randomSecret(), keyPassword.toCharArray(), null);
       store.setKeyEntry(SALT_KEY_ALIAS, randomSecret(), keyPassword.toCharArray(), null);
       writeAtomically(path, out -> store.store(out, storePassword.toCharArray()));
+      return true;
     }
     catch (IllegalStateException exception)
     {
@@ -73,6 +84,21 @@ public final class KeystoreFiles
     }
   }
 
+  /**
+   * Creates the keystore when missing. Idempotent for compose one-shot init:
+   * a regular file already at the path is left alone.
+   *
+   * @return {@code true} when a new file was written, {@code false} when skipped
+   */
+  public static boolean ensureCreated(Path path, String storePassword, String keyPassword)
+  {
+    if (path != null && Files.isRegularFile(path))
+    {
+      return false;
+    }
+    return create(path, storePassword, keyPassword);
+  }
+
   public static void main(String[] args)
   {
     String path = System.getenv("KEY_STORE_PATH");
@@ -82,8 +108,14 @@ public final class KeystoreFiles
     {
       throw new IllegalStateException("KEY_STORE_PATH is not configured.");
     }
-    create(Path.of(path), storePassword, keyPassword);
-    System.out.println("Wrote a new keystore to KEY_STORE_PATH.");
+    if (ensureCreated(Path.of(path), storePassword, keyPassword))
+    {
+      System.out.println("Wrote a new keystore to KEY_STORE_PATH.");
+    }
+    else
+    {
+      System.out.println("Keystore already exists at KEY_STORE_PATH. Skipping create.");
+    }
   }
 
   static void writeAtomically(Path path, OutputWriter writer) throws Exception
